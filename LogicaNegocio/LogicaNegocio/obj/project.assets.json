@@ -8,19 +8,24 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\seba\\.nuget\\packages\\": {}
+    "C:\\Users\\Administrador\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\seba\\source\\repos\\PROYECTO-INTEGRADOR2024ATI\\Backend\\LogicaNegocio\\LogicaNegocio\\LogicaNegocio.csproj",
+      "projectUniqueName": "C:\\Users\\Administrador\\source\\repos\\ProyectoATI2024\\Backend\\LogicaNegocio\\LogicaNegocio\\LogicaNegocio.csproj",
       "projectName": "LogicaNegocio",
-      "projectPath": "C:\\Users\\seba\\source\\repos\\PROYECTO-INTEGRADOR2024ATI\\Backend\\LogicaNegocio\\LogicaNegocio\\LogicaNegocio.csproj",
-      "packagesPath": "C:\\Users\\seba\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\seba\\source\\repos\\PROYECTO-INTEGRADOR2024ATI\\Backend\\LogicaNegocio\\LogicaNegocio\\obj\\",
+      "projectPath": "C:\\Users\\Administrador\\source\\repos\\ProyectoATI2024\\Backend\\LogicaNegocio\\LogicaNegocio\\LogicaNegocio.csproj",
+      "packagesPath": "C:\\Users\\Administrador\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Administrador\\source\\repos\\ProyectoATI2024\\Backend\\LogicaNegocio\\LogicaNegocio\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\seba\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Administrador\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -60,7 +65,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.411\\RuntimeIdentifierGraph.json"
       }
     }
   }
