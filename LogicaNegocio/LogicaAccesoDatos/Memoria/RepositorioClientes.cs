@@ -28,7 +28,7 @@ namespace LogicaAccesoDatos.Memoria
 
         public IEnumerable<Cliente> FindAll()
         {
-            throw new NotImplementedException();
+            return ClientesEnMemoria;
         }
 
         public Cliente FindById(int id)

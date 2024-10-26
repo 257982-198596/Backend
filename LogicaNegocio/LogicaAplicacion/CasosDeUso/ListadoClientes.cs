@@ -7,16 +7,18 @@ using System.Text;
 
 namespace LogicaAplicacion.CasosDeUso
 {
-    public class AltaCliente : IAltaCliente
+    public class ListadoClientes : IListadoClientes
     {
         public IRepositorioClientes RepositorioClientes { get; set; }
-        public AltaCliente(IRepositorioClientes repoClientes)
+
+        public ListadoClientes(IRepositorioClientes repoClientes)
         {
             RepositorioClientes = repoClientes;
         }
-        public void Alta(Cliente nuevo)
+
+        public IEnumerable<Cliente> ObtenerListado()
         {
-            RepositorioClientes.Add(nuevo);
+            return RepositorioClientes.FindAll();
         }
     }
 }
