@@ -3,6 +3,8 @@
 
 # Directorio de compilación y NuGet
 obj/
+**/obj/
+
 *.nuget.*
 project.assets.json
 
