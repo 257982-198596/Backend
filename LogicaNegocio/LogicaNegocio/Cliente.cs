@@ -19,5 +19,7 @@ namespace LogicaNegocio
         public String Direccion { get; set; }
 
         public EstadoCliente Estado { get; set; }
+
+        public List<CobroRecibido> CobrosDelCliente { get; set; }
     }
 }
