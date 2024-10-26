@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LogicaNegocio
+namespace LogicaNegocio.Dominio
 {
     public class EstadoCliente
     {

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using LogicaNegocio.InterfacesDominio;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LogicaNegocio
+namespace LogicaNegocio.Dominio
 {
-    public class Cliente
+    public class Cliente : IValidar
     {
         public int Id { get; set; }
 
@@ -21,5 +22,10 @@ namespace LogicaNegocio
         public EstadoCliente Estado { get; set; }
 
         public List<CobroRecibido> CobrosDelCliente { get; set; }
+
+        public void Validar()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
