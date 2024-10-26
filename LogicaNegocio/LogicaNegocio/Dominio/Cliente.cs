@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.InterfacesDominio;
+﻿using Excepciones;
+using LogicaNegocio.InterfacesDominio;
 using System;
 using System.Collections.Generic;
 using System.Text;

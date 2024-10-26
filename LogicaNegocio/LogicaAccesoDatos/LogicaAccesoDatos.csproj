@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="BaseDatos\" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Excepciones\Excepciones.csproj" />
+    <ProjectReference Include="..\LogicaNegocio\LogicaNegocio.csproj" />
   </ItemGroup>
 
 </Project>
