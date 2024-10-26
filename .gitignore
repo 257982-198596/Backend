@@ -1,3 +1,12 @@
+# Quitar archivos .cache
+*.cache
+
+# Directorio de compilación y NuGet
+obj/
+*.nuget.*
+project.assets.json
+
+
 # Archivos de compilación y temporales
 bin/
 obj/
