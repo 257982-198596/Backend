@@ -1,0 +1,71 @@
+# Quitar archivos .cache
+*.cache
+
+# Directorio de compilación y NuGet
+obj/
+**/obj/
+
+*.nuget.*
+project.assets.json
+
+
+# Archivos de compilación y temporales
+bin/
+obj/
+
+# Archivos generados por el compilador
+*.dll
+*.exe
+*.pdb
+*.cache
+*.ilk
+*.log
+*.mdb
+*.pidb
+*.obj
+
+# Archivos de configuración del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración del entorno de desarrollo
+.vscode/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Configuraciones locales de la aplicación
+appsettings.Development.json
+secrets.json
+
+# Archivos de publicación
+publish/
+publish_profiles/
+
+# Archivos de paquetes de NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Caché de paquetes de NuGet y directorio de dependencias
+**/packages/*/
+**/packages/.tools/
+
+# Carpeta de migraciones de Entity Framework
+Migrations/
+
+# Archivos de pruebas y resultados
+test-results/
+TestResults/
+
+# Archivos generados por el sistema de logs
+*.log
+logs/
+
+# Archivos de usuario específicos de la configuración local
+local.settings.json
