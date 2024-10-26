@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicaNegocio.InterfacesRepositorios
 {
-    interface IRepositorio<T>
+    public interface IRepositorio<T>
     {
         void Add(T obj);
         void Remove(int id);

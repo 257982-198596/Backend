@@ -26,7 +26,7 @@ namespace LogicaNegocio.Dominio
 
         public void Validar()
         {
-            throw new ClienteException();
+            throw new NotImplementedException();
         }
     }
 }

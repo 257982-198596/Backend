@@ -3,9 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LogicaNegocio.InterfacesRepositorios
+namespace LogicaAplicacion.InterfacesCU
 {
-    public interface IRepositorioServicios : IRepositorio<Servicio>
+    interface IAltaCliente
     {
+        void Alta(Cliente nuevo);
     }
 }
