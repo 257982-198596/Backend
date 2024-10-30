@@ -6,13 +6,16 @@ using System.Text;
 
 namespace LogicaNegocio.Dominio
 {
-    public class Cliente : IValidar
+    public class Cliente : Usuario, IValidar
     {
         public int Id { get; set; }
 
         public String NombreEmpresa { get; set; }
 
-        public String RUToCedula { get; set; }
+
+        public Documento DocumentoCliente { get; set; }
+
+        public String NumDocumento { get; set; }
 
         public String PersonaContacto { get; set; }
 
@@ -23,6 +26,11 @@ namespace LogicaNegocio.Dominio
         public EstadoCliente Estado { get; set; }
 
         public List<CobroRecibido> CobrosDelCliente { get; set; }
+
+        public List<ServicioDelCliente> ServiciosDelCliente { get; set; }
+
+        public List<Notificacion> NotificacionesDelCliente { get; set; }
+
 
         public void Validar()
         {
