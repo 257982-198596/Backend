@@ -47,7 +47,7 @@ jobs:
           cd .sonar\scanner
           ls
           # Ejecutar el análisis de SonarCloud
-          .sonar\scanner\dotnet-sonarscanner.exe begin /k:"257982-198596_Backend" /o:"proyecto-integrador-257982-198596" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
+          .\.sonar\scanner\dotnet-sonarscanner.exe begin /k:"257982-198596_Backend" /o:"proyecto-integrador-257982-198596" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
           
           # Compilar la solución
           dotnet build LogicaNegocio/LogicaNegocio.sln
