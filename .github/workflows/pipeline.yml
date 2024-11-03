@@ -43,14 +43,19 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          ls
-          cd .sonar\scanner
-          ls
+          # Define la ruta completa del ejecutable de SonarScanner
+          $scannerPath = "${{ github.workspace }}\.sonar\scanner\dotnet-sonarscanner.exe"
+          
+          # Verificar que el archivo exista
+          if (!(Test-Path -Path $scannerPath)) {
+              Write-Host "SonarScanner not found at $scannerPath"
+              exit 1
+          }
           # Ejecutar el análisis de SonarCloud
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"257982-198596_Backend" /o:"proyecto-integrador-257982-198596" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
+          & $scannerPath begin /k:"257982-198596_Backend" /o:"proyecto-integrador-257982-198596" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
           
           # Compilar la solución
           dotnet build LogicaNegocio/LogicaNegocio.sln
           
           # Finalizar el análisis de SonarCloud
-          dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          & $scannerPath end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
