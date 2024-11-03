@@ -1,0 +1,72 @@
+name: SonarCloud
+on:
+  push:
+    branches:  # Ejecutar en cualquier rama
+      - '**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build-sonarcloud:
+    name: Build and analyze
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Desactivar clones superficiales para un mejor análisis
+
+      - name: Set up .NET 6.0
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'zulu'  # Puedes elegir entre varias distribuciones compatibles
+    
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v4
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v4
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Necesario para obtener información de PR
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          # Define la ruta completa del ejecutable de SonarScanner
+          $scannerPath = "${{ github.workspace }}\.sonar\scanner\dotnet-sonarscanner.exe"
+          
+          # Verificar que el archivo exista
+          if (!(Test-Path -Path $scannerPath)) {
+              Write-Host "SonarScanner not found at $scannerPath"
+              exit 1
+          }
+          # Ejecutar el análisis de SonarCloud
+          & $scannerPath begin /k:"257982-198596_Backend" /o:"proyecto-integrador-257982-198596" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
+          
+          # Compilar la solución
+          dotnet build LogicaNegocio/LogicaNegocio.sln
+          
+          # Finalizar el análisis de SonarCloud
+          & $scannerPath end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
