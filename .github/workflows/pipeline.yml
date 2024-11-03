@@ -44,14 +44,12 @@ jobs:
         shell: powershell
         run: |
           ls
-          # Cambia al directorio de tu solución (reemplaza si es necesario)
-          cd LogicaNegocio
-          ls
+          
           # Ejecutar el análisis de SonarCloud
           dotnet-sonarscanner begin /k:"257982-198596_Backend" /o:"proyecto-integrador-257982-198596" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
           
           # Compilar la solución
-          dotnet build LogicaNegocio.sln
+          dotnet build LogicaNegocio/LogicaNegocio.sln
           
           # Finalizar el análisis de SonarCloud
           dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
