@@ -43,9 +43,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          # Asegurarse de que dotnet tools global esté en el PATH
-          echo "::add-path::$(dotnet tool list -g | grep -o 'dotnet-sonarscanner')"
-          
+          ls
           # Cambia al directorio de tu solución (reemplaza si es necesario)
           cd LogicaNegocio
           ls
