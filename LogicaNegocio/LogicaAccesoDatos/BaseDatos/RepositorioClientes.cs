@@ -1,34 +1,31 @@
-﻿using Excepciones;
-using LogicaNegocio.Dominio;
+﻿using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace LogicaAccesoDatos.Memoria
+namespace LogicaAccesoDatos.BaseDatos
 {
     public class RepositorioClientes : IRepositorioClientes
     {
-        public static List<Cliente> ClientesEnMemoria { get; set; } = new List<Cliente>();
 
+        public CobrosContext Contexto { get; set; }
 
+        public RepositorioClientes(CobrosContext context)
+        {
+            Contexto = context;
+        }
 
         public void Add(Cliente obj)
         {
-            if(obj != null)
-            {
-                obj.Validar();
-                ClientesEnMemoria.Add(obj);
-            }
-            else
-            {
-                throw new ClienteException("El cliente no puede ser nulo");
-            }
+            throw new NotImplementedException();
         }
 
         public IEnumerable<Cliente> FindAll()
         {
-            return ClientesEnMemoria;
+            return Contexto.Clientes.ToList();
         }
 
         public Cliente FindById(int id)

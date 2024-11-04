@@ -13,6 +13,6 @@ namespace LogicaNegocio.Dominio
 
         public String Nombre { get; set; }
 
-        public List<int> Rutina { get; set; }
+        //public List<int> Rutina { get; set; }
     }
 }

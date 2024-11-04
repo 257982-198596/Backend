@@ -1,87 +1,54 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using LogicaNegocio.Dominio;
+using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace WebAPIGestionCobros.Controllers
 {
-    public class ClientesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ClientesController : ControllerBase
     {
-        // GET: ClientesController
-        public ActionResult Index()
+        public IRepositorioClientes RepoClientes { get; set; }
+
+        public ClientesController(IRepositorioClientes repoClientes)
         {
-            return View();
+            RepoClientes = repoClientes;
         }
 
-        // GET: ClientesController/Details/5
-        public ActionResult Details(int id)
+
+        // GET: api/<ClientesController>
+        [HttpGet]
+        public IEnumerable<Cliente> Get()
         {
-            return View();
+            return RepoClientes.FindAll();
         }
 
-        // GET: ClientesController/Create
-        public ActionResult Create()
+        // GET api/<ClientesController>/5
+        [HttpGet("{id}")]
+        public string Get(int id)
         {
-            return View();
+            return "value";
         }
 
-        // POST: ClientesController/Create
+        // POST api/<ClientesController>
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public void Post([FromBody] string value)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
-        // GET: ClientesController/Edit/5
-        public ActionResult Edit(int id)
+        // PUT api/<ClientesController>/5
+        [HttpPut("{id}")]
+        public void Put(int id, [FromBody] string value)
         {
-            return View();
         }
 
-        // POST: ClientesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        // DELETE api/<ClientesController>/5
+        [HttpDelete("{id}")]
+        public void Delete(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ClientesController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ClientesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
