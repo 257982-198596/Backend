@@ -1,6 +1,9 @@
+using LogicaAccesoDatos.BaseDatos;
+using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +27,13 @@ namespace WebAPIGestionCobros
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //repositorios
+            services.AddScoped<IRepositorioClientes, RepositorioClientes>();
+
+            //conexión a bd
+            string stringConexion = Configuration.GetConnectionString("Miconexion");
+            services.AddDbContextPool<CobrosContext>(options => options.UseSqlServer(stringConexion));
+
             services.AddControllers();
         }
 

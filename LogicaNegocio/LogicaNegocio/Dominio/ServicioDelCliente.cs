@@ -18,9 +18,9 @@ namespace LogicaNegocio.Dominio
 
         public Moneda MonedaDelServicio { get; set; }
 
-        public DateOnly FechaInicio { get; set; }
+        public DateTime FechaInicio { get; set; }
 
-        public DateOnly FechaVencimiento { get; set; }
+        public DateTime FechaVencimiento { get; set; }
 
         public Frecuencia FrecuenciaDelServicio { get; set; }
 
