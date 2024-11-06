@@ -13,14 +13,26 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public DbSet<Cliente> Clientes { get; set; }
 
+        public DbSet<Suscriptor> Suscriptores { get; set; }
+
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Rol> Roles { get; set; }
+
         public CobrosContext(DbContextOptions<CobrosContext> opciones) : base(opciones)
         {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+            modelBuilder.Entity<CobroRecibido>()
+            .Property(c => c.Monto)
+            .HasPrecision(18, 2);
 
+            modelBuilder.Entity<ServicioDelCliente>()
+            .Property(s => s.Precio)
+            .HasPrecision(18, 2);
+
+            base.OnModelCreating(modelBuilder);
         }
 
     }

@@ -15,8 +15,10 @@ namespace LogicaNegocio.Dominio
 
         public String Password { get; set; }
 
-        public Pais PaisUsuario { get; set; }
 
         public Rol RolDeUsuario { get; set; }
+
+        public int RolId { get; set; }
+        
     }
 }
