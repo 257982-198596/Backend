@@ -18,6 +18,10 @@ namespace LogicaAccesoDatos.BaseDatos
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Rol> Roles { get; set; }
 
+        public DbSet<Documento> Documentos { get; set; }
+
+        public DbSet<Pais> Paises { get; set; }
+
         public CobrosContext(DbContextOptions<CobrosContext> opciones) : base(opciones)
         {
         }

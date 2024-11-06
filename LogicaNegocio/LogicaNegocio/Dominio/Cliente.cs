@@ -12,6 +12,8 @@ namespace LogicaNegocio.Dominio
 
         public Documento DocumentoCliente { get; set; }
 
+        public int DocumentoId { get; set; }
+
         public String NumDocumento { get; set; }
 
         public EstadoCliente Estado { get; set; }
@@ -25,7 +27,7 @@ namespace LogicaNegocio.Dominio
 
         public void Validar()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

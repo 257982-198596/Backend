@@ -1,5 +1,7 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +22,41 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Add(Cliente obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                obj.Validar();
+
+                Documento elDocumento = Contexto.Documentos.Find(obj.DocumentoId);
+                //EstadoCliente elEstado = 
+                Pais elPais = Contexto.Paises.Find(obj.PaisId);
+                //Falta Suscriptor
+                if(elDocumento != null)
+                {
+                    if(elPais != null)
+                    {
+                        obj.DocumentoCliente = elDocumento;
+                        obj.Pais = elPais;
+                        Contexto.Add(obj);
+                        Contexto.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new ClienteException("");
+                    }
+                }
+                else
+                {
+                    throw new ClienteException("");
+                }
+            }
+            catch (ClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public IEnumerable<Cliente> FindAll()
@@ -30,7 +66,7 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public Cliente FindById(int id)
         {
-            throw new NotImplementedException();
+            return Contexto.Clientes.Include(cli => cli.DocumentoCliente).Where(cli => cli.Id == id).SingleOrDefault();
         }
 
         public void Remove(int id)

@@ -14,5 +14,7 @@ namespace LogicaNegocio.Dominio
         public string PersonaContacto { get; set; }
 
         public Pais Pais { get; set; }
+
+        public int PaisId { get; set; }
     }
 }

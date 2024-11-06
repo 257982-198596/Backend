@@ -1,6 +1,8 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,22 +23,68 @@ namespace WebAPIGestionCobros.Controllers
 
         // GET: api/<ClientesController>
         [HttpGet]
-        public IEnumerable<Cliente> Get()
+        public IActionResult Get()
         {
-            return RepoClientes.FindAll();
+            IEnumerable<Cliente> losClientes = RepoClientes.FindAll();
+            if (losClientes == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(losClientes);
+            }
+            
         }
 
         // GET api/<ClientesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IActionResult Get(int? id)
         {
-            return "value";
+            if(id == null || id == 0)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                Cliente elCliente = RepoClientes.FindById(id.Value);
+                if (elCliente == null)
+                {
+                    return NotFound();
+                }else
+                {
+                    return Ok(elCliente);
+                }
+            }
+            catch (ClienteException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // POST api/<ClientesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Cliente nuevo)
         {
+            try
+            {
+                nuevo.Validar();
+                RepoClientes.Add(nuevo);
+            }
+            catch (ClienteException e)
+            {
+                return BadRequest(e);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return Created("api/clientes" + nuevo.Id, nuevo);
         }
 
         // PUT api/<ClientesController>/5
