@@ -12,10 +12,11 @@ namespace LogicaNegocio.Dominio
         public String Descripcion { get; set; }
 
         public Categoria CategoriaDelServicio { get; set; }
+        public int CategoriaId { get; set; }
 
         public void Validar()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

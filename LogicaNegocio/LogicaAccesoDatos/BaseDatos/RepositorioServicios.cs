@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,7 +21,33 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Add(Servicio obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+                obj.Validar();
+
+                Categoria laCategoria = Contexto.Categorias.Find(obj.CategoriaId);
+                
+                if (laCategoria != null)
+                {
+                                         
+                            obj.CategoriaDelServicio = laCategoria;
+                            Contexto.Add(obj);
+                            Contexto.SaveChanges();
+                     
+                }
+                else
+                {
+                    throw new ServicioException("Debe seleccionar una categoría de servicio");
+                }
+            }
+            catch (ServicioException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public IEnumerable<Servicio> FindAll()

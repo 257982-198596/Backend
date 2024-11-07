@@ -69,8 +69,23 @@ namespace WebAPIGestionCobros.Controllers
 
         // POST api/<ServiciosController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Servicio nuevo)
         {
+            try
+            {
+                nuevo.Validar();
+                RepoServicios.Add(nuevo);
+            }
+            catch (ServicioException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return Created("api/servicios" + nuevo.Id, nuevo);
         }
 
         // PUT api/<ServiciosController>/5
