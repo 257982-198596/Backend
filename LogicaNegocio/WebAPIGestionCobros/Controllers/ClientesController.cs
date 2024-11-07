@@ -77,7 +77,7 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ClienteException e)
             {
-                return BadRequest(e);
+                return BadRequest(e.Message);
             }
             catch(Exception ex)
             {
@@ -89,14 +89,65 @@ namespace WebAPIGestionCobros.Controllers
 
         // PUT api/<ClientesController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Cliente aModificar)
         {
+            try
+            {
+               if(aModificar.Id != null && aModificar.Id != 0)
+                {
+                    aModificar.Validar();
+                    RepoClientes.Update(aModificar);
+                    return Ok(aModificar);
+                }
+                else
+                {
+                    return BadRequest("El id del usuario es obligatorio");
+                }
+            }
+            catch (ClienteException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
+
         }
 
         // DELETE api/<ClientesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try
+            {
+                if (id != null && id != 0)
+                {
+                    Cliente elClienteAEliminar = RepoClientes.FindById(id);
+                    if (elClienteAEliminar != null)
+                    {
+                        RepoClientes.Remove(id);
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return BadRequest("No existe cliente con ese ID");
+                    }
+
+                }
+                else
+                {
+                    return BadRequest("El id es obligatorio para eliminar un cliente");
+                }
+            }
+            catch (ClienteException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }

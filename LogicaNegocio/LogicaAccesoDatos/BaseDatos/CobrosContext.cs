@@ -28,6 +28,8 @@ namespace LogicaAccesoDatos.BaseDatos
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            //para guardar decimal en DB
             modelBuilder.Entity<CobroRecibido>()
             .Property(c => c.Monto)
             .HasPrecision(18, 2);
@@ -35,6 +37,11 @@ namespace LogicaAccesoDatos.BaseDatos
             modelBuilder.Entity<ServicioDelCliente>()
             .Property(s => s.Precio)
             .HasPrecision(18, 2);
+
+            //Claves UNIQUE
+            modelBuilder.Entity<Cliente>()
+            .HasIndex(c => c.NumDocumento)
+            .IsUnique();
 
             base.OnModelCreating(modelBuilder);
         }
