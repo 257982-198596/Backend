@@ -14,6 +14,7 @@ namespace LogicaAccesoDatos.BaseDatos
         public DbSet<Cliente> Clientes { get; set; }
 
         public DbSet<Suscriptor> Suscriptores { get; set; }
+        public DbSet<Servicio> Servicios { get; set; }
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Rol> Roles { get; set; }
