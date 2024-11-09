@@ -62,12 +62,58 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Remove(int id)
         {
-            throw new NotImplementedException();
+            Servicio elServicioAEliminar = Contexto.Servicios.Find(id);
+            try
+            {
+                if (elServicioAEliminar != null)
+                {
+                    //TODO:validar registros en otras tablas
+                    Contexto.Remove(elServicioAEliminar);
+                    Contexto.SaveChanges();
+                }
+                else
+                {
+                    throw new ServicioException("No se pudo dar la baja, el servicio no existe en el sistema");
+                }
+
+            }
+            catch (ServicioException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public void Update(Servicio obj)
         {
-            throw new NotImplementedException();
+            try
+            {
+
+                Categoria laCategoriaDelServicio = Contexto.Categorias.Find(obj.CategoriaId);
+                if(laCategoriaDelServicio != null)
+                {
+                    //Valida Servicio
+                    obj.Validar();
+                    Contexto.Servicios.Update(obj);
+                    Contexto.SaveChanges();
+                }
+                else
+                {
+                    throw new ServicioException("La categoría seleccionada no existe en el sistema");
+                }
+                
+            }
+            catch (ServicioException ce)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 }

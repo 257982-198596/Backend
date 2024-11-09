@@ -90,14 +90,64 @@ namespace WebAPIGestionCobros.Controllers
 
         // PUT api/<ServiciosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public IActionResult Put(int id, [FromBody] Servicio aModificar)
         {
+            try
+            {
+                if (aModificar.Id != null && aModificar.Id != 0)
+                {
+                    aModificar.Validar();
+                    RepoServicios.Update(aModificar);
+                    return Ok(aModificar);
+                }
+                else
+                {
+                    return BadRequest("El id del servicio es obligatorio");
+                }
+            }
+            catch (ServicioException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
         }
 
         // DELETE api/<ServiciosController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public IActionResult Delete(int id)
         {
+            try
+            {
+                if (id != null && id != 0)
+                {
+                    Servicio elServicioAEliminar = RepoServicios.FindById(id);
+                    if (elServicioAEliminar != null)
+                    {
+                        RepoServicios.Remove(id);
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return BadRequest("No existe Servicio con ese ID");
+                    }
+
+                }
+                else
+                {
+                    return BadRequest("El id es obligatorio para eliminar un servicio");
+                }
+            }
+            catch (ServicioException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500);
+            }
         }
     }
 }
