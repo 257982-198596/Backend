@@ -70,7 +70,28 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public IEnumerable<Cliente> FindAll()
         {
-            return Contexto.Clientes.ToList();
+            try
+            {
+                List<Cliente> losClientes = Contexto.Clientes.ToList();
+                if (losClientes != null)
+                {
+                    return losClientes;
+                }
+                else
+                {
+                    throw new ClienteException("No hay clientes ingresados en el sistema");
+                }
+
+            }
+            catch (ClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            
         }
 
         public Cliente FindById(int id)

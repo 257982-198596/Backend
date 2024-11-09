@@ -52,7 +52,28 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public IEnumerable<Servicio> FindAll()
         {
-            return Contexto.Servicios.ToList();
+            try
+            {
+                List<Servicio> losServicios = Contexto.Servicios.ToList();
+                if (losServicios != null)
+                {
+                    return losServicios;
+                }
+                else
+                {
+                    throw new ServicioException("No hay servicios ingresados en el sistema");
+                }
+
+            }
+            catch (ServicioException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+            
         }
 
         public Servicio FindById(int id)
