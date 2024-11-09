@@ -57,7 +57,7 @@ project.fragment.lock.json
 **/packages/.tools/
 
 # Carpeta de migraciones de Entity Framework
-Migrations/
+#Migrations/
 
 # Archivos de pruebas y resultados
 test-results/

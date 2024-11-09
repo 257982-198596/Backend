@@ -14,6 +14,10 @@ namespace LogicaAccesoDatos.BaseDatos
         public DbSet<Cliente> Clientes { get; set; }
 
         public DbSet<Suscriptor> Suscriptores { get; set; }
+        public DbSet<Servicio> Servicios { get; set; }
+
+        public DbSet<ServicioDelCliente> ServiciosDelCliente { get; set; }
+        public DbSet<Categoria> Categorias { get; set; }
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Rol> Roles { get; set; }
@@ -21,6 +25,12 @@ namespace LogicaAccesoDatos.BaseDatos
         public DbSet<Documento> Documentos { get; set; }
 
         public DbSet<Pais> Paises { get; set; }
+
+        public DbSet<Frecuencia> Frecuencias { get; set; }
+
+        public DbSet<Moneda> Monedas { get; set; }
+
+        public DbSet<EstadoServicioDelCliente> EstadosServiciosDelClientes { get; set; }
 
         public CobrosContext(DbContextOptions<CobrosContext> opciones) : base(opciones)
         {

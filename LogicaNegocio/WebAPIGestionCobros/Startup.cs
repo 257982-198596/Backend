@@ -33,6 +33,8 @@ namespace WebAPIGestionCobros
 
             //repositorios
             services.AddScoped<IRepositorioClientes, RepositorioClientes>();
+            services.AddScoped<IRepositorioServicios, RepositorioServicios>();
+            services.AddScoped<IRepositorioServiciosDelCliente, RepositorioServiciosDelCliente>();
 
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");
