@@ -24,5 +24,7 @@ namespace LogicaNegocio.Dominio
         public Pais Pais { get; set; }
 
         public int PaisId { get; set; }
+
+        public Usuario UsuarioLogin { get; set; }
     }
 }
