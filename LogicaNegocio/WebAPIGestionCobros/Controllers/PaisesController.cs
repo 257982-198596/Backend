@@ -8,29 +8,28 @@ namespace WebAPIGestionCobros.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DocumentosController : ControllerBase
+    public class PaisesController : ControllerBase
     {
+        public IRepositorioPaises RepoPaises { get; set; }
 
-        public IRepositorioDocumentos RepoDocumentos { get; set; }
-
-        public DocumentosController(IRepositorioDocumentos repoDocumentos)
+        public PaisesController(IRepositorioPaises repoPaises)
         {
-            RepoDocumentos = repoDocumentos;
+            RepoPaises = repoPaises;
         }
 
 
-       
+        // GET: api/<PaisController>
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Documento> losTiposDocumentos = RepoDocumentos.FindAll();
-            if (losTiposDocumentos == null)
+            IEnumerable<Pais> losPaises = RepoPaises.FindAll();
+            if (losPaises == null)
             {
                 return NotFound();
             }
             else
             {
-                return Ok(losTiposDocumentos);
+                return Ok(losPaises);
             }
 
         }
