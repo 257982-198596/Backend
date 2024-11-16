@@ -72,7 +72,11 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                List<Cliente> losClientes = Contexto.Clientes.ToList();
+                List<Cliente> losClientes = Contexto.Clientes
+                    .Include(cli => cli.DocumentoCliente)
+                    .Include(cli => cli.UsuarioLogin)
+                    .Include(cli => cli.Pais)
+                    .ToList();
                 if (losClientes != null)
                 {
                     return losClientes;
