@@ -27,20 +27,32 @@ namespace LogicaAccesoDatos.BaseDatos
                 obj.Validar();
 
                 Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
-                //EstadoCliente elEstado = 
+                EstadoCliente elEstado = Contexto.EstadosDelCliente.FirstOrDefault(e => e.Nombre == "Activo");
                 Pais elPais = Contexto.Paises.Find(obj.PaisId);
-                //Falta Suscriptor
-                if(elTipoDocumento != null)
+                Suscriptor elSuscriptor = Contexto.Suscriptores.Find(obj.SuscriptorId);
+                Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
+                if (elTipoDocumento != null)
                 {
                     if(elPais != null)
                     {
                         Cliente elCliente = FindByNumDocumento(obj.NumDocumento);
                         if (elCliente == null)
                         {
-                            obj.DocumentoCliente = elTipoDocumento;
-                            obj.Pais = elPais;
-                            Contexto.Add(obj);
-                            Contexto.SaveChanges();
+                            if (elSuscriptor != null)
+                            {
+                                obj.DocumentoCliente = elTipoDocumento;
+                                obj.UsuarioLogin.RolDeUsuario = elRol;
+                                obj.Estado = elEstado;
+                                obj.Pais = elPais;
+                                obj.SuscriptorId = elSuscriptor.Id;
+                                Contexto.Add(obj);
+                                Contexto.SaveChanges();
+                            }
+                            else
+                            {
+                                throw new ClienteException("El Suscriptor no existe en el sistema");
+                            }
+                            ;
                         }
                         else
                         {

@@ -29,7 +29,7 @@ namespace LogicaNegocio.Dominio
 
         public List<Notificacion> NotificacionesDelCliente { get; set; }
 
-
+        public int SuscriptorId { get; set; }
         public void Validar()
         {
             

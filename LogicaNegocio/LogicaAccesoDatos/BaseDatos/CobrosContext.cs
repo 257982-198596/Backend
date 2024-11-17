@@ -32,6 +32,8 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public DbSet<EstadoServicioDelCliente> EstadosServiciosDelClientes { get; set; }
 
+        public DbSet<EstadoCliente> EstadosDelCliente { get; set; }
+
         public CobrosContext(DbContextOptions<CobrosContext> opciones) : base(opciones)
         {
         }
