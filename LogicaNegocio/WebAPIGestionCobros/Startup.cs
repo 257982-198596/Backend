@@ -27,6 +27,15 @@ namespace WebAPIGestionCobros
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowSpecificOrigin",
+                    builder => builder.WithOrigins("http://localhost:5174")
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod());
+            });
+
+            
             //para bloquear loops de referencias
             services.AddControllers().AddNewtonsoftJson(options =>
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
@@ -35,6 +44,9 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioClientes, RepositorioClientes>();
             services.AddScoped<IRepositorioServicios, RepositorioServicios>();
             services.AddScoped<IRepositorioServiciosDelCliente, RepositorioServiciosDelCliente>();
+            services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
+            services.AddScoped<IRepositorioDocumentos, RepositorioDocumentos>();
+            services.AddScoped<IRepositorioPaises, RepositorioPaises>();
 
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");
@@ -50,6 +62,9 @@ namespace WebAPIGestionCobros
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Activar la política de CORS
+            app.UseCors("AllowSpecificOrigin");
 
             app.UseRouting();
 
