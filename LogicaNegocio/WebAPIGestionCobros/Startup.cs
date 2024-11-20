@@ -49,7 +49,7 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioPaises, RepositorioPaises>();
 
             //conexión a bd
-            string stringConexion = Configuration.GetConnectionString("AzureDB");
+            string stringConexion = Configuration.GetConnectionString("Miconexion");
             services.AddDbContextPool<CobrosContext>(options => options.UseSqlServer(stringConexion));
 
             services.AddControllers();
