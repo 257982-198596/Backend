@@ -69,3 +69,7 @@ logs/
 
 # Archivos de usuario específicos de la configuración local
 local.settings.json
+
+# Ignorar los archivos de configuración de aplicación
+appsettings.json
+appsettings.*.json
