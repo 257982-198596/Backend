@@ -161,10 +161,22 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Update(Cliente obj)
         {
+            //Cliente elClienteBD = Contexto.Clientes.Where(c => c.Id == obj.Id)
+            //   .Include(c => c.UsuarioLogin)
+            //    .ThenInclude(u => u.RolDeUsuario)
+            //   .FirstOrDefault();
+            Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
+            Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
+            
+            Pais elPais = Contexto.Paises.Find(obj.PaisId);
+
             try
             {
                 //Valida Cliente
                 obj.Validar();
+                obj.UsuarioLogin.RolDeUsuario = elRol;
+                obj.DocumentoCliente = elTipoDocumento;
+                
                 Contexto.Clientes.Update(obj);
                 Contexto.SaveChanges();
             }

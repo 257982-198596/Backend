@@ -9,7 +9,7 @@ namespace LogicaNegocio.Dominio
 {
     public abstract class EntidadComercial
     {
-        [MinLength(5, ErrorMessage = "El nombre tiene que tener por lo menos 5 caracteres")]
+        [MinLength(3, ErrorMessage = "El nombre tiene que tener por lo menos 3 caracteres")]
         public string Nombre { get; set; }
 
         [RegularExpression("([0-9]+)", ErrorMessage = "El teléfono tiene que ser numérico")]
