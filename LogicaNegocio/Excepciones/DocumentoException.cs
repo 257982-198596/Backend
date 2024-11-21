@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Excepciones
 {
-    internal class DocumentoException : Exception
+    public class DocumentoException : Exception
     {
 
         public DocumentoException() { }
