@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioServiciosDelCliente : IRepositorio<ServicioDelCliente>
+    public interface IRepositorioFrecuencias
     {
-        IEnumerable<ServicioDelCliente> ServiciosDeUnCliente(int idCliente);
+        IEnumerable<Frecuencia> FindAll();
     }
 }

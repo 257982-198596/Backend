@@ -4,6 +4,7 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,20 +22,16 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         // GET: api/<ServiciosDelClienteController>
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{idCliente}")]
+        public IActionResult GetServiciosDeUnCliente(int idCliente)
         {
             try
             {
-                IEnumerable<ServicioDelCliente> losServiciosdeLosClientes = RepoServiciosDelCliente.FindAll();
-                if (losServiciosdeLosClientes == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(losServiciosdeLosClientes);
-                }
+
+                IEnumerable<ServicioDelCliente> losServiciosdelCliente = RepoServiciosDelCliente.ServiciosDeUnCliente(idCliente);
+                return Ok(losServiciosdelCliente);
+                
+               
             }
             catch (ServicioDelClienteException ex)
             {
@@ -48,7 +45,7 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         // GET api/<ServiciosDelClienteController>/5
-        [HttpGet("{id}")]
+        //[HttpGet("{id}")]
         public IActionResult Get(int? id)
         {
             if (id == null || id == 0)

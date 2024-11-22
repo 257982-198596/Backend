@@ -168,5 +168,28 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw;
             }
         }
+
+        public IEnumerable<ServicioDelCliente> ServiciosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                List<ServicioDelCliente> losServiciosDeClientes = Contexto.ServiciosDelCliente
+                .Include(servCli => servCli.Cliente)
+                .Include(servCli => servCli.ServicioContratado)
+                .Include(servCli => servCli.MonedaDelServicio)
+                .Include(serCli => serCli.FrecuenciaDelServicio)
+                .Where(servCli => servCli.ClienteId == idCliente).ToList();
+                return losServiciosDeClientes;
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }
