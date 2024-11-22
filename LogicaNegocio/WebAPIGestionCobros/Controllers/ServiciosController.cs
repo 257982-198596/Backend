@@ -94,8 +94,9 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                if (aModificar.Id != null && aModificar.Id != 0)
+                if (aModificar.Id != null)
                 {
+                    aModificar.Id = id;
                     aModificar.Validar();
                     RepoServicios.Update(aModificar);
                     return Ok(aModificar);

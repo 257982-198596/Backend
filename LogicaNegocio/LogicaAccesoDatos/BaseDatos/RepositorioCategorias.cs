@@ -9,31 +9,31 @@ using System.Threading.Tasks;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
-    public class RepositorioDocumentos : IRepositorioDocumentos
+    public class RepositorioCategorias : IRepositorioCategorias
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioDocumentos(CobrosContext context)
+        public RepositorioCategorias(CobrosContext context)
         {
             Contexto = context;
         }
 
-        public IEnumerable<Documento> FindAll()
+        public IEnumerable<Categoria> FindAll()
         {
             try
             {
-                List<Documento> losTiposDeDocumentos = Contexto.Documentos.ToList();
-                if (losTiposDeDocumentos != null)
+                List<Categoria> lasCategorias = Contexto.Categorias.ToList();
+                if (lasCategorias != null)
                 {
-                    return losTiposDeDocumentos;
+                    return lasCategorias;
                 }
                 else
                 {
-                    throw new DocumentoException("No hay tipos de documentos ingresados en el sistema");
+                    throw new CategoriaException("No hay categorias ingresados en el sistema");
                 }
 
             }
-            catch (DocumentoException ex)
+            catch (CategoriaException ex)
             {
                 throw;
             }

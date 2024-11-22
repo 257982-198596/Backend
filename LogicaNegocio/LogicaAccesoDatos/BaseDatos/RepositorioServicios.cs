@@ -54,7 +54,7 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                List<Servicio> losServicios = Contexto.Servicios.ToList();
+                List<Servicio> losServicios = Contexto.Servicios.Include(serv => serv.CategoriaDelServicio).ToList();
                 if (losServicios != null)
                 {
                     return losServicios;
