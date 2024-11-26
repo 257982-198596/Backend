@@ -4,6 +4,7 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,20 +22,16 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         // GET: api/<ServiciosDelClienteController>
-        [HttpGet]
-        public IActionResult Get()
+        [HttpGet("{idCliente}")]
+        public IActionResult GetServiciosDeUnCliente(int idCliente)
         {
             try
             {
-                IEnumerable<ServicioDelCliente> losServiciosdeLosClientes = RepoServiciosDelCliente.FindAll();
-                if (losServiciosdeLosClientes == null)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    return Ok(losServiciosdeLosClientes);
-                }
+
+                IEnumerable<ServicioDelCliente> losServiciosdelCliente = RepoServiciosDelCliente.ServiciosDeUnCliente(idCliente);
+                return Ok(losServiciosdelCliente);
+                
+               
             }
             catch (ServicioDelClienteException ex)
             {
@@ -48,16 +45,16 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         // GET api/<ServiciosDelClienteController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int? id)
+        [HttpGet("{idCliente}/{idServicioDelCliente}")]
+        public IActionResult Get(int idCliente, int idServicioDelCliente)
         {
-            if (id == null || id == 0)
+            if (idCliente == null || idCliente == 0 || idServicioDelCliente == null || idServicioDelCliente == 0)
             {
                 return BadRequest();
             }
             try
             {
-                ServicioDelCliente elServiciodeCliente = RepoServiciosDelCliente.FindById(id.Value);
+                ServicioDelCliente elServiciodeCliente = RepoServiciosDelCliente.FindById(idServicioDelCliente);
                 if (elServiciodeCliente == null)
                 {
                     return NotFound();
@@ -105,8 +102,9 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                if (aModificar.Id != null && aModificar.Id != 0)
+                if (id != null || id != 0)
                 {
+                    aModificar.Id = id;
                     aModificar.Validar();
                     RepoServiciosDelCliente.Update(aModificar);
                     return Ok(aModificar);

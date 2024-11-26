@@ -88,6 +88,8 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(cli => cli.DocumentoCliente)
                     .Include(cli => cli.UsuarioLogin)
                     .Include(cli => cli.Pais)
+                    .Include(cli => cli.ServiciosDelCliente)
+                    .ThenInclude(servCli => servCli.ServicioContratado)
                     .ToList();
                 if (losClientes != null)
                 {
