@@ -45,16 +45,16 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         // GET api/<ServiciosDelClienteController>/5
-        //[HttpGet("{id}")]
-        public IActionResult Get(int? id)
+        [HttpGet("{idCliente}/{idServicioDelCliente}")]
+        public IActionResult Get(int idCliente, int idServicioDelCliente)
         {
-            if (id == null || id == 0)
+            if (idCliente == null || idCliente == 0 || idServicioDelCliente == null || idServicioDelCliente == 0)
             {
                 return BadRequest();
             }
             try
             {
-                ServicioDelCliente elServiciodeCliente = RepoServiciosDelCliente.FindById(id.Value);
+                ServicioDelCliente elServiciodeCliente = RepoServiciosDelCliente.FindById(idServicioDelCliente);
                 if (elServiciodeCliente == null)
                 {
                     return NotFound();
@@ -102,8 +102,9 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                if (aModificar.Id != null && aModificar.Id != 0)
+                if (id != null || id != 0)
                 {
+                    aModificar.Id = id;
                     aModificar.Validar();
                     RepoServiciosDelCliente.Update(aModificar);
                     return Ok(aModificar);

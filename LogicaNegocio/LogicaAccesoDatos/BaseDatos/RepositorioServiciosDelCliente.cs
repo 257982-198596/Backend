@@ -27,8 +27,8 @@ namespace LogicaAccesoDatos.BaseDatos
                 Cliente elCliente = Contexto.Clientes.Find(obj.ClienteId);
                 Frecuencia laFrecuencia = Contexto.Frecuencias.Find(obj.FrecuenciaDelServicioId);
                 Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelServicioId);
-                //ESTADO ACTIVO
-                //EstadoServicioDelCliente elEstadoActivo = Contexto.EstadosServiciosDelClientes.Find(1);
+                EstadoServicioDelCliente elEstadoInicial = Contexto.EstadosServiciosDelClientes.FirstOrDefault(e => e.Nombre == "Activo");
+
                 if (elServicio != null)
                 {
                     if (elCliente != null)
@@ -37,15 +37,23 @@ namespace LogicaAccesoDatos.BaseDatos
                         {
                             if (laMoneda != null)
                             {
-                                obj.ServicioContratado = elServicio;
-                                obj.Cliente = elCliente;
-                                obj.FrecuenciaDelServicio = laFrecuencia;
+                                if(elEstadoInicial != null)
+                                {
+                                    obj.ServicioContratado = elServicio;
+                                    obj.Cliente = elCliente;
+                                    obj.FrecuenciaDelServicio = laFrecuencia;
+                                    obj.MonedaDelServicio = laMoneda;
+                                    obj.EstadoDelServicioDelCliente = elEstadoInicial;
+                                    laFrecuencia.CalcularVencimiento(obj);
 
-                                //obj.FechaVencimiento = obj.FechaInicio.AddDays(30)
-                                obj.MonedaDelServicio = laMoneda;
-                                //estado
-                                Contexto.Add(obj);
-                                Contexto.SaveChanges();
+                                    Contexto.Add(obj);
+                                    Contexto.SaveChanges();
+                                }
+                                else
+                                {
+                                    throw new ServicioDelClienteException("Error al obtener el estado del servicio inicial");
+                                }
+                                
                             }
                             else
                             {
@@ -112,7 +120,12 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                return Contexto.ServiciosDelCliente.Where(serv => serv.Id == id).SingleOrDefault();
+                return Contexto.ServiciosDelCliente.Where(serv => serv.Id == id)
+                    .Include(ser => ser.Cliente)
+                    .Include(ser => ser.FrecuenciaDelServicio)
+                    .Include(ser => ser.EstadoDelServicioDelCliente)
+                    .Include(ser => ser.MonedaDelServicio)
+                    .Include(ser => ser.ServicioContratado).SingleOrDefault();
             }
             catch (ServicioDelClienteException ex)
             {
@@ -152,9 +165,26 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Update(ServicioDelCliente obj)
         {
+
+            
+            
+            Frecuencia laFrecuencia = Contexto.Frecuencias.Find(obj.FrecuenciaDelServicioId);
+            Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelServicioId);
+            Servicio elServicio = Contexto.Servicios.Find(obj.ServicioContratadoId);
+            ServicioDelCliente elServicioACambiar = Contexto.ServiciosDelCliente
+                .Include(ser => ser.Cliente)
+                .Include(ser => ser.EstadoDelServicioDelCliente)
+                .Where(ser => ser.Id == obj.Id).SingleOrDefault();
+            Contexto.Entry(elServicioACambiar).State = EntityState.Detached;
+            Contexto.Entry(obj).State = EntityState.Modified;
             try
             {
-                //Valida Servicio del Cliente
+                obj.FrecuenciaDelServicio = laFrecuencia;
+                obj.MonedaDelServicio = laMoneda;
+                obj.ServicioContratado = elServicio;
+                obj.Cliente = elServicioACambiar.Cliente;
+                obj.EstadoDelServicioDelCliente = elServicioACambiar.EstadoDelServicioDelCliente;
+                laFrecuencia.CalcularVencimiento(obj);
                 obj.Validar();
                 Contexto.ServiciosDelCliente.Update(obj);
                 Contexto.SaveChanges();
@@ -177,6 +207,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 .Include(servCli => servCli.Cliente)
                 .Include(servCli => servCli.ServicioContratado)
                 .Include(servCli => servCli.MonedaDelServicio)
+                .Include(servCli => servCli.EstadoDelServicioDelCliente)
                 .Include(serCli => serCli.FrecuenciaDelServicio)
                 .Where(servCli => servCli.ClienteId == idCliente).ToList();
                 return losServiciosDeClientes;
