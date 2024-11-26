@@ -13,11 +13,15 @@ namespace LogicaNegocio.Dominio
 
         public Moneda MonedaDelCobro { get; set; }
 
+        public int MonedaDelCobroId { get; set; }
+
         public MedioDePago MedioPago { get; set; }
+
+        public int MedioPagoId { get; set; }
 
         public void Validar()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }
