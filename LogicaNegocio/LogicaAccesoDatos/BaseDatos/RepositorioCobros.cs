@@ -28,15 +28,27 @@ namespace LogicaAccesoDatos.BaseDatos
 
                 Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelCobroId);
                 MedioDePago elMedio = Contexto.MediosDePago.Find(obj.MedioPagoId);
+                ServicioDelCliente elServicioDelCliente = Contexto.ServiciosDelCliente
+                    .Include(serCli => serCli.ServicioContratado)
+                    .FirstOrDefault(serCli => serCli.Id == obj.ServicioDelClienteId);
+
 
                 if (laMoneda != null )
                 {
                     if (elMedio != null) {
-                        obj.MonedaDelCobro= laMoneda;
-                        obj.MedioPago = elMedio;
+                        if(elServicioDelCliente != null)
+                        {
+                            obj.MonedaDelCobro = laMoneda;
+                            obj.MedioPago = elMedio;
 
-                        Contexto.Add(obj);
-                        Contexto.SaveChanges();
+                            Contexto.Add(obj);
+                            Contexto.SaveChanges();
+                        }
+                        else
+                        {
+                            throw new CobroRecibidoException("Debe seleccionar un Servicio a Pagar");
+                        }
+
 
                     }
                     else

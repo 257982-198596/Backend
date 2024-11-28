@@ -51,7 +51,7 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioMonedas, RepositorioMonedas>();
             services.AddScoped<IRepositorioFrecuencias, RespositorioFrecuencias>();
             services.AddScoped<IRepositorioCobros, RepositorioCobros>();
-
+            services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
 
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");
