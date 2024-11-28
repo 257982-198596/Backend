@@ -19,6 +19,10 @@ namespace LogicaNegocio.Dominio
 
         public int MedioPagoId { get; set; }
 
+        public ServicioDelCliente ServicioDelCliente { get; set; }
+
+        public int ServicioDelClienteId { get; set; }
+
         public void Validar()
         {
             

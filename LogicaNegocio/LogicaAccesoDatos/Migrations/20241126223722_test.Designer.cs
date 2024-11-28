@@ -4,6 +4,7 @@ using LogicaAccesoDatos.BaseDatos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(CobrosContext))]
-    partial class CobrosContextModelSnapshot : ModelSnapshot
+    [Migration("20241126223722_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,18 +108,15 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<int?>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MedioPagoId")
+                    b.Property<int?>("MedioPagoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("MonedaDelCobroId")
+                    b.Property<int?>("MonedaDelCobroId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Monto")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ServicioDelClienteId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -127,9 +126,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("MonedaDelCobroId");
 
-                    b.HasIndex("ServicioDelClienteId");
-
-                    b.ToTable("CobrosRecibidos");
+                    b.ToTable("CobroRecibido");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Documento", b =>
@@ -225,7 +222,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MediosDePago");
+                    b.ToTable("MedioDePago");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Moneda", b =>
@@ -344,9 +341,6 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EstadoDelServicioDelClienteId")
                         .HasColumnType("int");
@@ -492,27 +486,15 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasOne("LogicaNegocio.Dominio.MedioDePago", "MedioPago")
                         .WithMany()
-                        .HasForeignKey("MedioPagoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MedioPagoId");
 
                     b.HasOne("LogicaNegocio.Dominio.Moneda", "MonedaDelCobro")
                         .WithMany()
-                        .HasForeignKey("MonedaDelCobroId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LogicaNegocio.Dominio.ServicioDelCliente", "ServicioDelCliente")
-                        .WithMany()
-                        .HasForeignKey("ServicioDelClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("MonedaDelCobroId");
 
                     b.Navigation("MedioPago");
 
                     b.Navigation("MonedaDelCobro");
-
-                    b.Navigation("ServicioDelCliente");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Notificacion", b =>

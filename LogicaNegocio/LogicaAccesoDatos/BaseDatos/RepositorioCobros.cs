@@ -69,6 +69,8 @@ namespace LogicaAccesoDatos.BaseDatos
                 List<CobroRecibido> losCobrosRecibidos = Contexto.CobrosRecibidos
                     .Include(co => co.MedioPago)
                     .Include(co => co.MonedaDelCobro)
+                    .Include(co => co.ServicioDelCliente)
+                    .ThenInclude(serCli => serCli.ServicioContratado)
                     .ToList();
 
                 if (losCobrosRecibidos != null)

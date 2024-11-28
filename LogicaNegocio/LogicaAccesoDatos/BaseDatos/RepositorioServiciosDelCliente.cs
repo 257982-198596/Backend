@@ -222,5 +222,72 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw;
             }
         }
+
+        public IEnumerable<ServicioDelCliente> ServiciosActivosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                if (idCliente != null || idCliente != 0)
+                {
+                    List<ServicioDelCliente> losServiciosDeClientes = Contexto.ServiciosDelCliente
+                   .Include(servCli => servCli.Cliente)
+                   .Include(servCli => servCli.ServicioContratado)
+                   .Include(servCli => servCli.MonedaDelServicio)
+                   .Include(servCli => servCli.EstadoDelServicioDelCliente)
+                   .Include(serCli => serCli.FrecuenciaDelServicio)
+                   .Where(servCli => servCli.ClienteId == idCliente &&
+                                 servCli.EstadoDelServicioDelCliente.Nombre == "Activo")
+                   .ToList();
+                    return losServiciosDeClientes;
+                }
+                else {
+                    throw new ServicioDelClienteException("El ID del cliente es inválido.");
+                }
+                   
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<ServicioDelCliente> ServiciosPagosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                if (idCliente != null || idCliente != 0)
+                {
+                    List<ServicioDelCliente> losServiciosDeClientes = Contexto.ServiciosDelCliente
+                   .Include(servCli => servCli.Cliente)
+                   .Include(servCli => servCli.ServicioContratado)
+                   .Include(servCli => servCli.MonedaDelServicio)
+                   .Include(servCli => servCli.EstadoDelServicioDelCliente)
+                   .Include(serCli => serCli.FrecuenciaDelServicio)
+                   .Where(servCli => servCli.ClienteId == idCliente &&
+                                 servCli.EstadoDelServicioDelCliente.Nombre == "Pago")
+                   .ToList();
+                    return losServiciosDeClientes;
+                }
+                else
+                {
+                    throw new ServicioDelClienteException("El ID del cliente es inválido.");
+                }
+
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }
