@@ -10,5 +10,10 @@ namespace LogicaNegocio.InterfacesRepositorios
     public interface IRepositorioServiciosDelCliente : IRepositorio<ServicioDelCliente>
     {
         IEnumerable<ServicioDelCliente> ServiciosDeUnCliente(int idCliente);
+
+        IEnumerable<ServicioDelCliente> ServiciosActivosDeUnCliente(int idCliente);
+
+        IEnumerable<ServicioDelCliente> ServiciosPagosDeUnCliente(int idCliente);
+        void ServicioPagado(ServicioDelCliente servicioDelCliente);
     }
 }

@@ -44,6 +44,66 @@ namespace WebAPIGestionCobros.Controllers
             
         }
 
+        // GET: api/<ServiciosDelClienteController>
+        [HttpGet("activos/{idCliente}")]
+        public IActionResult GetServiciosActivosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                if (idCliente != null || idCliente != 0)
+                {
+                    IEnumerable<ServicioDelCliente> losServiciosdelCliente = RepoServiciosDelCliente.ServiciosActivosDeUnCliente(idCliente);
+                    return Ok(losServiciosdelCliente);
+                }
+                else
+                {
+                    return BadRequest("El ID del cliente es inválido.");
+                }
+                
+
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+
+        }
+
+        // GET: api/<ServiciosDelClienteController>
+        [HttpGet("pagos/{idCliente}")]
+        public IActionResult GetServiciosPagosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                if (idCliente != null || idCliente != 0)
+                {
+                    IEnumerable<ServicioDelCliente> losServiciosdelCliente = RepoServiciosDelCliente.ServiciosPagosDeUnCliente(idCliente);
+                    return Ok(losServiciosdelCliente);
+                }
+                else
+                {
+                    return BadRequest("El ID del cliente es inválido.");
+                }
+
+
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+
+        }
+
         // GET api/<ServiciosDelClienteController>/5
         [HttpGet("{idCliente}/{idServicioDelCliente}")]
         public IActionResult Get(int idCliente, int idServicioDelCliente)

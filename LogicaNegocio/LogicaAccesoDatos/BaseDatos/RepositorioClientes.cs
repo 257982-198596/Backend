@@ -1,5 +1,6 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
+using LogicaNegocio.InterfacesDominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
-    public class RepositorioClientes : IRepositorioClientes
+    public class RepositorioClientes : IRepositorioClientes, IObservador<RepositorioCobros>
     {
 
         public CobrosContext Contexto { get; set; }
@@ -88,6 +89,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(cli => cli.DocumentoCliente)
                     .Include(cli => cli.UsuarioLogin)
                     .Include(cli => cli.Pais)
+                    .Include(cli => cli.CobrosDelCliente)
                     .Include(cli => cli.ServiciosDelCliente)
                     .ThenInclude(servCli => servCli.ServicioContratado)
                     .ToList();
@@ -189,6 +191,49 @@ namespace LogicaAccesoDatos.BaseDatos
             catch (Exception e)
             {
                 throw;
+            }
+        }
+
+        public void Actualizar(RepositorioCobros obj, string evento)
+        {
+            if (evento == "AltaCobro")
+            {
+                try
+                {
+                    // Obtener el último cobro recibido
+                    var ultimoCobro = obj.Contexto.CobrosRecibidos
+                        .Include(cob => cob.ServicioDelCliente)
+                        .ThenInclude(ser => ser.Cliente)
+                        .ThenInclude(cli => cli.CobrosDelCliente)
+                        .OrderByDescending(c => c.Id)
+                        .FirstOrDefault();
+
+                    if (ultimoCobro != null)
+                    {
+                        // Obtener el cliente asociado al cobro
+                        var cliente = ultimoCobro.ServicioDelCliente.Cliente;
+
+                        if (cliente != null)
+                        {
+                            // Agregar el cobro al cliente
+                            cliente.CobrosDelCliente.Add(ultimoCobro);
+                            obj.Contexto.SaveChanges();
+                        }
+                        else
+                        {
+                            throw new Exception("Cliente no encontrado para el cobro recibido.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("No se encontró ningún cobro recibido.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Logger.LogError(ex, "Error updating Cliente");
+                    throw new Exception("Error updating Cliente", ex);
+                }
             }
         }
     }

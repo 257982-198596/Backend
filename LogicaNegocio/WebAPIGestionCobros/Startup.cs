@@ -50,6 +50,15 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioCategorias, RepositorioCategorias>();
             services.AddScoped<IRepositorioMonedas, RepositorioMonedas>();
             services.AddScoped<IRepositorioFrecuencias, RespositorioFrecuencias>();
+            services.AddScoped<IRepositorioCobros, RepositorioCobros>();
+            services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
+
+            // Registra ObservadorService
+            services.AddScoped<ObservadorService>();
+
+
+
+
 
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");

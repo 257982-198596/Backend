@@ -1,5 +1,6 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
+using LogicaNegocio.InterfacesDominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
-    public class RepositorioServiciosDelCliente : IRepositorioServiciosDelCliente
+    public class RepositorioServiciosDelCliente : IObservador<RepositorioCobros> ,IRepositorioServiciosDelCliente
     {
         public CobrosContext Contexto { get; set; }
 
@@ -220,6 +221,150 @@ namespace LogicaAccesoDatos.BaseDatos
             catch (Exception e)
             {
                 throw;
+            }
+        }
+
+        public IEnumerable<ServicioDelCliente> ServiciosActivosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                if (idCliente != null || idCliente != 0)
+                {
+                    List<ServicioDelCliente> losServiciosDeClientes = Contexto.ServiciosDelCliente
+                   .Include(servCli => servCli.Cliente)
+                   .Include(servCli => servCli.ServicioContratado)
+                   .Include(servCli => servCli.MonedaDelServicio)
+                   .Include(servCli => servCli.EstadoDelServicioDelCliente)
+                   .Include(serCli => serCli.FrecuenciaDelServicio)
+                   .Where(servCli => servCli.ClienteId == idCliente &&
+                                 servCli.EstadoDelServicioDelCliente.Nombre == "Activo")
+                   .ToList();
+                    return losServiciosDeClientes;
+                }
+                else {
+                    throw new ServicioDelClienteException("El ID del cliente es inválido.");
+                }
+                   
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public IEnumerable<ServicioDelCliente> ServiciosPagosDeUnCliente(int idCliente)
+        {
+            try
+            {
+                if (idCliente != null || idCliente != 0)
+                {
+                    List<ServicioDelCliente> losServiciosDeClientes = Contexto.ServiciosDelCliente
+                   .Include(servCli => servCli.Cliente)
+                   .Include(servCli => servCli.ServicioContratado)
+                   .Include(servCli => servCli.MonedaDelServicio)
+                   .Include(servCli => servCli.EstadoDelServicioDelCliente)
+                   .Include(serCli => serCli.FrecuenciaDelServicio)
+                   .Where(servCli => servCli.ClienteId == idCliente &&
+                                 servCli.EstadoDelServicioDelCliente.Nombre == "Pago")
+                   .ToList();
+                    return losServiciosDeClientes;
+                }
+                else
+                {
+                    throw new ServicioDelClienteException("El ID del cliente es inválido.");
+                }
+
+
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        public void ServicioPagado(ServicioDelCliente servicioDelCliente)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Actualizar(RepositorioCobros obj, Object evento)
+        {
+            if (evento is IObservador<RepositorioServiciosDelCliente>.Eventos evt)
+            {
+                switch (evt)
+                {
+                    case IObservador<RepositorioServiciosDelCliente>.Eventos.AltaCobro:
+                        // Manejar el evento AltaCobro
+                        var servicio = obj.Contexto.ServiciosDelCliente.Find();
+                        //servicio.EstadoDelServicioDelCliente = EstadoServicioDelCliente.Pagado;
+                        obj.Contexto.SaveChanges();
+                        break;
+                    default:
+                        throw new ArgumentException("Evento no manejado");
+                }
+            }
+            else
+            {
+                throw new InvalidCastException("El parámetro evento no es del tipo esperado.");
+            }
+
+
+        }
+
+        public void Actualizar(RepositorioCobros obj, string evento)
+        {
+            try
+            {
+                // Obtener el último cobro recibido
+                var ultimoCobro = obj.Contexto.CobrosRecibidos
+                    .Include(c => c.ServicioDelCliente)
+                    .OrderByDescending(c => c.Id)
+                    .FirstOrDefault();
+
+                if (ultimoCobro != null)
+                {
+                    // Obtener el servicio del cliente asociado al cobro
+                    var servicioDelCliente = ultimoCobro.ServicioDelCliente;
+
+                    if (servicioDelCliente != null)
+                    {
+                        // Actualizar el estado del servicio del cliente
+                        var estadoPagado = obj.Contexto.EstadosServiciosDelClientes
+                            .FirstOrDefault(e => e.Nombre == "Pago");
+
+                        if (estadoPagado != null)
+                        {
+                            servicioDelCliente.EstadoDelServicioDelCliente = estadoPagado;
+                            obj.Contexto.SaveChanges();
+                        }
+                        else
+                        {
+                            throw new Exception("Estado 'Pago' no encontrado.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Servicio del cliente no encontrado para el cobro recibido.");
+                    }
+                }
+                else
+                {
+                    throw new Exception("No se encontró ningún cobro recibido.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Logger.LogError(ex, "Error updating ServicioDelCliente");
+                throw new Exception("Error updating ServicioDelCliente", ex);
             }
         }
     }

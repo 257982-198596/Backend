@@ -4,6 +4,7 @@ using LogicaAccesoDatos.BaseDatos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(CobrosContext))]
-    partial class CobrosContextModelSnapshot : ModelSnapshot
+    [Migration("20241126225319_cobrosRecibidosABaseDatos")]
+    partial class cobrosRecibidosABaseDatos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +37,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias", (string)null);
+                    b.ToTable("Categorias");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Cliente", b =>
@@ -92,7 +94,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("UsuarioLoginId");
 
-                    b.ToTable("Clientes", (string)null);
+                    b.ToTable("Clientes");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.CobroRecibido", b =>
@@ -116,9 +118,6 @@ namespace LogicaAccesoDatos.Migrations
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("ServicioDelClienteId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
@@ -127,9 +126,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("MonedaDelCobroId");
 
-                    b.HasIndex("ServicioDelClienteId");
-
-                    b.ToTable("CobrosRecibidos", (string)null);
+                    b.ToTable("CobrosRecibidos");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Documento", b =>
@@ -145,7 +142,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Documentos", (string)null);
+                    b.ToTable("Documentos");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoCliente", b =>
@@ -161,7 +158,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadosDelCliente", (string)null);
+                    b.ToTable("EstadosDelCliente");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoNotificacion", b =>
@@ -177,7 +174,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadoNotificacion", (string)null);
+                    b.ToTable("EstadoNotificacion");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoServicioDelCliente", b =>
@@ -193,7 +190,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadosServiciosDelClientes", (string)null);
+                    b.ToTable("EstadosServiciosDelClientes");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Frecuencia", b =>
@@ -209,7 +206,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Frecuencias", (string)null);
+                    b.ToTable("Frecuencias");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.MedioDePago", b =>
@@ -225,7 +222,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MediosDePago", (string)null);
+                    b.ToTable("MediosDePago");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Moneda", b =>
@@ -241,7 +238,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Monedas", (string)null);
+                    b.ToTable("Monedas");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Notificacion", b =>
@@ -270,7 +267,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("EstadoDeNotificacionId");
 
-                    b.ToTable("Notificacion", (string)null);
+                    b.ToTable("Notificacion");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Pais", b =>
@@ -286,7 +283,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Paises", (string)null);
+                    b.ToTable("Paises");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Rol", b =>
@@ -302,7 +299,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Servicio", b =>
@@ -331,7 +328,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("SuscriptorId");
 
-                    b.ToTable("Servicios", (string)null);
+                    b.ToTable("Servicios");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.ServicioDelCliente", b =>
@@ -344,9 +341,6 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("EstadoDelServicioDelClienteId")
                         .HasColumnType("int");
@@ -382,7 +376,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("ServicioContratadoId");
 
-                    b.ToTable("ServiciosDelCliente", (string)null);
+                    b.ToTable("ServiciosDelCliente");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Suscriptor", b =>
@@ -420,7 +414,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("UsuarioLoginId");
 
-                    b.ToTable("Suscriptores", (string)null);
+                    b.ToTable("Suscriptores");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Usuario", b =>
@@ -444,7 +438,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("RolId");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Cliente", b =>
@@ -502,17 +496,9 @@ namespace LogicaAccesoDatos.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LogicaNegocio.Dominio.ServicioDelCliente", "ServicioDelCliente")
-                        .WithMany()
-                        .HasForeignKey("ServicioDelClienteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("MedioPago");
 
                     b.Navigation("MonedaDelCobro");
-
-                    b.Navigation("ServicioDelCliente");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Notificacion", b =>
