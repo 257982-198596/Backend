@@ -1,4 +1,5 @@
 ﻿using LogicaNegocio.InterfacesDominio;
+using LogicaNegocio.InterfacesRepositorios;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,6 +12,7 @@ namespace LogicaNegocio.Dominio
     public class ServicioDelCliente : IValidar
     {
 
+        
         public int Id { get; set; }
 
         public Servicio ServicioContratado { get; set; }
@@ -44,9 +46,21 @@ namespace LogicaNegocio.Dominio
 
         public EstadoServicioDelCliente EstadoDelServicioDelCliente { get; set; }
 
+
+
+        public void Actualizar(CobroRecibido obj)
+        {
+            this.EstadoDelServicioDelCliente = new EstadoServicioDelCliente { Nombre = "Pago" };
+
+        }
+
+
+
         public void Validar()
         {
             
         }
+
+        
     }
 }

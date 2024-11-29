@@ -53,6 +53,13 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioCobros, RepositorioCobros>();
             services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
 
+            // Registra ObservadorService
+            services.AddScoped<ObservadorService>();
+
+
+
+
+
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");
             services.AddDbContextPool<CobrosContext>(options => options.UseSqlServer(stringConexion));

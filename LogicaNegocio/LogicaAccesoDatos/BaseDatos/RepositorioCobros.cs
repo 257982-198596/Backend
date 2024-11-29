@@ -1,5 +1,6 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
+using LogicaNegocio.InterfacesDominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
-    public class RepositorioCobros : IRepositorioCobros
+    public class RepositorioCobros : Observable<RepositorioCobros>, IRepositorioCobros
     {
 
 
@@ -20,6 +21,9 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             Contexto = context;
         }
+
+        
+
         public void Add(CobroRecibido obj)
         {
             try
@@ -32,7 +36,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(serCli => serCli.ServicioContratado)
                     .FirstOrDefault(serCli => serCli.Id == obj.ServicioDelClienteId);
 
-
+                Cliente elCliente = Contexto.Clientes.Find(elServicioDelCliente.ClienteId);
                 if (laMoneda != null )
                 {
                     if (elMedio != null) {
@@ -43,6 +47,13 @@ namespace LogicaAccesoDatos.BaseDatos
 
                             Contexto.Add(obj);
                             Contexto.SaveChanges();
+                            //aviso a los observadores - ServicioDelCliente (se tiene que renovar), Cliente agregar el cobro
+                            NotificarObservadores(this, "AltaCobro");
+                            //NotificarObservadores(IObservador<RepositorioServiciosDelCliente>.Eventos.AltaCobro);
+                            //obj.AgregarObservador(elServicioDelCliente);
+
+                            //obj.Notificar();
+
                         }
                         else
                         {
@@ -177,6 +188,21 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 throw;
             }
+        }
+
+        public void AgregarObservador(IObservador<IRepositorioServiciosDelCliente> observador)
+        {
+            AgregarObservador((IObservador<RepositorioCobros>)observador);
+        }
+
+        public void AgregarObservador(IRepositorioServiciosDelCliente repositorioServicios)
+        {
+            AgregarObservador((IObservador<RepositorioCobros>)repositorioServicios);
+        }
+
+        public void AgregarObservador(IRepositorioClientes repositorioClientes)
+        {
+            AgregarObservador((IObservador<RepositorioCobros>)repositorioClientes);
         }
     }
 }

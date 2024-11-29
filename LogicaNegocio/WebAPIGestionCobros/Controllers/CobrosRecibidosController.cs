@@ -1,4 +1,5 @@
 ﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
@@ -15,9 +16,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioCobros RepoCobrosRecibidos { get; set; }
 
-        public CobrosRecibidosController(IRepositorioCobros repoCobrosRecibidos)
+        private readonly ObservadorService _observadorService;
+
+        public CobrosRecibidosController(IRepositorioCobros repoCobrosRecibidos, ObservadorService observadorService)
         {
             RepoCobrosRecibidos = repoCobrosRecibidos;
+            _observadorService = observadorService;
         }
 
         // GET: api/<CobrosRecibidosController>

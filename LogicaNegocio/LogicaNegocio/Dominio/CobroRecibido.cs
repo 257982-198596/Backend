@@ -23,9 +23,16 @@ namespace LogicaNegocio.Dominio
 
         public int ServicioDelClienteId { get; set; }
 
+
+
         public void Validar()
         {
             
         }
+        //public void Notificar()
+        //{
+        //    NotificarObservadores(this);
+        //}
+
     }
 }
