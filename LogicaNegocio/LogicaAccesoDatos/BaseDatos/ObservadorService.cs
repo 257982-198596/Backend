@@ -13,11 +13,11 @@ namespace LogicaAccesoDatos.BaseDatos
         private readonly IRepositorioServiciosDelCliente _repositorioServicios;
         private readonly IRepositorioClientes _repositorioClientes;
 
-        public ObservadorService(IRepositorioCobros repositorioCobros, IRepositorioServiciosDelCliente repositorioServicios)
+        public ObservadorService(IRepositorioCobros repositorioCobros, IRepositorioServiciosDelCliente repositorioServicios, IRepositorioClientes repostorioClientes)
         {
             _repositorioCobros = repositorioCobros;
             _repositorioServicios = repositorioServicios;
-
+            _repositorioClientes = repostorioClientes;
             _repositorioCobros.AgregarObservador(_repositorioServicios);
             _repositorioCobros.AgregarObservador(_repositorioClientes);
         }

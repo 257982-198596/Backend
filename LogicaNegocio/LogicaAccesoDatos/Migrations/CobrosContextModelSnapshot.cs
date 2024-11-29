@@ -35,7 +35,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categorias", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Cliente", b =>
@@ -92,7 +92,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("UsuarioLoginId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.CobroRecibido", b =>
@@ -129,7 +129,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("ServicioDelClienteId");
 
-                    b.ToTable("CobrosRecibidos");
+                    b.ToTable("CobrosRecibidos", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Documento", b =>
@@ -145,7 +145,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Documentos");
+                    b.ToTable("Documentos", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoCliente", b =>
@@ -161,7 +161,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadosDelCliente");
+                    b.ToTable("EstadosDelCliente", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoNotificacion", b =>
@@ -177,7 +177,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadoNotificacion");
+                    b.ToTable("EstadoNotificacion", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoServicioDelCliente", b =>
@@ -193,7 +193,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadosServiciosDelClientes");
+                    b.ToTable("EstadosServiciosDelClientes", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Frecuencia", b =>
@@ -209,7 +209,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Frecuencias");
+                    b.ToTable("Frecuencias", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.MedioDePago", b =>
@@ -225,7 +225,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MediosDePago");
+                    b.ToTable("MediosDePago", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Moneda", b =>
@@ -241,7 +241,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Monedas");
+                    b.ToTable("Monedas", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Notificacion", b =>
@@ -270,7 +270,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("EstadoDeNotificacionId");
 
-                    b.ToTable("Notificacion");
+                    b.ToTable("Notificacion", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Pais", b =>
@@ -286,7 +286,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Paises");
+                    b.ToTable("Paises", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Rol", b =>
@@ -302,7 +302,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Servicio", b =>
@@ -331,7 +331,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("SuscriptorId");
 
-                    b.ToTable("Servicios");
+                    b.ToTable("Servicios", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.ServicioDelCliente", b =>
@@ -382,7 +382,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("ServicioContratadoId");
 
-                    b.ToTable("ServiciosDelCliente");
+                    b.ToTable("ServiciosDelCliente", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Suscriptor", b =>
@@ -420,7 +420,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("UsuarioLoginId");
 
-                    b.ToTable("Suscriptores");
+                    b.ToTable("Suscriptores", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Usuario", b =>
@@ -444,7 +444,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasIndex("RolId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Cliente", b =>
