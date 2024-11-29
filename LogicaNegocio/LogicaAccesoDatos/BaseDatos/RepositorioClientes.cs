@@ -89,6 +89,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(cli => cli.DocumentoCliente)
                     .Include(cli => cli.UsuarioLogin)
                     .Include(cli => cli.Pais)
+                    .Include(cli => cli.CobrosDelCliente)
                     .Include(cli => cli.ServiciosDelCliente)
                     .ThenInclude(servCli => servCli.ServicioContratado)
                     .ToList();
@@ -203,6 +204,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     var ultimoCobro = obj.Contexto.CobrosRecibidos
                         .Include(cob => cob.ServicioDelCliente)
                         .ThenInclude(ser => ser.Cliente)
+                        .ThenInclude(cli => cli.CobrosDelCliente)
                         .OrderByDescending(c => c.Id)
                         .FirstOrDefault();
 
