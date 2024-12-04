@@ -14,7 +14,7 @@ namespace LogicaNegocio.Dominio
 
         public Documento DocumentoCliente { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "El número de documento es obligatorio")]
         public int DocumentoId { get; set; }
 
         [Required]

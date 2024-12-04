@@ -72,9 +72,9 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                if(nuevo.PaisId != null || nuevo.PaisId != 0)
+                if(nuevo.PaisId != null && nuevo.PaisId != 0)
                 {
-                    if (nuevo.DocumentoId != null || nuevo.DocumentoId != 0)
+                    if (nuevo.DocumentoId != null && nuevo.DocumentoId != 0)
                     {
                         nuevo.Validar();
                         RepoClientes.Add(nuevo);

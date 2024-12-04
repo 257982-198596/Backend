@@ -37,6 +37,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     if(elPais != null)
                     {
                         Cliente elCliente = FindByNumDocumento(obj.NumDocumento);
+                        
                         if (elCliente == null)
                         {
                             if (elSuscriptor != null)
@@ -63,12 +64,12 @@ namespace LogicaAccesoDatos.BaseDatos
                     }
                     else
                     {
-                        throw new ClienteException("El pais es un campo obligatorio");
+                        throw new ClienteException("El pais seleccionado no existe en el sistema");
                     }
                 }
                 else
                 {
-                    throw new ClienteException("Debe seleccionar un tipo de documento");
+                    throw new ClienteException("El tipo de documento seleccionado no existe en el sistema");
                 }
             }
             catch (ClienteException ex)
@@ -122,20 +123,7 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public Cliente FindByNumDocumento(string numDocumento)
         {
-            Cliente elCliente = null;
-            List<Cliente> losClientes = Contexto.Clientes.ToList();
-            if (losClientes.Count > 0)
-            {
-                foreach (Cliente item in losClientes)
-                {
-                    if(item.NumDocumento == numDocumento)
-                    {
-                        elCliente = item;
-                    }
-                }
-            }
-            return elCliente;
-            
+            return Contexto.Clientes.FirstOrDefault(c => c.NumDocumento == numDocumento);
         }
         public void Remove(int id)
         {
@@ -176,13 +164,44 @@ namespace LogicaAccesoDatos.BaseDatos
 
             try
             {
-                //Valida Cliente
-                obj.Validar();
-                obj.UsuarioLogin.RolDeUsuario = elRol;
-                obj.DocumentoCliente = elTipoDocumento;
+                Cliente elCliente = FindByNumDocumento(obj.NumDocumento);
                 
-                Contexto.Clientes.Update(obj);
-                Contexto.SaveChanges();
+                if (elCliente != null) //o no cambio el numero, o cambio el numero a otro que ya existe
+                {
+                    Contexto.Entry(elCliente).State = EntityState.Detached;
+                    Contexto.Entry(obj).State = EntityState.Modified;
+                    if (elCliente.NumDocumento != obj.NumDocumento) //si cambio el numdoc pero es otro cliente
+                    {
+                        throw new ClienteException("Ya existe un cliente con ese numero de documento en el sistema");
+                    }
+                    if (elCliente.NumDocumento == obj.NumDocumento && elCliente.Id != obj.Id)
+                    {
+                        throw new ClienteException("Ya existe un cliente con ese numero de documento en el sistema");
+                    }
+                    
+                    obj.Validar();
+                    obj.UsuarioLogin.RolDeUsuario = elRol;
+                    obj.DocumentoCliente = elTipoDocumento;
+
+                    Contexto.Clientes.Update(obj);
+                    Contexto.SaveChanges();
+                }
+                else //cambio el numdoc a uno que no existe
+                {
+                    // si si cambio el numdoc
+                    
+                        //Contexto.Entry(obj).State = EntityState.Modified;
+                        //Valida Cliente
+                        obj.Validar();
+                        obj.UsuarioLogin.RolDeUsuario = elRol;
+                        obj.DocumentoCliente = elTipoDocumento;
+
+                        Contexto.Clientes.Update(obj);
+                        
+                        Contexto.SaveChanges();
+
+                }
+
             }
             catch (ClienteException ce)
             {

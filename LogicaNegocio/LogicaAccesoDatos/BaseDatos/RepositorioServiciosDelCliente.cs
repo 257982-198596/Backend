@@ -167,8 +167,6 @@ namespace LogicaAccesoDatos.BaseDatos
         public void Update(ServicioDelCliente obj)
         {
 
-            
-            
             Frecuencia laFrecuencia = Contexto.Frecuencias.Find(obj.FrecuenciaDelServicioId);
             Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelServicioId);
             Servicio elServicio = Contexto.Servicios.Find(obj.ServicioContratadoId);
