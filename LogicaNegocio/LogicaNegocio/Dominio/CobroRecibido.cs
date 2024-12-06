@@ -9,6 +9,8 @@ namespace LogicaNegocio.Dominio
     {
         public int Id { get; set; }
 
+        public DateTime FechaDePago { get; set; }
+
         public decimal Monto { get; set; }
 
         public Moneda MonedaDelCobro { get; set; }

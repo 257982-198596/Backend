@@ -154,19 +154,29 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelCobroId);
                 MedioDePago elMedio = Contexto.MediosDePago.Find(obj.MedioPagoId);
-                
+                ServicioDelCliente elServicioDelCliente = Contexto.ServiciosDelCliente
+                 .Include(serCli => serCli.ServicioContratado)
+                 .FirstOrDefault(serCli => serCli.Id == obj.ServicioDelClienteId);
 
                 if (laMoneda != null)
                 {
                     if (elMedio !=null) {
+                        if (elServicioDelCliente != null)
+                        {
+                            //Valida Cobro recibido
+                            obj.MedioPago = elMedio;
+                            obj.MonedaDelCobro = laMoneda;
+                            obj.ServicioDelCliente = elServicioDelCliente;
 
-                        //Valida Cobro recibido
-                        obj.MedioPago = elMedio;
-                        obj.MonedaDelCobro = laMoneda;
+                            obj.Validar();
+                            Contexto.CobrosRecibidos.Update(obj);
+                            Contexto.SaveChanges();
+                        }
+                        else
+                        {
+                            throw new CobroRecibidoException("El servicio seleccionado no existe en el sistema");
+                        }
 
-                        obj.Validar();
-                        Contexto.CobrosRecibidos.Update(obj);
-                        Contexto.SaveChanges();
                     }
                     else
                     {
