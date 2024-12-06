@@ -1,6 +1,8 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,25 +24,36 @@ namespace WebAPIGestionCobros.Controllers
         [Route("iniciarsesion")]
         public IActionResult IniciarSesion([FromBody] Usuario usuario)
         {
-            if (usuario.Email != null && usuario.Password != null)
+            try
             {
-                Usuario elusuario = RepoUsuarios.IniciarSesion(usuario.Email, usuario.Password);
-
-                if (elusuario != null)
+                if (usuario.Email != null && usuario.Password != null)
                 {
-                    return Ok(elusuario);
+                    Usuario elusuario = RepoUsuarios.IniciarSesion(usuario.Email, usuario.Password);
+
+                    if (elusuario != null)
+                    {
+                        return Ok(elusuario);
+
+                    }
+                    else
+                    {
+                        throw new UsuarioException("Usuario o contraseña incorrectos");
+                    }
 
                 }
                 else
                 {
-                    return NotFound("Usuario o contraseña inválidos");
+                    throw new UsuarioException("Usuario y contraseña so obligatorios");
                 }
-
-            }
-            else
+            }catch(UsuarioException ex)
             {
-                return BadRequest();
+                return BadRequest(ex);
             }
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
         }
 
         // GET api/<UsuariosController>/5

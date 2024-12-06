@@ -72,12 +72,28 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                nuevo.Validar();
-                RepoClientes.Add(nuevo);
+                if(nuevo.PaisId != null && nuevo.PaisId != 0)
+                {
+                    if (nuevo.DocumentoId != null && nuevo.DocumentoId != 0)
+                    {
+                        nuevo.Validar();
+                        RepoClientes.Add(nuevo);
+                    }
+                    else
+                    {
+                        throw new ClienteException("Debe seleccionar un tipo de documento para el cliente");
+                    }
+
+                }
+                else
+                {
+                    throw new ClienteException("Debe seleccionar un pais para el cliente");
+                }
+                
             }
             catch (ClienteException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
             catch(Exception ex)
             {

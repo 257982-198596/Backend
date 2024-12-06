@@ -44,6 +44,35 @@ namespace WebAPIGestionCobros.Controllers
             
         }
 
+        [HttpGet("servicio/{idServicioDelCliente}")]
+        public IActionResult GetServicioDeClientePorId(int idServicioDelCliente)
+        {
+            if (idServicioDelCliente == 0)
+            {
+                return BadRequest("El ID del servicio de cliente es inválido.");
+            }
+            try
+            {
+                ServicioDelCliente elServicioDeCliente = RepoServiciosDelCliente.FindById(idServicioDelCliente);
+                if (elServicioDeCliente == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(elServicioDeCliente);
+                }
+            }
+            catch (ServicioDelClienteException e)
+            {
+                return BadRequest(e);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
         // GET: api/<ServiciosDelClienteController>
         [HttpGet("activos/{idCliente}")]
         public IActionResult GetServiciosActivosDeUnCliente(int idCliente)
