@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SistemaDeNotificaciones;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
@@ -53,7 +54,8 @@ namespace LogicaAccesoDatos.BaseDatos
                             //obj.AgregarObservador(elServicioDelCliente);
 
                             //obj.Notificar();
-
+                            EnviarCorreo elCorreo = new EnviarCorreo();
+                            elCorreo.EnviarEmail();
                         }
                         else
                         {

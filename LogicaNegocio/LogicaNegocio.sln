@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicaAccesoDatos", "Logica
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPIGestionCobros", "WebAPIGestionCobros\WebAPIGestionCobros.csproj", "{AFE82515-5AF1-4FAA-884C-A9998C896FF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{060ED4AB-6798-430B-84CB-7BA5B91BAB1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{060ED4AB-6798-430B-84CB-7BA5B91BAB1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaDeNotificaciones", "SistemaDeNotificaciones\SistemaDeNotificaciones.csproj", "{48F34B97-B24F-4893-A38B-5854496DDC7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{060ED4AB-6798-430B-84CB-7BA5B91BAB1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{060ED4AB-6798-430B-84CB-7BA5B91BAB1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{060ED4AB-6798-430B-84CB-7BA5B91BAB1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48F34B97-B24F-4893-A38B-5854496DDC7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48F34B97-B24F-4893-A38B-5854496DDC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48F34B97-B24F-4893-A38B-5854496DDC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48F34B97-B24F-4893-A38B-5854496DDC7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
