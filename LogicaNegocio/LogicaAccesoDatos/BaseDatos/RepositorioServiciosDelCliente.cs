@@ -34,6 +34,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 {
                     if (elCliente != null)
                     {
+                        Usuario elUsuario = elCliente.UsuarioLogin;
                         if (laFrecuencia != null)
                         {
                             if (laMoneda != null)
@@ -42,6 +43,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                 {
                                     obj.ServicioContratado = elServicio;
                                     obj.Cliente = elCliente;
+                                    obj.Cliente.UsuarioLogin = elUsuario;
                                     obj.FrecuenciaDelServicio = laFrecuencia;
                                     obj.MonedaDelServicio = laMoneda;
                                     obj.EstadoDelServicioDelCliente = elEstadoInicial;

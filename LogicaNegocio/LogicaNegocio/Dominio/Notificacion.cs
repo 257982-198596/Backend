@@ -17,5 +17,15 @@ namespace LogicaNegocio.Dominio
 
         public EstadoNotificacion EstadoDeNotificacion { get; set; }
 
+        public Notificacion()
+        {
+            
+        }
+        public Notificacion(DateTime fecha, String mensaje)
+        {
+            FechaEnvio = fecha;
+            Mensaje = mensaje;
+        }
+
     }
 }

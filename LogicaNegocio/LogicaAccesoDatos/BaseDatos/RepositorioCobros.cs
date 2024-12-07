@@ -15,12 +15,13 @@ namespace LogicaAccesoDatos.BaseDatos
     public class RepositorioCobros : Observable<RepositorioCobros>, IRepositorioCobros
     {
 
-
+        private readonly EnviarCorreo SistemaEnviarCorreo;
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioCobros(CobrosContext context)
+        public RepositorioCobros(CobrosContext context, EnviarCorreo enviarCorreo)
         {
             Contexto = context;
+            SistemaEnviarCorreo = enviarCorreo;
         }
 
         
@@ -37,7 +38,10 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(serCli => serCli.ServicioContratado)
                     .FirstOrDefault(serCli => serCli.Id == obj.ServicioDelClienteId);
 
-                Cliente elCliente = Contexto.Clientes.Find(elServicioDelCliente.ClienteId);
+                Cliente elCliente = Contexto.Clientes
+                .Include(cli => cli.UsuarioLogin)
+                .FirstOrDefault(cli => cli.Id == elServicioDelCliente.ClienteId);
+                //Cliente elCliente = Contexto.Clientes.Find(elServicioDelCliente.ClienteId);
                 if (laMoneda != null )
                 {
                     if (elMedio != null) {
@@ -50,12 +54,9 @@ namespace LogicaAccesoDatos.BaseDatos
                             Contexto.SaveChanges();
                             //aviso a los observadores - ServicioDelCliente (se tiene que renovar), Cliente agregar el cobro
                             NotificarObservadores(this, "AltaCobro");
-                            //NotificarObservadores(IObservador<RepositorioServiciosDelCliente>.Eventos.AltaCobro);
-                            //obj.AgregarObservador(elServicioDelCliente);
 
-                            //obj.Notificar();
-                            EnviarCorreo elCorreo = new EnviarCorreo();
-                            elCorreo.EnviarEmail();
+                            SistemaEnviarCorreo.EnviarRenovacionServicio(obj, elCliente);
+
                         }
                         else
                         {

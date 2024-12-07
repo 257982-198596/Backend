@@ -34,6 +34,8 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public DbSet<Moneda> Monedas { get; set; }
 
+        public DbSet<Notificacion> Notificaciones { get; set; }
+
         public DbSet<EstadoServicioDelCliente> EstadosServiciosDelClientes { get; set; }
 
         public DbSet<EstadoCliente> EstadosDelCliente { get; set; }
