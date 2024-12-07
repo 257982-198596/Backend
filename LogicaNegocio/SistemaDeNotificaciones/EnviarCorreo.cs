@@ -11,12 +11,7 @@ namespace SistemaDeNotificaciones
     public class EnviarCorreo
     {
 
-        public IRepositorioNotificaciones RepoNotificaciones { get; set; }
-
-        public EnviarCorreo(IRepositorioNotificaciones repoNotificaciones)
-        {
-            RepoNotificaciones = repoNotificaciones;
-        }
+        
 
         
         public async Task EnviarEmail()
@@ -67,19 +62,11 @@ namespace SistemaDeNotificaciones
             var htmlContent = "";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
-            if(response.IsSuccessStatusCode)
-            {
-                Notificacion laNotificacion = new Notificacion(DateTime.Now, subject + plainTextContent);
-                RepoNotificaciones.Add(laNotificacion);
-            }
             
         }
 
 
-        public void GuardarNotificacion(Notificacion notificacion)
-        {
-            RepoNotificaciones.Add(notificacion);
-        }
+        
 
     }
 

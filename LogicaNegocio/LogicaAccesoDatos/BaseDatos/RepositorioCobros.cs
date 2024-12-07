@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SistemaDeNotificaciones;
+using SendGrid.Helpers.Mail.Model;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
@@ -56,7 +57,13 @@ namespace LogicaAccesoDatos.BaseDatos
                             NotificarObservadores(this, "AltaCobro");
 
                             SistemaEnviarCorreo.EnviarRenovacionServicio(obj, elCliente);
-
+                            Notificacion laNotificacion = new Notificacion
+                            {
+                                FechaEnvio = DateTime.Now,
+                                Mensaje = $"RENOVACIÓN DE SERVICIO: {obj.ServicioDelCliente.Descripcion}"
+                            };
+                            Contexto.Notificaciones.Add(laNotificacion);
+                            Contexto.SaveChanges();
                         }
                         else
                         {
