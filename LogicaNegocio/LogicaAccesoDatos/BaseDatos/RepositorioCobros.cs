@@ -57,11 +57,9 @@ namespace LogicaAccesoDatos.BaseDatos
                             NotificarObservadores(this, "AltaCobro");
 
                             SistemaEnviarCorreo.EnviarRenovacionServicio(obj, elCliente);
-                            Notificacion laNotificacion = new Notificacion
-                            {
-                                FechaEnvio = DateTime.Now,
-                                Mensaje = $"RENOVACIÓN DE SERVICIO: {obj.ServicioDelCliente.Descripcion}"
-                            };
+                            Notificacion laNotificacion = new Notificacion(DateTime.Now, $"RENOVACIÓN DE SERVICIO: {obj.ServicioDelCliente.Descripcion}");
+
+                            
                             Contexto.Notificaciones.Add(laNotificacion);
                             Contexto.SaveChanges();
                         }
