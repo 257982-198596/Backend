@@ -61,10 +61,12 @@ namespace LogicaAccesoDatos.BaseDatos
                             //Envio de correo
                             SistemaEnviarCorreo.EnviarRenovacionServicio(obj, elCliente);
                             Notificacion laNotificacion = new Notificacion(DateTime.Now, $"RENOVACIÓN DE SERVICIO: {obj.ServicioDelCliente.Descripcion}");
+                            laNotificacion.ClienteNotificado = elCliente;
+                            laNotificacion.ServicioNotificado = elServicioDelCliente;
                             // Recuperar estados de la notificación
                             laNotificacion.EstadoDeNotificacion = Contexto.EstadosDeNotificacion.FirstOrDefault(e => e.Nombre == "Enviada");
                             //EstadoNotificacion estadoFallido = Contexto.EstadosDeNotificacion.FirstOrDefault(e => e.Nombre == "Fallida");
-                            NotificarObservadores(this, "AltaNotificacion");
+                            //NotificarObservadores(this, "AltaNotificacion");
 
 
                             Contexto.Notificaciones.Add(laNotificacion);

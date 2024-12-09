@@ -18,6 +18,15 @@ namespace LogicaNegocio.Dominio
         public EstadoNotificacion EstadoDeNotificacion { get; set; }
 
         public int EstadoDeNotificacionId { get; set; }
+
+        public Cliente ClienteNotificado { get; set; }
+
+        public int ClienteNotificadoId { get; set; }
+
+        public ServicioDelCliente ServicioNotificado { get; set; }
+
+        public int ServicioNotificadoId { get; set; }
+
         public Notificacion()
         {
             

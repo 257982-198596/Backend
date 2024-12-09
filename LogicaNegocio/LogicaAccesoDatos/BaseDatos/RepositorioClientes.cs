@@ -296,8 +296,8 @@ namespace LogicaAccesoDatos.BaseDatos
                 {
                     // Logger.LogError(ex, "Error updating Cliente");
                     throw new Exception("Error updating Cliente", ex);
-                }*/
-            }
+                }
+            }*/
         }
     }
 }
