@@ -1,5 +1,6 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
+using LogicaNegocio.InterfacesDominio;
 using LogicaNegocio.InterfacesRepositorios;
 using SendGrid.Helpers.Mail;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
-    public class RepositorioNotificaciones : IRepositorioNotificaciones
+    public class RepositorioNotificaciones : IRepositorioNotificaciones, IObservador<RepositorioCobros>
     {
         public CobrosContext Contexto { get; set; }
 
@@ -55,6 +56,11 @@ namespace LogicaAccesoDatos.BaseDatos
         }
 
         public void Update(Notificacion obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Actualizar(RepositorioCobros obj, string evento)
         {
             throw new NotImplementedException();
         }

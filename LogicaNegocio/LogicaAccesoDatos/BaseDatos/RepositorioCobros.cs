@@ -39,10 +39,12 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(serCli => serCli.ServicioContratado)
                     .FirstOrDefault(serCli => serCli.Id == obj.ServicioDelClienteId);
 
+                
                 Cliente elCliente = Contexto.Clientes
                 .Include(cli => cli.UsuarioLogin)
                 .FirstOrDefault(cli => cli.Id == elServicioDelCliente.ClienteId);
-                //Cliente elCliente = Contexto.Clientes.Find(elServicioDelCliente.ClienteId);
+                //Contexto.Entry(elCliente).State = EntityState.Detached;
+                //Contexto.Entry(elServicioDelCliente).State = EntityState.Detached;
                 if (laMoneda != null )
                 {
                     if (elMedio != null) {
@@ -53,13 +55,18 @@ namespace LogicaAccesoDatos.BaseDatos
 
                             Contexto.Add(obj);
                             Contexto.SaveChanges();
+
                             //aviso a los observadores - ServicioDelCliente (se tiene que renovar), Cliente agregar el cobro
                             NotificarObservadores(this, "AltaCobro");
-
+                            //Envio de correo
                             SistemaEnviarCorreo.EnviarRenovacionServicio(obj, elCliente);
                             Notificacion laNotificacion = new Notificacion(DateTime.Now, $"RENOVACIÓN DE SERVICIO: {obj.ServicioDelCliente.Descripcion}");
+                            // Recuperar estados de la notificación
+                            laNotificacion.EstadoDeNotificacion = Contexto.EstadosDeNotificacion.FirstOrDefault(e => e.Nombre == "Enviada");
+                            //EstadoNotificacion estadoFallido = Contexto.EstadosDeNotificacion.FirstOrDefault(e => e.Nombre == "Fallida");
+                            NotificarObservadores(this, "AltaNotificacion");
 
-                            
+
                             Contexto.Notificaciones.Add(laNotificacion);
                             Contexto.SaveChanges();
                         }

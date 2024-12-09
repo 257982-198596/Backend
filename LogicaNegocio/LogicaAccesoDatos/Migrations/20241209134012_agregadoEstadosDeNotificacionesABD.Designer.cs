@@ -4,6 +4,7 @@ using LogicaAccesoDatos.BaseDatos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(CobrosContext))]
-    partial class CobrosContextModelSnapshot : ModelSnapshot
+    [Migration("20241209134012_agregadoEstadosDeNotificacionesABD")]
+    partial class agregadoEstadosDeNotificacionesABD
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,7 +260,7 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<int?>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EstadoDeNotificacionId")
+                    b.Property<int?>("EstadoDeNotificacionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaEnvio")
@@ -526,9 +528,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasOne("LogicaNegocio.Dominio.EstadoNotificacion", "EstadoDeNotificacion")
                         .WithMany()
-                        .HasForeignKey("EstadoDeNotificacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("EstadoDeNotificacionId");
 
                     b.Navigation("EstadoDeNotificacion");
                 });

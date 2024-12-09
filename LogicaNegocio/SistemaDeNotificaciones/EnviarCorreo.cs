@@ -62,7 +62,10 @@ namespace SistemaDeNotificaciones
             var htmlContent = "";
             var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
             var response = await client.SendEmailAsync(msg);
-            
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error al enviar corrreo");
+            }
         }
 
 
