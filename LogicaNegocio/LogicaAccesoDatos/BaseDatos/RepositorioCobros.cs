@@ -110,7 +110,9 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(co => co.MedioPago)
                     .Include(co => co.MonedaDelCobro)
                     .Include(co => co.ServicioDelCliente)
-                    .ThenInclude(serCli => serCli.ServicioContratado)
+                        .ThenInclude(serCli => serCli.Cliente)
+                    .Include(co => co.ServicioDelCliente)
+                        .ThenInclude(serCli => serCli.ServicioContratado) 
                     .ToList();
 
                 if (losCobrosRecibidos != null)
