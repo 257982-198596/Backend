@@ -19,6 +19,15 @@ namespace LogicaNegocio.Dominio
         public Rol RolDeUsuario { get; set; }
 
         public int RolId { get; set; }
-        
+
+        public string GenerarContrasenaTemporal(int longitud = 8)
+        {
+
+            const string caracteresPermitidos = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            Random random = new Random();
+            return new string(Enumerable.Repeat(caracteresPermitidos, longitud)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
     }
 }

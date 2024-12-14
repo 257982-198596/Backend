@@ -1,4 +1,5 @@
 ﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
@@ -148,8 +149,48 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPost("enviar")]
+        public IActionResult EnviarRecordatorio([FromBody] Notificacion nuevaNotificacion)
+        {
+            try
+            {
+                
+
+                RepoNotificaciones.Add(nuevaNotificacion);
+                return Ok(nuevaNotificacion);
+            }
+            catch (NotificacionException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error al enviar el recordatorio.", error = ex.Message });
+            }
+        }
+
+        [HttpPost("procesar-vencimientos")]
+        public IActionResult ProcesarNotificacionesVencimientos()
+        {
+            try
+            {
+                IEnumerable<Notificacion> notificacionesGeneradas = RepoNotificaciones.GenerarNotificacionesPendientes();
+                if (notificacionesGeneradas == null)
+                {
+                    return Ok("No se encontraron notificaciones pendientes para procesar.");
+                }
+                return Ok(new { Mensaje = "Notificaciones procesadas con éxito.", Notificaciones = notificacionesGeneradas });
+            }
+            catch (NotificacionException ex)
+            {
+                return BadRequest(new { Mensaje = "Error al procesar las notificaciones pendientes.", Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+            }
+        }
     }
-
-
-    
 }
+

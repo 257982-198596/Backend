@@ -10,5 +10,7 @@ namespace LogicaNegocio.InterfacesRepositorios
     public interface IRepositorioUsuarios
     {
         Usuario IniciarSesion(string username, string password);
+
+        void ResetContrasena(Usuario usuario);
     }
 }

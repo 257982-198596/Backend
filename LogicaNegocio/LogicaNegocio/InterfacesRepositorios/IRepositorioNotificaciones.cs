@@ -9,5 +9,6 @@ namespace LogicaNegocio.InterfacesRepositorios
 {
     public interface IRepositorioNotificaciones : IRepositorio<Notificacion>
     {
+        IEnumerable<Notificacion> GenerarNotificacionesPendientes();
     }
 }

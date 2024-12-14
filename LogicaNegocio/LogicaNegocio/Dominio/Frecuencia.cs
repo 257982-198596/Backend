@@ -38,5 +38,7 @@ namespace LogicaNegocio.Dominio
                     throw new FrecuenciaException($"Frecuencia '{this.Nombre}' no soportada.");
             }
         }
+
+
     }
 }
