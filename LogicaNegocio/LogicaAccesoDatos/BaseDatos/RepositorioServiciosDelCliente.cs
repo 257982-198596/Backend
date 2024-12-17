@@ -34,6 +34,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 {
                     if (elCliente != null)
                     {
+                        Usuario elUsuario = elCliente.UsuarioLogin;
                         if (laFrecuencia != null)
                         {
                             if (laMoneda != null)
@@ -42,6 +43,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                 {
                                     obj.ServicioContratado = elServicio;
                                     obj.Cliente = elCliente;
+                                    obj.Cliente.UsuarioLogin = elUsuario;
                                     obj.FrecuenciaDelServicio = laFrecuencia;
                                     obj.MonedaDelServicio = laMoneda;
                                     obj.EstadoDelServicioDelCliente = elEstadoInicial;
@@ -289,42 +291,32 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
-        public void ServicioPagado(ServicioDelCliente servicioDelCliente)
+        public void RenovarServicio(ServicioDelCliente servicioDelCliente)
         {
-            throw new NotImplementedException();
+            ServicioDelCliente nuevoServicio = new ServicioDelCliente();
+            nuevoServicio.Cliente = servicioDelCliente.Cliente;
+            nuevoServicio.ServicioContratado = servicioDelCliente.ServicioContratado;
+            nuevoServicio.MonedaDelServicio = servicioDelCliente.MonedaDelServicio;
+            nuevoServicio.FrecuenciaDelServicio = servicioDelCliente.FrecuenciaDelServicio;
+            nuevoServicio.EstadoDelServicioDelCliente = Contexto.EstadosServiciosDelClientes.FirstOrDefault(e => e.Nombre == "Activo");
+            nuevoServicio.Precio = servicioDelCliente.Precio;
+            nuevoServicio.Descripcion = servicioDelCliente.Descripcion;
+            nuevoServicio.FechaInicio = servicioDelCliente.FechaVencimiento;
+            nuevoServicio.FrecuenciaDelServicio.CalcularVencimiento(nuevoServicio);
+            Contexto.Add(nuevoServicio);
         }
 
-        public void Actualizar(RepositorioCobros obj, Object evento)
-        {
-            if (evento is IObservador<RepositorioServiciosDelCliente>.Eventos evt)
-            {
-                switch (evt)
-                {
-                    case IObservador<RepositorioServiciosDelCliente>.Eventos.AltaCobro:
-                        // Manejar el evento AltaCobro
-                        var servicio = obj.Contexto.ServiciosDelCliente.Find();
-                        //servicio.EstadoDelServicioDelCliente = EstadoServicioDelCliente.Pagado;
-                        obj.Contexto.SaveChanges();
-                        break;
-                    default:
-                        throw new ArgumentException("Evento no manejado");
-                }
-            }
-            else
-            {
-                throw new InvalidCastException("El parámetro evento no es del tipo esperado.");
-            }
-
-
-        }
+      
 
         public void Actualizar(RepositorioCobros obj, string evento)
         {
-            try
+            if (evento == "AltaCobro")
+                try
             {
                 // Obtener el último cobro recibido
                 var ultimoCobro = obj.Contexto.CobrosRecibidos
                     .Include(c => c.ServicioDelCliente)
+                    .ThenInclude(ser => ser.FrecuenciaDelServicio)
                     .OrderByDescending(c => c.Id)
                     .FirstOrDefault();
 
@@ -343,6 +335,7 @@ namespace LogicaAccesoDatos.BaseDatos
                         {
                             servicioDelCliente.EstadoDelServicioDelCliente = estadoPagado;
                             obj.Contexto.SaveChanges();
+                            RenovarServicio(servicioDelCliente);
                         }
                         else
                         {

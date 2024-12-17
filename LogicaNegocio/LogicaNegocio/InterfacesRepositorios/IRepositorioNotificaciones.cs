@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioUsuarios
+    public interface IRepositorioNotificaciones : IRepositorio<Notificacion>
     {
-        Usuario IniciarSesion(string username, string password);
-
-        void ResetContrasena(Usuario usuario);
+        IEnumerable<Notificacion> GenerarNotificacionesPendientes();
     }
 }

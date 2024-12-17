@@ -78,7 +78,18 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public Servicio FindById(int id)
         {
-            return Contexto.Servicios.Where(ser => ser.Id == id).SingleOrDefault();
+            try
+            {
+                return Contexto.Servicios.Where(ser => ser.Id == id).SingleOrDefault();
+            }
+            catch (ServicioException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public void Remove(int id)

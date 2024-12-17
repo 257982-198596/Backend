@@ -253,7 +253,51 @@ namespace LogicaAccesoDatos.BaseDatos
                     // Logger.LogError(ex, "Error updating Cliente");
                     throw new Exception("Error updating Cliente", ex);
                 }
-            }
+            }/*else if(evento == "AltaNotificacion")
+            {
+                try
+                {
+                    
+                    // Obtener la última notificación
+                    Notificacion ultimaNotificacion = obj.Contexto.Notificaciones
+                        .Include(n => n.EstadoDeNotificacion)
+                        .OrderByDescending(n => n.Id)
+                        .FirstOrDefault();
+
+                    if (ultimaNotificacion != null)
+                    {
+                        CobroRecibido ultimoCobro = obj.Contexto.CobrosRecibidos
+                        .Include(c => c.ServicioDelCliente)
+                        .ThenInclude(s => s.Cliente)
+                        .ThenInclude(c => c.NotificacionesDelCliente)
+                        .OrderByDescending(c => c.Id)
+                        .FirstOrDefault();
+
+                        // Obtener el cliente asociado al cobro
+                        if (ultimoCobro?.ServicioDelCliente?.Cliente != null)
+                        {
+                            var cliente = ultimoCobro.ServicioDelCliente.Cliente;
+
+                            // Asociar la notificación al cliente
+                            cliente.NotificacionesDelCliente.Add(ultimaNotificacion);
+                            obj.Contexto.SaveChanges();
+                        }
+                        else
+                        {
+                            throw new Exception("Cliente no encontrado para el último cobro recibido.");
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("No se encontró ningún cobro recibido.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Logger.LogError(ex, "Error updating Cliente");
+                    throw new Exception("Error updating Cliente", ex);
+                }
+            }*/
         }
     }
 }

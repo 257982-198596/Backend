@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Excepciones\Excepciones.csproj" />
     <ProjectReference Include="..\LogicaNegocio\LogicaNegocio.csproj" />
+    <ProjectReference Include="..\SistemaDeNotificaciones\SistemaDeNotificaciones.csproj" />
   </ItemGroup>
 
 </Project>

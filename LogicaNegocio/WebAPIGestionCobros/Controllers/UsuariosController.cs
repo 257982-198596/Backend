@@ -80,5 +80,20 @@ namespace WebAPIGestionCobros.Controllers
         public void Delete(int id)
         {
         }
+
+        [HttpPost]
+        [Route("reset")]
+        public IActionResult ResetContrasena([FromBody] Usuario usuario)
+        {
+            try
+            {
+                RepoUsuarios.ResetContrasena(usuario);
+                return Ok("Contraseña temporal generada y enviada por correo.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

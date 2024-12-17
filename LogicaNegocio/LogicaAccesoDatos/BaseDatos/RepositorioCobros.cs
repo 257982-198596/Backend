@@ -8,18 +8,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SistemaDeNotificaciones;
+using SendGrid.Helpers.Mail.Model;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
     public class RepositorioCobros : Observable<RepositorioCobros>, IRepositorioCobros
     {
 
-
+        private readonly EnviarCorreo SistemaEnviarCorreo;
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioCobros(CobrosContext context)
+        public RepositorioCobros(CobrosContext context, EnviarCorreo enviarCorreo)
         {
             Contexto = context;
+            SistemaEnviarCorreo = enviarCorreo;
         }
 
         
@@ -36,7 +39,12 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(serCli => serCli.ServicioContratado)
                     .FirstOrDefault(serCli => serCli.Id == obj.ServicioDelClienteId);
 
-                Cliente elCliente = Contexto.Clientes.Find(elServicioDelCliente.ClienteId);
+                
+                Cliente elCliente = Contexto.Clientes
+                .Include(cli => cli.UsuarioLogin)
+                .FirstOrDefault(cli => cli.Id == elServicioDelCliente.ClienteId);
+                //Contexto.Entry(elCliente).State = EntityState.Detached;
+                //Contexto.Entry(elServicioDelCliente).State = EntityState.Detached;
                 if (laMoneda != null )
                 {
                     if (elMedio != null) {
@@ -47,13 +55,22 @@ namespace LogicaAccesoDatos.BaseDatos
 
                             Contexto.Add(obj);
                             Contexto.SaveChanges();
+
                             //aviso a los observadores - ServicioDelCliente (se tiene que renovar), Cliente agregar el cobro
                             NotificarObservadores(this, "AltaCobro");
-                            //NotificarObservadores(IObservador<RepositorioServiciosDelCliente>.Eventos.AltaCobro);
-                            //obj.AgregarObservador(elServicioDelCliente);
+                            //Envio de correo
+                            SistemaEnviarCorreo.EnviarRenovacionServicio(obj, elCliente);
+                            Notificacion laNotificacion = new Notificacion(DateTime.Now, $"RENOVACIÓN DE SERVICIO: {obj.ServicioDelCliente.Descripcion}");
+                            laNotificacion.ClienteNotificado = elCliente;
+                            laNotificacion.ServicioNotificado = elServicioDelCliente;
+                            // Recuperar estados de la notificación
+                            laNotificacion.EstadoDeNotificacion = Contexto.EstadosDeNotificacion.FirstOrDefault(e => e.Nombre == "Enviada");
+                            //EstadoNotificacion estadoFallido = Contexto.EstadosDeNotificacion.FirstOrDefault(e => e.Nombre == "Fallida");
+                            //NotificarObservadores(this, "AltaNotificacion");
 
-                            //obj.Notificar();
 
+                            Contexto.Notificaciones.Add(laNotificacion);
+                            Contexto.SaveChanges();
                         }
                         else
                         {
@@ -93,7 +110,9 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(co => co.MedioPago)
                     .Include(co => co.MonedaDelCobro)
                     .Include(co => co.ServicioDelCliente)
-                    .ThenInclude(serCli => serCli.ServicioContratado)
+                        .ThenInclude(serCli => serCli.Cliente)
+                    .Include(co => co.ServicioDelCliente)
+                        .ThenInclude(serCli => serCli.ServicioContratado) 
                     .ToList();
 
                 if (losCobrosRecibidos != null)

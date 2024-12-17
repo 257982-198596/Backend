@@ -4,6 +4,7 @@ using LogicaAccesoDatos.BaseDatos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(CobrosContext))]
-    partial class CobrosContextModelSnapshot : ModelSnapshot
+    [Migration("20241207202236_notificacionesABaseDeDatos")]
+    partial class notificacionesABaseDeDatos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,7 +182,7 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EstadosDeNotificacion");
+                    b.ToTable("EstadoNotificacion");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.EstadoServicioDelCliente", b =>
@@ -255,10 +257,10 @@ namespace LogicaAccesoDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("ClienteNotificadoId")
+                    b.Property<int?>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EstadoDeNotificacionId")
+                    b.Property<int?>("EstadoDeNotificacionId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaEnvio")
@@ -267,16 +269,11 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<string>("Mensaje")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServicioNotificadoId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ClienteNotificadoId");
+                    b.HasIndex("ClienteId");
 
                     b.HasIndex("EstadoDeNotificacionId");
-
-                    b.HasIndex("ServicioNotificadoId");
 
                     b.ToTable("Notificaciones");
                 });
@@ -525,29 +522,15 @@ namespace LogicaAccesoDatos.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Notificacion", b =>
                 {
-                    b.HasOne("LogicaNegocio.Dominio.Cliente", "ClienteNotificado")
-                        .WithMany()
-                        .HasForeignKey("ClienteNotificadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("LogicaNegocio.Dominio.Cliente", null)
+                        .WithMany("NotificacionesDelCliente")
+                        .HasForeignKey("ClienteId");
 
                     b.HasOne("LogicaNegocio.Dominio.EstadoNotificacion", "EstadoDeNotificacion")
                         .WithMany()
-                        .HasForeignKey("EstadoDeNotificacionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("LogicaNegocio.Dominio.ServicioDelCliente", "ServicioNotificado")
-                        .WithMany()
-                        .HasForeignKey("ServicioNotificadoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ClienteNotificado");
+                        .HasForeignKey("EstadoDeNotificacionId");
 
                     b.Navigation("EstadoDeNotificacion");
-
-                    b.Navigation("ServicioNotificado");
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Servicio", b =>
@@ -637,6 +620,8 @@ namespace LogicaAccesoDatos.Migrations
             modelBuilder.Entity("LogicaNegocio.Dominio.Cliente", b =>
                 {
                     b.Navigation("CobrosDelCliente");
+
+                    b.Navigation("NotificacionesDelCliente");
 
                     b.Navigation("ServiciosDelCliente");
                 });

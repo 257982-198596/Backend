@@ -34,9 +34,13 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public DbSet<Moneda> Monedas { get; set; }
 
+        public DbSet<Notificacion> Notificaciones { get; set; }
+
         public DbSet<EstadoServicioDelCliente> EstadosServiciosDelClientes { get; set; }
 
         public DbSet<EstadoCliente> EstadosDelCliente { get; set; }
+
+        public DbSet<EstadoNotificacion> EstadosDeNotificacion { get; set; }
 
         public CobrosContext(DbContextOptions<CobrosContext> opciones) : base(opciones)
         {
@@ -58,6 +62,12 @@ namespace LogicaAccesoDatos.BaseDatos
             modelBuilder.Entity<Cliente>()
             .HasIndex(c => c.NumDocumento)
             .IsUnique();
+
+            modelBuilder.Entity<Notificacion>()
+            .HasOne(n => n.EstadoDeNotificacion)
+            .WithMany()
+            .HasForeignKey(n => n.EstadoDeNotificacionId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SistemaDeNotificaciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,10 +53,12 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioFrecuencias, RespositorioFrecuencias>();
             services.AddScoped<IRepositorioCobros, RepositorioCobros>();
             services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
+            services.AddScoped<IRepositorioNotificaciones, RepositorioNotificaciones>();
 
             // Registra ObservadorService
             services.AddScoped<ObservadorService>();
-
+            // Para uso del sistema de envio de correos
+            services.AddScoped<EnviarCorreo>();
 
 
 
@@ -63,6 +66,8 @@ namespace WebAPIGestionCobros
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");
             services.AddDbContextPool<CobrosContext>(options => options.UseSqlServer(stringConexion));
+
+
 
             services.AddControllers();
         }
