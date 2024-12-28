@@ -81,15 +81,16 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Categoria aModificar)
         {
-            if (id != aModificar.Id)
+            if (id == null)
             {
                 return BadRequest();
             }
             try
             {
+                aModificar.Id = id;
                 aModificar.Validar();
                 RepoCategorias.Update(aModificar);
-                return NoContent();
+                return Ok(aModificar);
             }
             catch (Exception ex)
             {
