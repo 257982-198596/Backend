@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioCategorias
+    public interface IRepositorioCategorias : IRepositorio<Categoria>
     {
         IEnumerable<Categoria> FindAll();
     }
