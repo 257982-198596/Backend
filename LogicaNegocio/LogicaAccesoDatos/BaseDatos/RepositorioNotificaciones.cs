@@ -208,5 +208,11 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             //throw new NotImplementedException();
         }
+
+        public int ContarNotificacionesEnviadas(int clienteId, DateTime desdeFecha)
+        {
+            return Contexto.Notificaciones
+                .Count(n => n.ClienteNotificadoId == clienteId && n.FechaEnvio >= desdeFecha);
+        }
     }
 }
