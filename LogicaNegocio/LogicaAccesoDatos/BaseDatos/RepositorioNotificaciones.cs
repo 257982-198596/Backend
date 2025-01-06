@@ -67,6 +67,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(not => not.EstadoDeNotificacion)
                     .Include(not => not.ClienteNotificado)
                     .Include(not => not.ServicioNotificado)
+                    .ThenInclude(serCli => serCli.ServicioContratado)
                     .ToList();
                 if (lasNotificaciones != null)
                 {
