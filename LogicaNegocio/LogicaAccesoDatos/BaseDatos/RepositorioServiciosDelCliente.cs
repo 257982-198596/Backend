@@ -306,7 +306,14 @@ namespace LogicaAccesoDatos.BaseDatos
             Contexto.Add(nuevoServicio);
         }
 
-      
+
+        public ServicioDelCliente ObtenerProximoServicioAVencerse(int idCliente)
+        {
+            return Contexto.ServiciosDelCliente
+                .Where(s => s.ClienteId == idCliente && s.FechaVencimiento > DateTime.Now)
+                .OrderBy(s => s.FechaVencimiento)
+                .FirstOrDefault();
+        }
 
         public void Actualizar(RepositorioCobros obj, string evento)
         {
