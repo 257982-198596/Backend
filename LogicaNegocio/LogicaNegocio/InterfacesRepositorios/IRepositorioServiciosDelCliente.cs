@@ -19,5 +19,7 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         public decimal CalcularIngresosProximos365Dias(int idCliente);
 
+        IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptor(int idSuscriptor);
+
     }
 }

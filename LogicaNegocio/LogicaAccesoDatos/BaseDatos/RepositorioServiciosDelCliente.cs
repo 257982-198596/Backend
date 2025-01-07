@@ -368,6 +368,9 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
+
+        // FUNCIONES PARA REPORTES //
+
         public decimal CalcularIngresosProximos365Dias(int idCliente)
         {
             IEnumerable<ServicioDelCliente> serviciosActivos = Contexto.ServiciosDelCliente
@@ -402,6 +405,38 @@ namespace LogicaAccesoDatos.BaseDatos
             }
 
             return totalIngresos;
+        }
+
+        public IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptor(int idSuscriptor)
+        {
+            try
+            {
+                if (idSuscriptor != null || idSuscriptor != 0)
+                {
+                    List<ServicioDelCliente> serviciosActivos = Contexto.ServiciosDelCliente
+                        .Include(servCli => servCli.Cliente)
+                        .Include(servCli => servCli.ServicioContratado)
+                        .Include(servCli => servCli.MonedaDelServicio)
+                        .Include(servCli => servCli.EstadoDelServicioDelCliente)
+                        .Include(servCli => servCli.FrecuenciaDelServicio)
+                        .Where(servCli => servCli.Cliente.SuscriptorId == idSuscriptor &&
+                                          servCli.EstadoDelServicioDelCliente.Nombre == "Activo")
+                        .ToList();
+                    return serviciosActivos;
+                }
+                else
+                {
+                    throw new ServicioDelClienteException("El ID del suscriptor es inválido.");
+                }
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
     }
 }
