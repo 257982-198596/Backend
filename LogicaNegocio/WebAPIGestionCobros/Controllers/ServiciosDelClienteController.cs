@@ -249,16 +249,39 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         [HttpGet("proximo-vencimiento/{idCliente}")]
-        public IActionResult ObtenerProximoServicioAVencerse(int idCliente)
+        public IActionResult ObtenerProximoServicioActivoAVencerse(int idCliente)
         {
             try
             {
-                ServicioDelCliente proximoServicio = RepoServiciosDelCliente.ObtenerProximoServicioAVencerse(idCliente);
+                ServicioDelCliente proximoServicio = RepoServiciosDelCliente.ObtenerProximoServicioActivoAVencerse(idCliente);
                 if (proximoServicio == null)
                 {
                     return NotFound(new { Mensaje = "No se encontraron servicios próximos a vencerse para el cliente." });
                 }
                 return Ok(new { ClienteId = idCliente, Servicio = proximoServicio, FechaVencimiento = proximoServicio.FechaVencimiento });
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+            }
+        }
+
+
+        [HttpGet("ingresos-proximos-365-dias/{idCliente}")]
+        public IActionResult CalcularIngresosProximos365Dias(int idCliente)
+        {
+            try
+            {
+                decimal totalIngresos = RepoServiciosDelCliente.CalcularIngresosProximos365Dias(idCliente);
+                return Ok(new { ClienteId = idCliente, TotalIngresos = totalIngresos });
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {

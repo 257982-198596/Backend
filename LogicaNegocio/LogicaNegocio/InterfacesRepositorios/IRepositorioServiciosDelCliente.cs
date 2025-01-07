@@ -15,7 +15,9 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         IEnumerable<ServicioDelCliente> ServiciosPagosDeUnCliente(int idCliente);
 
-        ServicioDelCliente ObtenerProximoServicioAVencerse(int idCliente);
+        ServicioDelCliente ObtenerProximoServicioActivoAVencerse(int idCliente);
+
+        public decimal CalcularIngresosProximos365Dias(int idCliente);
 
     }
 }

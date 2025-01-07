@@ -201,6 +201,10 @@ namespace WebAPIGestionCobros.Controllers
                 int cantidadNotificaciones = RepoNotificaciones.ContarNotificacionesEnviadas(clienteId, fechaHaceTreintaDias);
                 return Ok(new { ClienteId = clienteId, CantidadNotificaciones = cantidadNotificaciones });
             }
+            catch (NotificacionException ex)
+            {
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });

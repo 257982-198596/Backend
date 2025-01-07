@@ -307,11 +307,13 @@ namespace LogicaAccesoDatos.BaseDatos
         }
 
 
-        public ServicioDelCliente ObtenerProximoServicioAVencerse(int idCliente)
+        public ServicioDelCliente ObtenerProximoServicioActivoAVencerse(int idCliente)
         {
             return Contexto.ServiciosDelCliente
-                .Where(s => s.ClienteId == idCliente && s.FechaVencimiento > DateTime.Now)
-                .OrderBy(s => s.FechaVencimiento)
+                .Where(s => s.ClienteId == idCliente
+                    && s.FechaVencimiento > DateTime.Now
+                    && s.EstadoDelServicioDelCliente.Nombre == "Activo")
+                 .OrderBy(s => s.FechaVencimiento)
                 .FirstOrDefault();
         }
 
@@ -364,6 +366,42 @@ namespace LogicaAccesoDatos.BaseDatos
                 // Logger.LogError(ex, "Error updating ServicioDelCliente");
                 throw new Exception("Error updating ServicioDelCliente", ex);
             }
+        }
+
+        public decimal CalcularIngresosProximos365Dias(int idCliente)
+        {
+            IEnumerable<ServicioDelCliente> serviciosActivos = Contexto.ServiciosDelCliente
+                .Include(s => s.FrecuenciaDelServicio)
+                .Where(s => s.ClienteId == idCliente
+                    && s.EstadoDelServicioDelCliente.Nombre == "Activo"
+                    && s.FechaVencimiento <= DateTime.Now.AddYears(1));
+
+            decimal totalIngresos = 0;
+            int multiplicador = 1;
+            foreach (var servicio in serviciosActivos)
+            {
+                if (servicio.FrecuenciaDelServicio.Nombre == "Mensual")
+                {
+                    multiplicador = 12;
+                }
+                if (servicio.FrecuenciaDelServicio.Nombre == "Trimestral")
+                {
+                    multiplicador = 4;
+                }
+                if (servicio.FrecuenciaDelServicio.Nombre == "Semestral")
+                {
+                    multiplicador = 2;
+                }
+                if (servicio.FrecuenciaDelServicio.Nombre == "Anual")
+                {
+                    multiplicador = 1;
+                }
+
+
+                totalIngresos += servicio.Precio * multiplicador;
+            }
+
+            return totalIngresos;
         }
     }
 }
