@@ -191,6 +191,25 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
             }
         }
+
+        [HttpGet("cantidad-notificaciones/{clienteId}")]
+        public IActionResult ObtenerCantidadNotificacionesEnviadas(int clienteId)
+        {
+            try
+            {
+                DateTime fechaHaceTreintaDias = DateTime.Now.AddDays(-30);
+                int cantidadNotificaciones = RepoNotificaciones.ContarNotificacionesEnviadas(clienteId, fechaHaceTreintaDias);
+                return Ok(new { ClienteId = clienteId, CantidadNotificaciones = cantidadNotificaciones });
+            }
+            catch (NotificacionException ex)
+            {
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+            }
+        }
     }
 }
 

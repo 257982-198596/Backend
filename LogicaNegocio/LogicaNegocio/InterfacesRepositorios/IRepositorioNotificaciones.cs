@@ -10,5 +10,8 @@ namespace LogicaNegocio.InterfacesRepositorios
     public interface IRepositorioNotificaciones : IRepositorio<Notificacion>
     {
         IEnumerable<Notificacion> GenerarNotificacionesPendientes();
+
+        int ContarNotificacionesEnviadas(int clienteId, DateTime desdeFecha);
+
     }
 }
