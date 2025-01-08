@@ -306,5 +306,23 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
             }
         }
+
+        [HttpGet("activos-suscriptor-vencen-este-mes/{idSuscriptor}")]
+        public IActionResult GetServiciosActivosDeClientesDeUnSuscriptorQueVencenEsteMes(int idSuscriptor)
+        {
+            try
+            {
+                var serviciosQueVencenEsteMes = RepoServiciosDelCliente.ServiciosActivosDeClientesDeUnSuscriptorQueVencenEsteMes(idSuscriptor);
+                return Ok(serviciosQueVencenEsteMes);
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                return BadRequest(new { Mensaje = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+            }
+        }
     }
 }

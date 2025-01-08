@@ -438,5 +438,30 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw;
             }
         }
+
+        public IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptorQueVencenEsteMes(int idSuscriptor)
+        {
+            try
+            {
+                if (idSuscriptor != null || idSuscriptor != 0)
+                {
+                    IEnumerable<ServicioDelCliente> serviciosActivos = ServiciosActivosDeClientesDeUnSuscriptor(idSuscriptor);
+                    IEnumerable<ServicioDelCliente> serviciosQueVencenEsteMes = serviciosActivos.Where(s => s.FechaVencimiento.Year == DateTime.Now.Year && s.FechaVencimiento.Month == DateTime.Now.Month);
+                    return serviciosQueVencenEsteMes;
+                }
+                else
+                {
+                    throw new ServicioDelClienteException("El ID del suscriptor es inválido.");
+                }
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
     }
 }

@@ -21,5 +21,7 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptor(int idSuscriptor);
 
+        IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptorQueVencenEsteMes(int idSuscriptor);
+
     }
 }
