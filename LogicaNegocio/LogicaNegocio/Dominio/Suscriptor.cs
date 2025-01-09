@@ -17,5 +17,9 @@ namespace LogicaNegocio.Dominio
 
         public List<Servicio> ServiciosDelSuscriptor { get; set; }
 
+        public void Validar()
+        {
+
+        }
     }
 }

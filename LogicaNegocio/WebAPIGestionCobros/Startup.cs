@@ -54,6 +54,7 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioCobros, RepositorioCobros>();
             services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
             services.AddScoped<IRepositorioNotificaciones, RepositorioNotificaciones>();
+            services.AddScoped<IRepositorioSuscriptores, RepositorioSuscriptores>();
 
             // Registra ObservadorService
             services.AddScoped<ObservadorService>();
