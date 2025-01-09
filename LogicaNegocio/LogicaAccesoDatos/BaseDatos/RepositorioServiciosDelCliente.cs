@@ -407,7 +407,7 @@ namespace LogicaAccesoDatos.BaseDatos
             return totalIngresos;
         }
 
-        public IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptor(int idSuscriptor)
+        public IEnumerable<ServicioDelCliente> ServiciosDeClientesDeUnSuscriptor(int idSuscriptor)
         {
             try
             {
@@ -419,8 +419,7 @@ namespace LogicaAccesoDatos.BaseDatos
                         .Include(servCli => servCli.MonedaDelServicio)
                         .Include(servCli => servCli.EstadoDelServicioDelCliente)
                         .Include(servCli => servCli.FrecuenciaDelServicio)
-                        .Where(servCli => servCli.Cliente.SuscriptorId == idSuscriptor &&
-                                          servCli.EstadoDelServicioDelCliente.Nombre == "Activo")
+                        .Where(servCli => servCli.Cliente.SuscriptorId == idSuscriptor)
                         .ToList();
                     return serviciosActivos;
                 }
@@ -439,14 +438,14 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
-        public IEnumerable<ServicioDelCliente> ServiciosActivosDeClientesDeUnSuscriptorQueVencenEsteMes(int idSuscriptor)
+        public IEnumerable<ServicioDelCliente> ServiciosDeClientesDeUnSuscriptorQueVencenEsteMes(int idSuscriptor)
         {
             try
             {
                 if (idSuscriptor != null || idSuscriptor != 0)
                 {
-                    IEnumerable<ServicioDelCliente> serviciosActivos = ServiciosActivosDeClientesDeUnSuscriptor(idSuscriptor);
-                    IEnumerable<ServicioDelCliente> serviciosQueVencenEsteMes = serviciosActivos.Where(s => s.FechaVencimiento.Year == DateTime.Now.Year && s.FechaVencimiento.Month == DateTime.Now.Month);
+                    IEnumerable<ServicioDelCliente> serviciosDelSuscriptor = ServiciosDeClientesDeUnSuscriptor(idSuscriptor);
+                    IEnumerable<ServicioDelCliente> serviciosQueVencenEsteMes = serviciosDelSuscriptor.Where(s => s.FechaVencimiento.Year == DateTime.Now.Year && s.FechaVencimiento.Month == DateTime.Now.Month);
                     return serviciosQueVencenEsteMes;
                 }
                 else
@@ -463,5 +462,6 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw;
             }
         }
+
     }
 }

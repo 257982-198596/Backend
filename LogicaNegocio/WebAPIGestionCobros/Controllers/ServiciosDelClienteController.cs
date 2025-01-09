@@ -289,13 +289,14 @@ namespace WebAPIGestionCobros.Controllers
             }
         }
 
+        //no es solo servicios activos - a corregir
         [HttpGet("activos-suscriptor/{idSuscriptor}")]
-        public IActionResult GetServiciosActivosDeClientesDeUnSuscriptor(int idSuscriptor)
+        public IActionResult GetServiciosDeClientesDeUnSuscriptor(int idSuscriptor)
         {
             try
             {
-                IEnumerable<ServicioDelCliente> serviciosActivos = RepoServiciosDelCliente.ServiciosActivosDeClientesDeUnSuscriptor(idSuscriptor);
-                return Ok(serviciosActivos);
+                IEnumerable<ServicioDelCliente> servicios = RepoServiciosDelCliente.ServiciosDeClientesDeUnSuscriptor(idSuscriptor);
+                return Ok(servicios);
             }
             catch (ServicioDelClienteException ex)
             {
@@ -312,7 +313,7 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                var serviciosQueVencenEsteMes = RepoServiciosDelCliente.ServiciosActivosDeClientesDeUnSuscriptorQueVencenEsteMes(idSuscriptor);
+                var serviciosQueVencenEsteMes = RepoServiciosDelCliente.ServiciosDeClientesDeUnSuscriptorQueVencenEsteMes(idSuscriptor);
                 return Ok(serviciosQueVencenEsteMes);
             }
             catch (ServicioDelClienteException ex)
