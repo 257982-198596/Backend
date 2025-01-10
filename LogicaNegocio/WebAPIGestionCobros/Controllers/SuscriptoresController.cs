@@ -45,5 +45,24 @@ namespace WebAPIGestionCobros.Controllers
 
             return Created("api/suscriptores/" + nuevo.Id, nuevo);
         }
+
+        // GET api/<SuscriptoresController>/5
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            try
+            {
+                Suscriptor suscriptor = RepoSuscriptores.FindById(id);
+                return Ok(suscriptor);
+            }
+            catch (SuscriptorException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

@@ -69,7 +69,19 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public Suscriptor FindById(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Suscriptor suscriptor = Contexto.Suscriptores.Find(id);
+                if (suscriptor == null)
+                {
+                    throw new SuscriptorException("Suscriptor no encontrado");
+                }
+                return suscriptor;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
 
         public void Remove(int id)
