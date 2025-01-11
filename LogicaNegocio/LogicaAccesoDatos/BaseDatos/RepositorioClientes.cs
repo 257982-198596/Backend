@@ -91,6 +91,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     .Include(cli => cli.UsuarioLogin)
                     .Include(cli => cli.Pais)
                     .Include(cli => cli.CobrosDelCliente)
+                    .Include(cli => cli.Estado)
                     .Include(cli => cli.ServiciosDelCliente)
                     .ThenInclude(servCli => servCli.ServicioContratado)
                     .ToList();
@@ -298,6 +299,67 @@ namespace LogicaAccesoDatos.BaseDatos
                     throw new Exception("Error updating Cliente", ex);
                 }
             }*/
+        }
+
+        public void HabilitarCliente(int id)
+        {
+            try
+            {
+                Cliente cliente = Contexto.Clientes.Find(id);
+                if (cliente != null)
+                {
+
+                    EstadoCliente estadoActivo = Contexto.EstadosDelCliente.FirstOrDefault(e => e.Nombre == "Activo");
+                    if (estadoActivo != null)
+                    {
+                        cliente.Estado = estadoActivo;
+                        Contexto.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new ClienteException("Estado 'Activo' no encontrado");
+                    }
+
+                }else
+                {
+                    throw new ClienteException("Cliente no encontrado");
+                }
+
+                
+            }
+            catch (Exception e)
+            {
+                throw new ClienteException("Error al habilitar el cliente", e);
+            }
+        }
+
+        public void DeshabilitarCliente(int id)
+        {
+            try
+            {
+                Cliente cliente = Contexto.Clientes.Find(id);
+                if (cliente != null)
+                {
+                    EstadoCliente estadoInactivo = Contexto.EstadosDelCliente.FirstOrDefault(e => e.Nombre == "Inactivo");
+                    if (estadoInactivo != null)
+                    {
+                        cliente.Estado = estadoInactivo;
+                        Contexto.SaveChanges();
+                    }
+                    else
+                    {
+                        throw new ClienteException("Estado 'Inactivo' no encontrado");
+                    }
+                }
+                else
+                {
+                    throw new ClienteException("Cliente no encontrado");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new ClienteException("Error al deshabilitar el cliente", e);
+            }
         }
     }
 }

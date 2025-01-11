@@ -8,6 +8,8 @@ namespace LogicaNegocio.InterfacesRepositorios
     public interface IRepositorioClientes : IRepositorio<Cliente>
     {
 
-            
+        void HabilitarCliente(int id);
+
+        void DeshabilitarCliente(int id);
     }
 }
