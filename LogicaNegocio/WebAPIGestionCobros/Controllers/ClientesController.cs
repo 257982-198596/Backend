@@ -166,5 +166,43 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500);
             }
         }
+
+        // PUT api/<ClientesController>/habilitar/5
+        [HttpPut("habilitar/{id}")]
+        public IActionResult Habilitar(int id)
+        {
+            try
+            {
+                RepoClientes.HabilitarCliente(id);
+                return Ok();
+            }
+            catch (ClienteException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        // PUT api/<ClientesController>/deshabilitar/5
+        [HttpPut("deshabilitar/{id}")]
+        public IActionResult Deshabilitar(int id)
+        {
+            try
+            {
+                RepoClientes.DeshabilitarCliente(id);
+                return Ok();
+            }
+            catch (ClienteException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
     }
 }

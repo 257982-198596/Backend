@@ -1,15 +1,13 @@
 ﻿using LogicaNegocio.Dominio;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace LogicaNegocio.InterfacesRepositorios
 {
-    public interface IRepositorioClientes : IRepositorio<Cliente>
+    public interface IRepositorioSuscriptores : IRepositorio<Suscriptor>
     {
-
-        void HabilitarCliente(int id);
-
-        void DeshabilitarCliente(int id);
     }
 }
