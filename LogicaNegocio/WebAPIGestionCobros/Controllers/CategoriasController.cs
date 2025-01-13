@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -33,6 +34,24 @@ namespace WebAPIGestionCobros.Controllers
                 return Ok(lasCategorias);
             }
 
+        }
+
+        [HttpGet("suscriptor/{suscriptorId}")]
+        public IActionResult GetBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                IEnumerable<Categoria> categorias = RepoCategorias.FindBySuscriptorId(suscriptorId);
+                if (categorias == null)
+                {
+                    return NotFound();
+                }
+                return Ok(categorias);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
         // GET api/<CategoriasController>/5

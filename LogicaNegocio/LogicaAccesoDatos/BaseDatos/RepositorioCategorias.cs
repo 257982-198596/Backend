@@ -44,6 +44,21 @@ namespace LogicaAccesoDatos.BaseDatos
 
         }
 
+        public IEnumerable<Categoria> FindBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                List<Categoria> categorias = Contexto.Categorias
+                    .Where(c => c.SuscriptorId == suscriptorId)
+                    .ToList();
+                return categorias;
+            }
+            catch (Exception ex)
+            {
+                throw new CategoriaException("Error al obtener las categorías del suscriptor", ex);
+            }
+        }
+
         public void Add(Categoria obj)
         {
             try

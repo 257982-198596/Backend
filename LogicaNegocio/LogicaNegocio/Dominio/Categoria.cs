@@ -14,6 +14,7 @@ namespace LogicaNegocio.Dominio
 
         public String Nombre { get; set; }
 
+        public int SuscriptorId { get; set; }
         public void Validar()
         {
             
