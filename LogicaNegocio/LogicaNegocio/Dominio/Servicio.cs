@@ -14,6 +14,8 @@ namespace LogicaNegocio.Dominio
         public Categoria CategoriaDelServicio { get; set; }
         public int CategoriaId { get; set; }
 
+        public int SuscriptorId { get; set; }
+
         public void Validar()
         {
             //throw new NotImplementedException();

@@ -147,5 +147,33 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw;
             }
         }
+
+        public IEnumerable<Servicio> FindAllBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                List<Servicio> losServicios = Contexto.Servicios
+                    .Include(serv => serv.CategoriaDelServicio)
+                    .Where(serv => serv.SuscriptorId == suscriptorId)
+                    .ToList();
+
+                if (losServicios != null)
+                {
+                    return losServicios;
+                }
+                else
+                {
+                    throw new ServicioException("No hay servicios ingresados en el sistema para el suscriptor especificado");
+                }
+            }
+            catch (ServicioException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new ServicioException("Error al obtener los servicios del suscriptor", e);
+            }
+        }
     }
 }
