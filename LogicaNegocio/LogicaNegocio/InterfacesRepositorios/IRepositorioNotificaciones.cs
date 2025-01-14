@@ -13,5 +13,7 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         int ContarNotificacionesEnviadas(int clienteId, DateTime desdeFecha);
 
+        IEnumerable<Notificacion> FindBySuscriptorId(int suscriptorId);
+
     }
 }

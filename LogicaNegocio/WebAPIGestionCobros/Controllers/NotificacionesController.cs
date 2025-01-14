@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -34,6 +35,26 @@ namespace WebAPIGestionCobros.Controllers
                 return Ok(lasNotificaciones);
             }
         }
+
+        //NOTIFICACIONES DE UN SUSCRIPTOR
+        [HttpGet("suscriptor/{suscriptorId}")]
+        public IActionResult GetBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                IEnumerable<Notificacion> notificaciones = RepoNotificaciones.FindBySuscriptorId(suscriptorId);
+                if (notificaciones == null)
+                {
+                    return NotFound();
+                }
+                return Ok(notificaciones);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
 
         // GET api/<NotificacionesController>/5
         [HttpGet("{id}")]

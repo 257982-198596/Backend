@@ -135,6 +135,27 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
+        public IEnumerable<CobroRecibido> FindBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                List<CobroRecibido> cobros = Contexto.CobrosRecibidos
+                    .Include(co => co.MedioPago)
+                    .Include(co => co.MonedaDelCobro)
+                    .Include(co => co.ServicioDelCliente)
+                        .ThenInclude(serCli => serCli.ServicioContratado)
+                    .Include(c => c.ServicioDelCliente)
+                    .ThenInclude(sc => sc.Cliente)
+                    .Where(c => c.ServicioDelCliente.Cliente.SuscriptorId == suscriptorId)
+                    .ToList();
+                return cobros;
+            }
+            catch (Exception ex)
+            {
+                throw new CobroRecibidoException("Error al obtener los cobros del suscriptor", ex);
+            }
+        }
+
         public CobroRecibido FindById(int id)
         {
             return Contexto.CobrosRecibidos.Where(co => co.Id == id).SingleOrDefault();

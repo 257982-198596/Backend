@@ -89,6 +89,25 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
+        public IEnumerable<Notificacion> FindBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                List<Notificacion> notificacionesDelSuscriptor = Contexto.Notificaciones
+                    .Include(not => not.EstadoDeNotificacion)
+                    .Include(not => not.ServicioNotificado)
+                    .ThenInclude(serCli => serCli.ServicioContratado)
+                    .Include(n => n.ClienteNotificado)
+                    .Where(n => n.ClienteNotificado.SuscriptorId == suscriptorId)
+                    .ToList();
+                return notificacionesDelSuscriptor;
+            }
+            catch (Exception ex)
+            {
+                throw new NotificacionException("Error al obtener las notificaciones del suscriptor", ex);
+            }
+        }
+
         public Notificacion FindById(int id)
         {
             try

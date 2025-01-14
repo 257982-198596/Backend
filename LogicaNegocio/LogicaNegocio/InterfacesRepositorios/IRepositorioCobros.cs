@@ -15,5 +15,7 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         void AgregarObservador(IRepositorioClientes repositorioClientes);
 
+        IEnumerable<CobroRecibido> FindBySuscriptorId(int suscriptorId);
+
     }
 }

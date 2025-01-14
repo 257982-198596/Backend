@@ -5,6 +5,7 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -39,6 +40,26 @@ namespace WebAPIGestionCobros.Controllers
                 return Ok(losCobrosRecibidos);
             }
         }
+
+        // COBROS DEL SUSCRIPTOR Y SUS CLIENTES
+        [HttpGet("suscriptor/{suscriptorId}")]
+        public IActionResult GetBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                IEnumerable<CobroRecibido> cobros = RepoCobrosRecibidos.FindBySuscriptorId(suscriptorId);
+                if (cobros == null)
+                {
+                    return NotFound();
+                }
+                return Ok(cobros);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
 
         // GET api/<CobrosRecibidosController>/5
         [HttpGet("{id}")]
