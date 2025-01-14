@@ -231,6 +231,21 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
             }
         }
+
+        //NOTIFICACIONES POR MES DE UN AÑO DADO (DEL SUSCRIPTOR)
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/notificaciones-por-mes")]
+        public IActionResult GetNotificacionesPorMes(int suscriptorId, int year)
+        {
+            try
+            {
+                Dictionary<int, decimal> notificacionesPorMes = RepoNotificaciones.CantidadNotificacionesPorMesaDelSuscriptorId(suscriptorId, year);
+                return Ok(notificacionesPorMes);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
     }
 }
 

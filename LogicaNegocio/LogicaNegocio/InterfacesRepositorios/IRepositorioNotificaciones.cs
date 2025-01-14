@@ -15,5 +15,8 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         IEnumerable<Notificacion> FindBySuscriptorId(int suscriptorId);
 
+
+        Dictionary<int, decimal> CantidadNotificacionesPorMesaDelSuscriptorId(int suscriptorId, int year);
+
     }
 }
