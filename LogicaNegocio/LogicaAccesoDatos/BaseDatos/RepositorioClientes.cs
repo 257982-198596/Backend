@@ -42,6 +42,7 @@ namespace LogicaAccesoDatos.BaseDatos
                         {
                             if (elSuscriptor != null)
                             {
+                                obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
                                 obj.DocumentoCliente = elTipoDocumento;
                                 obj.UsuarioLogin.RolDeUsuario = elRol;
                                 obj.Estado = elEstado;
