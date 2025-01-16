@@ -254,5 +254,78 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             AgregarObservador((IObservador<RepositorioCobros>)repositorioClientes);
         }
+
+
+        public Dictionary<int, decimal> SumaCobrosPorMes(int suscriptorId, int year)
+        {
+            try
+            {
+                Dictionary<int, decimal> cobrosPorMes = new Dictionary<int, decimal>();
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    decimal suma = Contexto.CobrosRecibidos
+                        .Include(c => c.ServicioDelCliente)
+                        .ThenInclude(sc => sc.Cliente)
+                        .Where(c => c.ServicioDelCliente.Cliente.SuscriptorId == suscriptorId && c.FechaDePago.Month == mes && c.FechaDePago.Year == year)
+                        .Sum(c => c.Monto);
+                    cobrosPorMes.Add(mes, suma);
+                }
+                return cobrosPorMes;
+            }
+            catch (Exception ex)
+            {
+                throw new CobroRecibidoException("Error al obtener la suma de cobros por mes", ex);
+            }
+        }
+
+        public Dictionary<int, decimal> SumaCobrosPorMesYServicio(int suscriptorId, int year, int servicioId)
+        {
+            try
+            {
+                Dictionary<int, decimal> cobrosPorMes = new Dictionary<int, decimal>();
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    decimal suma = Contexto.CobrosRecibidos
+                        .Include(c => c.ServicioDelCliente)
+                        .ThenInclude(sc => sc.Cliente)
+                        .Where(c => c.ServicioDelCliente.Cliente.SuscriptorId == suscriptorId
+                                    && c.FechaDePago.Month == mes
+                                    && c.FechaDePago.Year == year
+                                    && c.ServicioDelCliente.ServicioContratadoId == servicioId)
+                        .Sum(c => c.Monto);
+                    cobrosPorMes.Add(mes, suma);
+                }
+                return cobrosPorMes;
+            }
+            catch (Exception ex)
+            {
+                throw new CobroRecibidoException("Error al obtener la suma de cobros por mes y servicio", ex);
+            }
+        }
+
+        public Dictionary<int, decimal> SumaCobrosPorMesYCliente(int suscriptorId, int year, int clienteId)
+        {
+            try
+            {
+                Dictionary<int, decimal> cobrosPorMes = new Dictionary<int, decimal>();
+                for (int mes = 1; mes <= 12; mes++)
+                {
+                    decimal suma = Contexto.CobrosRecibidos
+                        .Include(c => c.ServicioDelCliente)
+                        .ThenInclude(sc => sc.Cliente)
+                        .Where(c => c.ServicioDelCliente.Cliente.SuscriptorId == suscriptorId
+                                    && c.FechaDePago.Month == mes
+                                    && c.FechaDePago.Year == year
+                                    && c.ServicioDelCliente.ClienteId == clienteId)
+                        .Sum(c => c.Monto);
+                    cobrosPorMes.Add(mes, suma);
+                }
+                return cobrosPorMes;
+            }
+            catch (Exception ex)
+            {
+                throw new CobroRecibidoException("Error al obtener la suma de cobros por mes y cliente", ex);
+            }
+        }
     }
 }

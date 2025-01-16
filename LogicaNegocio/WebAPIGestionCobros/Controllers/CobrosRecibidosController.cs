@@ -2,6 +2,7 @@
 using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -176,6 +177,51 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception e)
             {
                 return StatusCode(500);
+            }
+        }
+
+        //FUNCION QUE RECIBE UN SUSCRIPTOR Y UN ANIO Y PASA EL TOTAL COBRADO POR MES EN DICCIONARIO
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/cobros-por-mes")]
+        public IActionResult GetCobrosPorMes(int suscriptorId, int year)
+        {
+            try
+            {
+                var resultado = RepoCobrosRecibidos.SumaCobrosPorMes(suscriptorId, year);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        //FUNCION QUE FILTRA POR SERVICIO - RF011
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/servicio/{servicioId}/cobros-por-mes")]
+        public IActionResult GetCobrosPorMesYServicio(int suscriptorId, int year, int servicioId)
+        {
+            try
+            {
+                var resultado = RepoCobrosRecibidos.SumaCobrosPorMesYServicio(suscriptorId, year, servicioId);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        //FUNCION QUE FILTRA POR CLIENTE - RF011
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/cliente/{clienteId}/cobros-por-mes")]
+        public IActionResult GetCobrosPorMesYCliente(int suscriptorId, int year, int clienteId)
+        {
+            try
+            {
+                var resultado = RepoCobrosRecibidos.SumaCobrosPorMesYCliente(suscriptorId, year, clienteId);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }
