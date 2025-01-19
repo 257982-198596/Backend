@@ -10,5 +10,7 @@ namespace LogicaNegocio.InterfacesRepositorios
     public interface IRepositorioCategorias : IRepositorio<Categoria>
     {
         IEnumerable<Categoria> FindAll();
+
+        IEnumerable<Categoria> FindBySuscriptorId(int suscriptorId);
     }
 }

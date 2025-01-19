@@ -47,12 +47,12 @@ namespace WebAPIGestionCobros.Controllers
         }
 
         // GET api/<SuscriptoresController>/5
-        [HttpGet("{id}")]
-        public IActionResult Get(int id)
+        [HttpGet("{idUsuario}")]
+        public IActionResult GetSuscriptorPorIdUsuario(int idUsuario)
         {
             try
             {
-                Suscriptor suscriptor = RepoSuscriptores.FindById(id);
+                Suscriptor suscriptor = RepoSuscriptores.FindByIdUsuario(idUsuario);
                 return Ok(suscriptor);
             }
             catch (SuscriptorException e)

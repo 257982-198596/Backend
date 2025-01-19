@@ -9,5 +9,6 @@ namespace LogicaNegocio.InterfacesRepositorios
 {
     public interface IRepositorioSuscriptores : IRepositorio<Suscriptor>
     {
+        Suscriptor FindByIdUsuario(int idUsuario);
     }
 }

@@ -7,5 +7,6 @@ namespace LogicaNegocio.InterfacesRepositorios
 {
     public interface IRepositorioServicios : IRepositorio<Servicio>
     {
+        IEnumerable<Servicio> FindAllBySuscriptorId(int suscriptorId);
     }
 }

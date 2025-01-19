@@ -2,9 +2,11 @@
 using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -39,6 +41,26 @@ namespace WebAPIGestionCobros.Controllers
                 return Ok(losCobrosRecibidos);
             }
         }
+
+        // COBROS DEL SUSCRIPTOR Y SUS CLIENTES
+        [HttpGet("suscriptor/{suscriptorId}")]
+        public IActionResult GetBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                IEnumerable<CobroRecibido> cobros = RepoCobrosRecibidos.FindBySuscriptorId(suscriptorId);
+                if (cobros == null)
+                {
+                    return NotFound();
+                }
+                return Ok(cobros);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
 
         // GET api/<CobrosRecibidosController>/5
         [HttpGet("{id}")]
@@ -155,6 +177,51 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception e)
             {
                 return StatusCode(500);
+            }
+        }
+
+        //FUNCION QUE RECIBE UN SUSCRIPTOR Y UN ANIO Y PASA EL TOTAL COBRADO POR MES EN DICCIONARIO
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/cobros-por-mes")]
+        public IActionResult GetCobrosPorMes(int suscriptorId, int year)
+        {
+            try
+            {
+                var resultado = RepoCobrosRecibidos.SumaCobrosPorMes(suscriptorId, year);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        //FUNCION QUE FILTRA POR SERVICIO - RF011
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/servicio/{servicioId}/cobros-por-mes")]
+        public IActionResult GetCobrosPorMesYServicio(int suscriptorId, int year, int servicioId)
+        {
+            try
+            {
+                var resultado = RepoCobrosRecibidos.SumaCobrosPorMesYServicio(suscriptorId, year, servicioId);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        //FUNCION QUE FILTRA POR CLIENTE - RF011
+        [HttpGet("suscriptor/{suscriptorId}/anio/{year}/cliente/{clienteId}/cobros-por-mes")]
+        public IActionResult GetCobrosPorMesYCliente(int suscriptorId, int year, int clienteId)
+        {
+            try
+            {
+                var resultado = RepoCobrosRecibidos.SumaCobrosPorMesYCliente(suscriptorId, year, clienteId);
+                return Ok(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
     }

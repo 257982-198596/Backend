@@ -89,6 +89,25 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
+        public IEnumerable<Notificacion> FindBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                List<Notificacion> notificacionesDelSuscriptor = Contexto.Notificaciones
+                    .Include(not => not.EstadoDeNotificacion)
+                    .Include(not => not.ServicioNotificado)
+                    .ThenInclude(serCli => serCli.ServicioContratado)
+                    .Include(n => n.ClienteNotificado)
+                    .Where(n => n.ClienteNotificado.SuscriptorId == suscriptorId)
+                    .ToList();
+                return notificacionesDelSuscriptor;
+            }
+            catch (Exception ex)
+            {
+                throw new NotificacionException("Error al obtener las notificaciones del suscriptor", ex);
+            }
+        }
+
         public Notificacion FindById(int id)
         {
             try
@@ -213,6 +232,36 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             return Contexto.Notificaciones
                 .Count(n => n.ClienteNotificadoId == clienteId && n.FechaEnvio >= desdeFecha);
+        }
+
+        public Dictionary<int, decimal> CantidadNotificacionesPorMesaDelSuscriptorId(int suscriptorId, int year)
+        {
+            try
+            {
+                var notificacionesPorMes = Contexto.Notificaciones
+                    .Include(n => n.ClienteNotificado)
+                    .Where(n => n.ClienteNotificado.SuscriptorId == suscriptorId && n.FechaEnvio.Year == year)
+                    .GroupBy(n => n.FechaEnvio.Month)
+                    .Select(g => new { Mes = g.Key, Cantidad = g.Count() })
+                    .ToList();
+
+                Dictionary<int, decimal> resultadoMeses = new Dictionary<int, decimal>();
+                for (int i = 1; i <= 12; i++)
+                {
+                    resultadoMeses[i] = 0m;
+                }
+
+                foreach (var item in notificacionesPorMes)
+                {
+                    resultadoMeses[item.Mes] = (item.Cantidad * 30m) / 60m;
+                }
+
+                return resultadoMeses;
+            }
+            catch (Exception ex)
+            {
+                throw new NotificacionException("Error al obtener las notificaciones del suscriptor por mes", ex);
+            }
         }
     }
 }

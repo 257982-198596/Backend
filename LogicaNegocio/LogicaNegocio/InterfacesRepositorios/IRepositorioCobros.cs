@@ -15,5 +15,13 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         void AgregarObservador(IRepositorioClientes repositorioClientes);
 
+        IEnumerable<CobroRecibido> FindBySuscriptorId(int suscriptorId);
+
+        Dictionary<int, decimal> SumaCobrosPorMes(int suscriptorId, int year);
+
+        Dictionary<int, decimal> SumaCobrosPorMesYServicio(int suscriptorId, int year, int servicioId);
+
+        Dictionary<int, decimal> SumaCobrosPorMesYCliente(int suscriptorId, int year, int clienteId);
+
     }
 }

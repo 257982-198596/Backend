@@ -1,6 +1,7 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,28 @@ namespace LogicaAccesoDatos.BaseDatos
         public void Update(Suscriptor obj)
         {
             throw new NotImplementedException();
+        }
+
+        public Suscriptor FindByIdUsuario(int idUsuario)
+        {
+            try
+            {
+                Suscriptor suscriptor = Contexto.Suscriptores
+                    .Include(s => s.ClientesDelSuscriptor)
+                    .Include(s => s.ServiciosDelSuscriptor)
+                    .FirstOrDefault(s => s.UsuarioLogin.Id == idUsuario);
+
+                if (suscriptor == null)
+                {
+                    throw new SuscriptorException("No se encontró un suscriptor con el ID de usuario especificado");
+                }
+
+                return suscriptor;
+            }
+            catch (Exception e)
+            {
+                throw new SuscriptorException("Error al obtener el suscriptor por ID de usuario", e);
+            }
         }
     }
 }

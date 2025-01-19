@@ -4,6 +4,7 @@ using LogicaAccesoDatos.BaseDatos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LogicaAccesoDatos.Migrations
 {
     [DbContext(typeof(CobrosContext))]
-    partial class CobrosContextModelSnapshot : ModelSnapshot
+    [Migration("20250113221108_SuscriptorIdAServicio")]
+    partial class SuscriptorIdAServicio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,12 +35,7 @@ namespace LogicaAccesoDatos.Migrations
                     b.Property<string>("Nombre")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("SuscriptorId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("SuscriptorId");
 
                     b.ToTable("Categorias");
                 });
@@ -445,7 +442,7 @@ namespace LogicaAccesoDatos.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
@@ -455,22 +452,9 @@ namespace LogicaAccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique()
-                        .HasFilter("[Email] IS NOT NULL");
-
                     b.HasIndex("RolId");
 
                     b.ToTable("Usuarios");
-                });
-
-            modelBuilder.Entity("LogicaNegocio.Dominio.Categoria", b =>
-                {
-                    b.HasOne("LogicaNegocio.Dominio.Suscriptor", null)
-                        .WithMany("CategoriasDelSuscriptor")
-                        .HasForeignKey("SuscriptorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Cliente", b =>
@@ -663,8 +647,6 @@ namespace LogicaAccesoDatos.Migrations
 
             modelBuilder.Entity("LogicaNegocio.Dominio.Suscriptor", b =>
                 {
-                    b.Navigation("CategoriasDelSuscriptor");
-
                     b.Navigation("ClientesDelSuscriptor");
 
                     b.Navigation("ServiciosDelSuscriptor");

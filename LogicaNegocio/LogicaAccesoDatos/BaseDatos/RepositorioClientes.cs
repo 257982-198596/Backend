@@ -42,6 +42,7 @@ namespace LogicaAccesoDatos.BaseDatos
                         {
                             if (elSuscriptor != null)
                             {
+                                obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
                                 obj.DocumentoCliente = elTipoDocumento;
                                 obj.UsuarioLogin.RolDeUsuario = elRol;
                                 obj.Estado = elEstado;
@@ -115,6 +116,42 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             
         }
+
+        // POR SUSCRIPTOR
+        public IEnumerable<Cliente> FindAllBySuscriptorId(int suscriptorId)
+        {
+            try
+            {
+                List<Cliente> losClientes = Contexto.Clientes
+                    .Include(cli => cli.DocumentoCliente)
+                    .Include(cli => cli.UsuarioLogin)
+                    .Include(cli => cli.Pais)
+                    .Include(cli => cli.CobrosDelCliente)
+                    .Include(cli => cli.Estado)
+                    .Include(cli => cli.ServiciosDelCliente)
+                    .ThenInclude(servCli => servCli.ServicioContratado)
+                    .Where(cli => cli.SuscriptorId == suscriptorId)
+                    .ToList();
+
+                if (losClientes != null)
+                {
+                    return losClientes;
+                }
+                else
+                {
+                    throw new ClienteException("No hay clientes ingresados en el sistema para el suscriptor especificado");
+                }
+            }
+            catch (ClienteException ex)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new ClienteException("Error al obtener los clientes del suscriptor", e);
+            }
+        }
+
 
         public Cliente FindById(int id)
         {

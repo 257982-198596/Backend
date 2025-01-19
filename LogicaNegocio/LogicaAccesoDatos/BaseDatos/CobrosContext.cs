@@ -69,6 +69,10 @@ namespace LogicaAccesoDatos.BaseDatos
             .HasForeignKey(n => n.EstadoDeNotificacionId)
             .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Usuario>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
             base.OnModelCreating(modelBuilder);
         }
 
