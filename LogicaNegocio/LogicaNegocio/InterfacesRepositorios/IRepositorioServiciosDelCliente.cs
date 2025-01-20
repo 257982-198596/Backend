@@ -23,5 +23,7 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         IEnumerable<ServicioDelCliente> ServiciosDeClientesDeUnSuscriptorQueVencenEsteMes(int idSuscriptor);
 
+        //metodo para modificar estado del servicio a Vencido
+        IEnumerable<ServicioDelCliente> MarcarServiciosComoVencidos();
     }
 }

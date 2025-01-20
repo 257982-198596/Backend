@@ -325,5 +325,19 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
             }
         }
+
+        [HttpPost("cambiar-estado-servicios-del-cliente-a-vencidos")]
+        public IActionResult MarcarServiciosComoVencidos()
+        {
+            try
+            {
+                IEnumerable<ServicioDelCliente> serviciosVencidos = RepoServiciosDelCliente.MarcarServiciosComoVencidos();
+                return Ok(serviciosVencidos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error al marcar servicios como vencidos: {ex.Message}");
+            }
+        }
     }
 }

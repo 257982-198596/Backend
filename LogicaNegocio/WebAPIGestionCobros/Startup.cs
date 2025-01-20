@@ -59,13 +59,21 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
             services.AddScoped<IRepositorioNotificaciones, RepositorioNotificaciones>();
             services.AddScoped<IRepositorioSuscriptores, RepositorioSuscriptores>();
-            services.AddHostedService<WebAPIGestionCobros.Servicios.NotificarVencimientosAutomatizados>();
+
+
+            
+            
 
             // Registrar NotificacionesController para EnvioAutomatizado
             services.AddScoped<NotificacionesController>();
 
+            // Registrar ServiciosDelClienteController para CambiarEstadosDeServiciosDelClienteVencidos
+            services.AddScoped<ServiciosDelClienteController>();
+
             // Registrar el servicio hospedado
             services.AddHostedService<NotificarVencimientosAutomatizados>();
+            services.AddHostedService<CambiarEstadosDeServiciosDelClienteVencidos>();
+
 
             // Registra ObservadorService
             services.AddScoped<ObservadorService>();

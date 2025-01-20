@@ -1,30 +1,28 @@
-﻿using LogicaNegocio.Dominio;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WebAPIGestionCobros.Controllers;
 
 namespace WebAPIGestionCobros.Servicios
 {
-    public class NotificarVencimientosAutomatizados : IHostedService, IDisposable
+    public class CambiarEstadosDeServiciosDelClienteVencidos : IHostedService, IDisposable
     {
         private Timer _timer;
-
-
         private readonly IServiceProvider ServiceProvider;
-        //private readonly NotificacionesController ControladorNotificaciones; se modifica por error singleton en scoped del startup
+        
 
-        public NotificarVencimientosAutomatizados(IServiceProvider serviceProvider)
+        public CambiarEstadosDeServiciosDelClienteVencidos(IServiceProvider serviceProvider)
         {
             ServiceProvider = serviceProvider;
+            
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            DoWork(null);
+            //DoWork(null);
             // Configurar el temporizador para que se ejecute todos los días a las 00:01
             var now = DateTime.Now;
             var nextRun = new DateTime(now.Year, now.Month, now.Day, 00, 01, 0).AddDays(1);
@@ -34,22 +32,20 @@ namespace WebAPIGestionCobros.Servicios
             return Task.CompletedTask;
         }
 
-        private void DoWork(object state)
+        private async void DoWork(object state)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
-                NotificacionesController ControladorNotificaciones = scope.ServiceProvider.GetRequiredService<NotificacionesController>();
+                ServiciosDelClienteController controladorServicios = scope.ServiceProvider.GetRequiredService<ServiciosDelClienteController>();
                 try
                 {
-                    ControladorNotificaciones.ProcesarNotificacionesVencimientos();
+                    controladorServicios.MarcarServiciosComoVencidos();
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception($"Error al procesar notificaciones de vencimientos: {ex.Message}", ex);
+                    throw new Exception($"Error al cambiar estados de servicios del cliente a vencidos: {ex.Message}", ex);
                 }
             }
-            
-
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

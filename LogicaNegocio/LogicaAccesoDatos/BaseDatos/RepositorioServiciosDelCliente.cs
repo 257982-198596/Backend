@@ -463,5 +463,35 @@ namespace LogicaAccesoDatos.BaseDatos
             }
         }
 
+        public IEnumerable<ServicioDelCliente> MarcarServiciosComoVencidos()
+        {
+            try
+            {
+                IEnumerable<ServicioDelCliente> serviciosVencidos = Contexto.ServiciosDelCliente
+                    .Where(s => s.FechaVencimiento < DateTime.Now && s.EstadoDelServicioDelCliente.Nombre == "Activo")
+                    .ToList();
+
+                EstadoServicioDelCliente estadoVencido = Contexto.EstadosServiciosDelClientes
+                    .FirstOrDefault(e => e.Nombre == "Vencido");
+
+                if (estadoVencido == null)
+                {
+                    throw new Exception("Estado 'Vencido' no encontrado en la base de datos.");
+                }
+
+
+                foreach (ServicioDelCliente servicioDelCliente in serviciosVencidos)
+                {
+                    servicioDelCliente.EstadoDelServicioDelCliente = estadoVencido;
+                }
+
+                Contexto.SaveChanges();
+                return serviciosVencidos;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error al marcar servicios como vencidos: {ex.Message}", ex);
+            }
+        }
     }
 }
