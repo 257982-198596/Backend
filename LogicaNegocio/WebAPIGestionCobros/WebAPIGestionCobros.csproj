@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LogicaAccesoDatos\LogicaAccesoDatos.csproj" />
     <ProjectReference Include="..\LogicaNegocio\LogicaNegocio.csproj" />
+	  
   </ItemGroup>
 
 

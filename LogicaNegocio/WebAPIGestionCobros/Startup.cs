@@ -13,6 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPIGestionCobros.Controllers;
+using WebAPIGestionCobros.Servicios;
+
+
 
 namespace WebAPIGestionCobros
 {
@@ -55,12 +59,20 @@ namespace WebAPIGestionCobros
             services.AddScoped<IRepositorioMediosDePago, RepositorioMediosDePago>();
             services.AddScoped<IRepositorioNotificaciones, RepositorioNotificaciones>();
             services.AddScoped<IRepositorioSuscriptores, RepositorioSuscriptores>();
+            services.AddHostedService<WebAPIGestionCobros.Servicios.NotificarVencimientosAutomatizados>();
+
+            // Registrar NotificacionesController para EnvioAutomatizado
+            services.AddScoped<NotificacionesController>();
+
+            // Registrar el servicio hospedado
+            services.AddHostedService<NotificarVencimientosAutomatizados>();
 
             // Registra ObservadorService
             services.AddScoped<ObservadorService>();
+
             // Para uso del sistema de envio de correos
             services.AddScoped<EnviarCorreo>();
-
+            
 
 
 

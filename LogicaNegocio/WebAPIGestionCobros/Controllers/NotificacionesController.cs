@@ -191,7 +191,7 @@ namespace WebAPIGestionCobros.Controllers
             }
         }
 
-        [HttpPost("procesar-vencimientos")]
+        [HttpPost("procesar-notificaciones-de-vencimientos")]
         public IActionResult ProcesarNotificacionesVencimientos()
         {
             try
