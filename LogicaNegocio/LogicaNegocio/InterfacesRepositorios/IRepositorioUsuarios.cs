@@ -12,5 +12,7 @@ namespace LogicaNegocio.InterfacesRepositorios
         Usuario IniciarSesion(string username, string password);
 
         void ResetContrasena(Usuario usuario);
+
+        void HashExistingPasswords();
     }
 }
