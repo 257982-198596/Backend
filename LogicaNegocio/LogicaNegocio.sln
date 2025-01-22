@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebAPIGestionCobros", "WebA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{060ED4AB-6798-430B-84CB-7BA5B91BAB1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SistemaDeNotificaciones", "SistemaDeNotificaciones\SistemaDeNotificaciones.csproj", "{48F34B97-B24F-4893-A38B-5854496DDC7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SistemaDeNotificaciones", "SistemaDeNotificaciones\SistemaDeNotificaciones.csproj", "{48F34B97-B24F-4893-A38B-5854496DDC7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

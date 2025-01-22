@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
@@ -42,12 +43,14 @@ namespace LogicaAccesoDatos.BaseDatos
                         {
                             if (elSuscriptor != null)
                             {
-                                obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
+                                
                                 obj.DocumentoCliente = elTipoDocumento;
                                 obj.UsuarioLogin.RolDeUsuario = elRol;
                                 obj.Estado = elEstado;
                                 obj.Pais = elPais;
                                 obj.SuscriptorId = elSuscriptor.Id;
+                                obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
+                                obj.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
                                 Contexto.Add(obj);
                                 Contexto.SaveChanges();
                             }
@@ -220,6 +223,8 @@ namespace LogicaAccesoDatos.BaseDatos
                     obj.Validar();
                     obj.UsuarioLogin.RolDeUsuario = elRol;
                     obj.DocumentoCliente = elTipoDocumento;
+
+
 
                     Contexto.Clientes.Update(obj);
                     Contexto.SaveChanges();

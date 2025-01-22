@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
@@ -30,9 +31,10 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 foreach (Usuario item in losUsuarios)
                 {
-                    if (item.Email == username && item.Password == password)
+                    if (item.Email == username && BCrypt.Net.BCrypt.Verify(password, item.Password))
                     {
                         usuarioIniciado = item;
+                        break;
                     }
                 }
             }
@@ -48,11 +50,29 @@ namespace LogicaAccesoDatos.BaseDatos
             }
 
             string contrasenaTemporal = elUsuario.GenerarContrasenaTemporal();
-            elUsuario.Password = contrasenaTemporal; 
+            elUsuario.Password = BCrypt.Net.BCrypt.HashPassword(contrasenaTemporal); 
             Contexto.Usuarios.Update(elUsuario);
             Contexto.SaveChanges();
 
             SistemaEnviarCorreo.EnviarContrasenaTemporal(new Cliente { UsuarioLogin = elUsuario }, contrasenaTemporal);
+        }
+
+        public void HashExistingPasswords()
+        {
+            var usuarios = Contexto.Usuarios.ToList();
+            String pass = "";
+            foreach (var usuario in usuarios)
+            {
+                pass = usuario.Password;
+                // Verificar si la contraseña ya está hasheada
+                if (!usuario.Password.StartsWith("$2a$") && !usuario.Password.StartsWith("$2b$") && !usuario.Password.StartsWith("$2y$"))
+                {
+                    // Si no está hasheada, hashearla
+                    usuario.Password = BCrypt.Net.BCrypt.HashPassword(usuario.Password);
+                }
+            }
+
+            Contexto.SaveChanges();
         }
     }
 }

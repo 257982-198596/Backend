@@ -95,5 +95,20 @@ namespace WebAPIGestionCobros.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost]
+        [Route("hashpasswords")]
+        public IActionResult HashExistingPasswords()
+        {
+            try
+            {
+                RepoUsuarios.HashExistingPasswords();
+                return Ok("Contraseñas hasheadas correctamente.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
