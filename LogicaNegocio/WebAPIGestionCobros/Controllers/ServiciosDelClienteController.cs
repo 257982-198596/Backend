@@ -339,5 +339,7 @@ namespace WebAPIGestionCobros.Controllers
                 return StatusCode(500, $"Error al marcar servicios como vencidos: {ex.Message}");
             }
         }
+
+
     }
 }

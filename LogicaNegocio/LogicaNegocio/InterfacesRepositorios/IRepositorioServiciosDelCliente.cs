@@ -25,5 +25,7 @@ namespace LogicaNegocio.InterfacesRepositorios
 
         //metodo para modificar estado del servicio a Vencido
         IEnumerable<ServicioDelCliente> MarcarServiciosComoVencidos();
+
+
     }
 }
