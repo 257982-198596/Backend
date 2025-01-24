@@ -158,7 +158,7 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public Cliente FindById(int id)
         {
-            return Contexto.Clientes.Include(cli => cli.DocumentoCliente).Where(cli => cli.Id == id).SingleOrDefault();
+            return Contexto.Clientes.Include(cli => cli.DocumentoCliente).Include(cli => cli.UsuarioLogin).Where(cli => cli.Id == id).SingleOrDefault();
         }
 
 
