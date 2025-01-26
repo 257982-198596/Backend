@@ -42,6 +42,8 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public DbSet<EstadoNotificacion> EstadosDeNotificacion { get; set; }
 
+        public DbSet<CotizacionDolar> Cotizaciones { get; set; }
+
         public CobrosContext(DbContextOptions<CobrosContext> opciones) : base(opciones)
         {
         }
