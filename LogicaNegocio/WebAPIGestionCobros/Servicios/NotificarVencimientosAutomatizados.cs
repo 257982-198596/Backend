@@ -25,9 +25,9 @@ namespace WebAPIGestionCobros.Servicios
         public Task StartAsync(CancellationToken cancellationToken)
         {
             //DoWork(null);
-            // Configurar el temporizador para que se ejecute todos los días a las 00:01
+            // Configurar el temporizador para que se ejecute todos los días a las 09:00
             var now = DateTime.Now;
-            var nextRun = new DateTime(now.Year, now.Month, now.Day, 00, 01, 0).AddDays(1);
+            var nextRun = new DateTime(now.Year, now.Month, now.Day, 09, 00, 0).AddDays(1);
             var initialDelay = nextRun - now;
 
             _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromDays(1));

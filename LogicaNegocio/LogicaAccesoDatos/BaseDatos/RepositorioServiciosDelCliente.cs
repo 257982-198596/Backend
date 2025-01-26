@@ -370,11 +370,16 @@ namespace LogicaAccesoDatos.BaseDatos
 
 
         // FUNCIONES PARA REPORTES //
-
+        // INDICADOR DE SERVICIOS DE UN CLIENTE MONTO ANUAL
         public decimal CalcularIngresosProximos365Dias(int idCliente)
         {
+            CotizacionDolar ultimaCotizacion = Contexto.Cotizaciones
+                                   .OrderByDescending(c => c.Fecha)
+                                   .FirstOrDefault();
+
             IEnumerable<ServicioDelCliente> serviciosActivos = Contexto.ServiciosDelCliente
                 .Include(s => s.FrecuenciaDelServicio)
+                .Include(s => s.MonedaDelServicio)
                 .Where(s => s.ClienteId == idCliente
                     && s.EstadoDelServicioDelCliente.Nombre == "Activo"
                     && s.FechaVencimiento <= DateTime.Now.AddYears(1));
@@ -383,25 +388,30 @@ namespace LogicaAccesoDatos.BaseDatos
             int multiplicador = 1;
             foreach (var servicio in serviciosActivos)
             {
-                if (servicio.FrecuenciaDelServicio.Nombre == "Mensual")
+                decimal montoServicio = servicio.Precio;
+                if (servicio.MonedaDelServicio.Nombre == "Pesos")
                 {
-                    multiplicador = 12;
+                    if (ultimaCotizacion != null)
+                    {
+                        montoServicio = montoServicio / ultimaCotizacion.Valor;
+                    }
                 }
-                if (servicio.FrecuenciaDelServicio.Nombre == "Trimestral")
+                switch (servicio.FrecuenciaDelServicio.Nombre)
                 {
-                    multiplicador = 4;
+                    case "Mensual":
+                        totalIngresos += montoServicio * 12;
+                        break;
+                    case "Trimestral":
+                        totalIngresos += montoServicio * 4;
+                        break;
+                    case "Semestral":
+                        totalIngresos += montoServicio * 2;
+                        break;
+                    case "Anual":
+                        totalIngresos += montoServicio;
+                        break;
                 }
-                if (servicio.FrecuenciaDelServicio.Nombre == "Semestral")
-                {
-                    multiplicador = 2;
-                }
-                if (servicio.FrecuenciaDelServicio.Nombre == "Anual")
-                {
-                    multiplicador = 1;
-                }
-
-
-                totalIngresos += servicio.Precio * multiplicador;
+                
             }
 
             return totalIngresos;
