@@ -26,9 +26,15 @@ public class ActualizarCotizacionDolar : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        ObtenerCotizacionCallback(null);
+        //ObtenerCotizacionCallback(null);
         // Configurar el temporizador para que se ejecute todos los días a las 10:30
-        var initialDelay = TimeSpan.FromMinutes(12);
+        var now = DateTime.Now;
+        var nextRun = new DateTime(now.Year, now.Month, now.Day, 10, 30, 0);
+        if (now > nextRun)
+        {
+            nextRun = nextRun.AddDays(1);
+        }
+        var initialDelay = nextRun - now;
 
         _timer = new Timer(ObtenerCotizacionCallback, null, initialDelay, TimeSpan.FromDays(1));
         return Task.CompletedTask;
