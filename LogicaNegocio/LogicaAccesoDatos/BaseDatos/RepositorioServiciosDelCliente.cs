@@ -393,7 +393,8 @@ namespace LogicaAccesoDatos.BaseDatos
                 {
                     if (ultimaCotizacion != null)
                     {
-                        montoServicio = montoServicio / ultimaCotizacion.Valor;
+                        montoServicio = servicio.MonedaDelServicio.CovertirADolares(servicio.Precio, ultimaCotizacion.Valor);
+                        //montoServicio = montoServicio / ultimaCotizacion.Valor;
                     }
                 }
                 switch (servicio.FrecuenciaDelServicio.Nombre)
@@ -471,6 +472,51 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 throw;
             }
+        }
+
+        public Dictionary<string, decimal> ObtenerIndicadoresServiciosVencenEsteMes(int idSuscriptor)
+        {
+            var indicadores = new Dictionary<string, decimal>();
+
+            try
+            {
+                DateTime fechaActual = DateTime.Now;
+                List<ServicioDelCliente> serviciosVencenEsteMes = ServiciosDeClientesDeUnSuscriptor(idSuscriptor)
+                    .Where(s => s.FechaVencimiento.Year == fechaActual.Year &&
+                                s.FechaVencimiento.Month == fechaActual.Month)
+                    .ToList();
+
+                CotizacionDolar cotizacionDolar = Contexto.Cotizaciones
+                .OrderByDescending(c => c.Fecha)
+                .FirstOrDefault();
+
+                decimal montoTotalRenovaciones = 0;
+                decimal montoYaCobrado = 0;
+                foreach (var servicio in serviciosVencenEsteMes)
+                {
+                    decimal montoDelServicioEnDolares = servicio.MonedaDelServicio.CovertirADolares(servicio.Precio, cotizacionDolar.Valor);
+                    montoTotalRenovaciones += montoDelServicioEnDolares;
+                    if(servicio.EstadoDelServicioDelCliente.Nombre == "Pago")
+                    {
+                        montoYaCobrado += montoDelServicioEnDolares;
+                    }
+                }
+
+                var montoPendienteCobro = montoTotalRenovaciones - montoYaCobrado;
+                var cantidadVencimientos = serviciosVencenEsteMes.Count;
+
+                indicadores["MontoTotalRenovaciones"] = montoTotalRenovaciones;
+                indicadores["MontoYaCobrado"] = montoYaCobrado;
+                indicadores["MontoPendienteCobro"] = montoPendienteCobro;
+                indicadores["CantidadVencimientos"] = cantidadVencimientos;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new ServicioDelClienteException("Error al obtener los indicadores de servicios que vencen este mes", ex);
+            }
+
+            return indicadores;
         }
 
         public IEnumerable<ServicioDelCliente> MarcarServiciosComoVencidos()

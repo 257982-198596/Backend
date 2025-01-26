@@ -26,6 +26,9 @@ namespace LogicaNegocio.InterfacesRepositorios
         //metodo para modificar estado del servicio a Vencido
         IEnumerable<ServicioDelCliente> MarcarServiciosComoVencidos();
 
+        // indicadores para reporte vencimientos del mes corriente
+        Dictionary<string, decimal> ObtenerIndicadoresServiciosVencenEsteMes(int idSuscriptor);
+
 
     }
 }
