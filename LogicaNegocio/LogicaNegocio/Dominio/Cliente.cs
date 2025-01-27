@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LogicaNegocio.Dominio
 {
@@ -32,7 +33,38 @@ namespace LogicaNegocio.Dominio
         public int SuscriptorId { get; set; }
         public void Validar()
         {
+            ValidarNombre();
+            ValidarNumDocumento();
+            ValidarTelefono();
+            ValidarDireccion();
+            ValidarPersonaContacto();
+            ValidarPais();
+            ValidarEmail();
+            ValidarPassword();
+        }
+
+        
+
+        private void ValidarNumDocumento()
+        {
+            if (string.IsNullOrWhiteSpace(NumDocumento))
+            {
+                throw new ClienteException("El número de documento es obligatorio");
+            }
+            if (!Regex.IsMatch(NumDocumento, @"^\d+$"))
+            {
+                throw new ClienteException("El número de documento debe ser numérico");
+            }
+            this.DocumentoCliente.ValidaTipoDocumento(NumDocumento);
             
         }
+
+        
+
+        
+
+        
+
+        
     }
 }
