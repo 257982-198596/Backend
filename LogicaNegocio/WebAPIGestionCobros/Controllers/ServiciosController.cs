@@ -1,7 +1,9 @@
 ﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +19,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioServicios RepoServicios { get; set; }
 
-        public ServiciosController(IRepositorioServicios repoServicios)
+        private readonly ILogger<RepositorioCategorias> logAzure;
+
+        public ServiciosController(IRepositorioServicios repoServicios, ILogger<RepositorioCategorias> logger)
         {
             RepoServicios = repoServicios;
+            logAzure = logger;
         }
 
 
@@ -82,10 +87,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
