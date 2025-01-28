@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SistemaDeNotificaciones;
 using SendGrid.Helpers.Mail.Model;
+using Microsoft.Extensions.Logging;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
@@ -19,10 +20,13 @@ namespace LogicaAccesoDatos.BaseDatos
         private readonly EnviarCorreo SistemaEnviarCorreo;
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioCobros(CobrosContext context, EnviarCorreo enviarCorreo)
+        private readonly ILogger<RepositorioCobros> logAzure;
+
+        public RepositorioCobros(CobrosContext context, EnviarCorreo enviarCorreo, ILogger<RepositorioCobros> logger)
         {
             Contexto = context;
             SistemaEnviarCorreo = enviarCorreo;
+            logAzure = logger;
         }
 
         
@@ -93,10 +97,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (CobroRecibidoException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -127,10 +133,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (CobroRecibidoException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -150,15 +158,35 @@ namespace LogicaAccesoDatos.BaseDatos
                     .ToList();
                 return cobros;
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CobroRecibidoException("Error al obtener los cobros del suscriptor", ex);
             }
         }
 
         public CobroRecibido FindById(int id)
         {
-            return Contexto.CobrosRecibidos.Where(co => co.Id == id).SingleOrDefault();
+            try
+            {
+                return Contexto.CobrosRecibidos.Where(co => co.Id == id).SingleOrDefault();
+            }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+
         }
 
         public void Remove(int id)
@@ -180,10 +208,13 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (CobroRecibidoException ex)
             {
+                logAzure.LogError(ex.Message);
+
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -230,12 +261,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
 
             }
-            catch (ServicioException ce)
+            catch (CobroRecibidoException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -272,8 +305,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
                 return cobrosPorMes;
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CobroRecibidoException("Error al obtener la suma de cobros por mes", ex);
             }
         }
@@ -310,8 +349,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
                 return cobrosPorMes;
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CobroRecibidoException("Error al obtener la suma de cobros por mes y servicio", ex);
             }
         }
@@ -349,8 +394,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
                 return cobrosPorMes;
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CobroRecibidoException("Error al obtener la suma de cobros por mes y cliente", ex);
             }
         }
