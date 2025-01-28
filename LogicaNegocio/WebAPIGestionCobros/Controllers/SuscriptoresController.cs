@@ -1,8 +1,10 @@
 ﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace WebAPIGestionCobros.Controllers
@@ -13,9 +15,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioSuscriptores RepoSuscriptores { get; set; }
 
-        public SuscriptoresController(IRepositorioSuscriptores repoSuscriptores)
+        private readonly ILogger<RepositorioSuscriptores> logAzure;
+
+        public SuscriptoresController(IRepositorioSuscriptores repoSuscriptores, ILogger<RepositorioSuscriptores> logger)
         {
             RepoSuscriptores = repoSuscriptores;
+            logAzure = logger;
         }
 
         // POST api/<SuscriptoresController>
@@ -36,10 +41,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (SuscriptorException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e.Message);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
 
@@ -65,10 +72,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (SuscriptorException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e.Message);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
 
@@ -86,11 +95,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (SuscriptorException e)
             {
+                logAzure.LogError(e.Message);
                 return NotFound(e.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
     }
