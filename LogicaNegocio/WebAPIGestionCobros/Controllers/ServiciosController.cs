@@ -101,7 +101,7 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
             catch (Exception ex)
             {

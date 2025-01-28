@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Excepciones;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,17 @@ namespace LogicaNegocio.Dominio
 
         public String Nombre { get; set; }
 
+        public void Validar()
+        {
+            ValidarNombre();
+        }
+
+        private void ValidarNombre()
+        {
+            if (string.IsNullOrWhiteSpace(Nombre))
+            {
+                throw new MedioDePagoException("El nombre del medio de pago es obligatorio");
+            }
+        }
     }
 }

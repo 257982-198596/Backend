@@ -30,6 +30,7 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+
             IEnumerable<CobroRecibido> losCobrosRecibidos = RepoCobrosRecibidos.FindAll();
 
             if (losCobrosRecibidos == null)

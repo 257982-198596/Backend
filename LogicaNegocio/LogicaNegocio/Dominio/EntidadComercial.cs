@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Excepciones;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LogicaNegocio.Dominio
@@ -26,5 +28,87 @@ namespace LogicaNegocio.Dominio
         public int PaisId { get; set; }
 
         public Usuario UsuarioLogin { get; set; }
+
+        protected void ValidarPais()
+        {
+            if (PaisId == 0)
+            {
+                throw new Exception("El país de origen es obligatorio");
+            }
+        }
+
+        protected void ValidarEmail()
+        {
+            if (UsuarioLogin == null)
+            {
+                throw new Exception("El usuario de login es obligatorio");
+            }
+            UsuarioLogin.ValidarEmail();
+        }
+
+        protected void ValidarPassword()
+        {
+            if (UsuarioLogin == null)
+            {
+                throw new Exception("El usuario de login es obligatorio");
+            }
+            UsuarioLogin.ValidarPassword();
+        }
+
+        protected void ValidarNombre()
+        {
+            if (string.IsNullOrWhiteSpace(Nombre))
+            {
+                throw new Exception("El nombre es obligatorio");
+            }
+            if (Nombre.Length <= 3)
+            {
+                throw new Exception("El nombre debe tener más de 3 caracteres");
+            }
+        }
+
+        protected void ValidarTelefono()
+        {
+            if (string.IsNullOrWhiteSpace(Telefono))
+            {
+                throw new Exception("El número de teléfono es obligatorio");
+            }
+            if (Telefono.Length <= 7)
+            {
+                throw new Exception("El teléfono debe tener más de 7 caracteres");
+            }
+            if (Telefono.Length >= 15)
+            {
+                throw new Exception("El teléfono debe tener menos de 15 caracteres");
+            }
+            if (!Regex.IsMatch(Telefono, @"^\d+$"))
+            {
+                throw new Exception("El teléfono debe ser numérico");
+            }
+        }
+
+        protected void ValidarDireccion()
+        {
+            if (string.IsNullOrWhiteSpace(Direccion))
+            {
+                throw new Exception("El campo dirección es obligatorio");
+            }
+            if (Direccion.Length <= 5)
+            {
+                throw new Exception("La dirección debe tener más de 5 caracteres");
+            }
+        }
+
+        protected void ValidarPersonaContacto()
+        {
+            if (string.IsNullOrWhiteSpace(PersonaContacto))
+            {
+                throw new ClienteException("La persona de contacto es obligatoria");
+            }
+            if (PersonaContacto.Length <= 5)
+            {
+                throw new ClienteException("La persona de contacto debe tener más de 5 caracteres");
+            }
+        }
     }
 }
