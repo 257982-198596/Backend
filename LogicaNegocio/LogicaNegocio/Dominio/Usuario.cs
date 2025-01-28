@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LogicaNegocio.Dominio
@@ -21,6 +22,26 @@ namespace LogicaNegocio.Dominio
 
         public int RolId { get; set; }
 
+
+        public void ValidarEmail()
+        {
+            if (string.IsNullOrWhiteSpace(this.Email))
+            {
+                throw new UsuarioException("El correo electrónico es obligatorio");
+            }
+            if (!Regex.IsMatch(this.Email, @"^[^\s@]+@[^\s@]+\.[^\s@]+$"))
+            {
+                throw new UsuarioException("El correo electrónico no es válido");
+            }
+        }
+
+        public void ValidarPassword()
+        {
+            if (string.IsNullOrWhiteSpace(this.Password))
+            {
+                throw new UsuarioException("La contraseña es obligatoria");
+            }
+        }
         public string GenerarContrasenaTemporal(int longitud = 8)
         {
 

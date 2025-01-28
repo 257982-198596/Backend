@@ -36,15 +36,23 @@ namespace LogicaAccesoDatos.BaseDatos
                 {
                     if (elPais != null)
                     {
-                        obj.Pais = elPais;
-                        obj.UsuarioLogin.RolDeUsuario = elRol;
+                        if(obj.UsuarioLogin != null)
+                        {
+                            obj.Pais = elPais;
+                            obj.UsuarioLogin.RolDeUsuario = elRol;
 
-                        // Hash the password
-                        obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
-                        obj.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
+                            // Hash the password
+                            obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
+                            obj.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
 
-                        Contexto.Add(obj);
-                        Contexto.SaveChanges();
+                            Contexto.Add(obj);
+                            Contexto.SaveChanges();
+                        }
+                        else
+                        {
+                            throw new SuscriptorException("El suscriptor debe tener un usuario asociado");
+                        }
+                        
                     }
                     else
                     {

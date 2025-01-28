@@ -282,18 +282,31 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
+                CotizacionDolar cotizacionDolar = Contexto.Cotizaciones
+                .OrderByDescending(c => c.Fecha)
+                .FirstOrDefault();
+
                 Dictionary<int, decimal> cobrosPorMes = new Dictionary<int, decimal>();
                 for (int mes = 1; mes <= 12; mes++)
                 {
-                    decimal suma = Contexto.CobrosRecibidos
+                    List<CobroRecibido> cobrosDelMes = Contexto.CobrosRecibidos
+                        .Include(c => c.MonedaDelCobro)
                         .Include(c => c.ServicioDelCliente)
                         .ThenInclude(sc => sc.Cliente)
                         .Where(c => c.ServicioDelCliente.Cliente.SuscriptorId == suscriptorId
                                     && c.FechaDePago.Month == mes
                                     && c.FechaDePago.Year == year
                                     && c.ServicioDelCliente.ServicioContratadoId == servicioId)
-                        .Sum(c => c.Monto);
-                    cobrosPorMes.Add(mes, suma);
+                        .ToList();
+                    decimal sumaDelMes = 0;
+                        foreach(var cobro in cobrosDelMes)
+                        {
+                        decimal monto = cobro.Monto;
+                        monto = cobro.MonedaDelCobro.CovertirADolares(cobro.Monto, cotizacionDolar.Valor);
+                        sumaDelMes += monto;
+                        }
+                    
+                    cobrosPorMes.Add(mes, sumaDelMes);
                 }
                 return cobrosPorMes;
             }
@@ -307,18 +320,32 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
+                CotizacionDolar cotizacionDolar = Contexto.Cotizaciones
+                .OrderByDescending(c => c.Fecha)
+                .FirstOrDefault();
+
                 Dictionary<int, decimal> cobrosPorMes = new Dictionary<int, decimal>();
                 for (int mes = 1; mes <= 12; mes++)
                 {
-                    decimal suma = Contexto.CobrosRecibidos
+                    List<CobroRecibido> cobrosDelMes = Contexto.CobrosRecibidos
+                        .Include(c => c.MonedaDelCobro)
                         .Include(c => c.ServicioDelCliente)
                         .ThenInclude(sc => sc.Cliente)
                         .Where(c => c.ServicioDelCliente.Cliente.SuscriptorId == suscriptorId
                                     && c.FechaDePago.Month == mes
                                     && c.FechaDePago.Year == year
                                     && c.ServicioDelCliente.ClienteId == clienteId)
-                        .Sum(c => c.Monto);
-                    cobrosPorMes.Add(mes, suma);
+                        .ToList();
+
+                    decimal sumaDelMes = 0;
+                    foreach (var cobro in cobrosDelMes)
+                    {
+                        decimal monto = cobro.Monto;
+                        monto = cobro.MonedaDelCobro.CovertirADolares(cobro.Monto, cotizacionDolar.Valor);
+                        sumaDelMes += monto;
+                    }
+
+                    cobrosPorMes.Add(mes, sumaDelMes);
                 }
                 return cobrosPorMes;
             }

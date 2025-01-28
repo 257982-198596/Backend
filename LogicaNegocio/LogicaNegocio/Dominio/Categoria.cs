@@ -1,4 +1,5 @@
-﻿using LogicaNegocio.InterfacesDominio;
+﻿using Excepciones;
+using LogicaNegocio.InterfacesDominio;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,10 @@ namespace LogicaNegocio.Dominio
         public int SuscriptorId { get; set; }
         public void Validar()
         {
-            
+            if (this.Id == 0)
+            {
+                throw new CategoriaException("Debe seleccionar una categoría");
+            }
         }
     }
 }

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Excepciones;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LogicaNegocio.Dominio
@@ -21,6 +23,27 @@ namespace LogicaNegocio.Dominio
 
         public void Validar()
         {
+            ValidarNombre();
+            ValidarRUT();
+            ValidarTelefono();
+            ValidarDireccion();
+            ValidarPersonaContacto();
+            ValidarPais();
+            ValidarEmail();
+            ValidarPassword();
+        }
+
+        private void ValidarRUT()
+        {
+            if (string.IsNullOrWhiteSpace(RUT))
+            {
+                throw new SuscriptorException("El número de documento es obligatorio");
+            }
+            if (!Regex.IsMatch(RUT, @"^\d+$"))
+            {
+                throw new SuscriptorException("El número de documento debe ser numérico");
+            }
+            
 
         }
     }

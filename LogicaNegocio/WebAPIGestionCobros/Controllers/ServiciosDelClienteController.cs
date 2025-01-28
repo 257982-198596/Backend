@@ -326,6 +326,21 @@ namespace WebAPIGestionCobros.Controllers
             }
         }
 
+        // INDICADORES REPORTE VENCIMIENTOS DEL MES CORRIENTE
+        [HttpGet("indicadores-vencimientos-mes/{idSuscriptor}")]
+        public IActionResult GetIndicadoresServiciosVencenEsteMes(int idSuscriptor)
+        {
+            try
+            {
+                Dictionary<string, decimal> indicadores = RepoServiciosDelCliente.ObtenerIndicadoresServiciosVencenEsteMes(idSuscriptor);
+                return Ok(indicadores);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpPost("cambiar-estado-servicios-del-cliente-a-vencidos")]
         public IActionResult MarcarServiciosComoVencidos()
         {
