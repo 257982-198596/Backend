@@ -4,6 +4,7 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,23 +18,40 @@ namespace WebAPIGestionCobros.Controllers
 
         public IRepositorioNotificaciones RepoNotificaciones { get; set; }
 
-        public NotificacionesController(IRepositorioNotificaciones repoNotificaciones)
+        private readonly ILogger<RepositorioNotificaciones> logAzure;
+
+        public NotificacionesController(IRepositorioNotificaciones repoNotificaciones, ILogger<RepositorioNotificaciones> logger)
         {
             RepoNotificaciones = repoNotificaciones;
+            logAzure = logger;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Notificacion> lasNotificaciones = RepoNotificaciones.FindAll();
-            if (lasNotificaciones == null)
+            try
             {
-                return NotFound();
+                IEnumerable<Notificacion> lasNotificaciones = RepoNotificaciones.FindAll();
+                if (lasNotificaciones == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(lasNotificaciones);
+                }
             }
-            else
+            catch (NotificacionException ex)
             {
-                return Ok(lasNotificaciones);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         //NOTIFICACIONES DE UN SUSCRIPTOR
@@ -49,8 +67,14 @@ namespace WebAPIGestionCobros.Controllers
                 }
                 return Ok(notificaciones);
             }
+            catch (NotificacionException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -78,10 +102,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (NotificacionException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -97,10 +123,12 @@ namespace WebAPIGestionCobros.Controllers
                 }
                 catch (NotificacionException e)
                 {
+                    logAzure.LogError(e.Message);
                     return BadRequest(e.Message);
                 }
                 catch (Exception ex)
                 {
+                    logAzure.LogError(ex.Message);
                     return BadRequest(ex);
                 }
 
@@ -128,10 +156,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return StatusCode(500);
             }
         }
@@ -163,10 +193,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return StatusCode(500);
             }
         }
@@ -183,11 +215,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Error al enviar el recordatorio.", error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -205,11 +239,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (NotificacionException ex)
             {
-                return BadRequest(new { Mensaje = "Error al procesar las notificaciones pendientes.", Error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -224,10 +260,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
             }
         }
@@ -241,8 +279,14 @@ namespace WebAPIGestionCobros.Controllers
                 Dictionary<int, decimal> notificacionesPorMes = RepoNotificaciones.CantidadNotificacionesPorMesaDelSuscriptorId(suscriptorId, year);
                 return Ok(notificacionesPorMes);
             }
+            catch (NotificacionException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }

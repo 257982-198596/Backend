@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -19,9 +19,9 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioServicios RepoServicios { get; set; }
 
-        private readonly ILogger<RepositorioCategorias> logAzure;
+        private readonly ILogger<RepositorioServicios> logAzure;
 
-        public ServiciosController(IRepositorioServicios repoServicios, ILogger<RepositorioCategorias> logger)
+        public ServiciosController(IRepositorioServicios repoServicios, ILogger<RepositorioServicios> logger)
         {
             RepoServicios = repoServicios;
             logAzure = logger;
@@ -32,15 +32,29 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Servicio> losServicios = RepoServicios.FindAll();
-            if (losServicios == null)
+            try
             {
-                return NotFound();
+                IEnumerable<Servicio> losServicios = RepoServicios.FindAll();
+                if (losServicios == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(losServicios);
+                }
             }
-            else
+            catch (ServicioException ex)
             {
-                return Ok(losServicios);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         // GET api/<ServiciosController>/suscriptor/5
@@ -59,6 +73,11 @@ namespace WebAPIGestionCobros.Controllers
                     return Ok(losServicios);
                 }
             }
+            catch (ServicioException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
@@ -72,7 +91,7 @@ namespace WebAPIGestionCobros.Controllers
         {
             if (id == null || id == 0)
             {
-                return BadRequest();
+                return BadRequest(); 
             }
             try
             {

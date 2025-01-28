@@ -1,7 +1,11 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace WebAPIGestionCobros.Controllers
@@ -13,9 +17,12 @@ namespace WebAPIGestionCobros.Controllers
 
         public IRepositorioDocumentos RepoDocumentos { get; set; }
 
-        public DocumentosController(IRepositorioDocumentos repoDocumentos)
+        private readonly ILogger<RepositorioDocumentos> logAzure;
+
+        public DocumentosController(IRepositorioDocumentos repoDocumentos, ILogger<RepositorioDocumentos> logger)
         {
             RepoDocumentos = repoDocumentos;
+            logAzure = logger;
         }
 
 
@@ -23,15 +30,29 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Documento> losTiposDocumentos = RepoDocumentos.FindAll();
-            if (losTiposDocumentos == null)
+            try
             {
-                return NotFound();
+                IEnumerable<Documento> losTiposDocumentos = RepoDocumentos.FindAll();
+                if (losTiposDocumentos == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(losTiposDocumentos);
+                }
             }
-            else
+            catch (DocumentoException ex)
             {
-                return Ok(losTiposDocumentos);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
 
         }
     }

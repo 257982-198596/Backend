@@ -1,7 +1,11 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace WebAPIGestionCobros.Controllers
@@ -12,9 +16,11 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioMonedas RepoMonedas { get; set; }
 
-        public MonedasController(IRepositorioMonedas repoMonedas)
+        private readonly ILogger<RepositorioMonedas> logAzure;
+        public MonedasController(IRepositorioMonedas repoMonedas, ILogger<RepositorioMonedas> logger)
         {
             RepoMonedas = repoMonedas;
+            logAzure = logger;
         }
 
 
@@ -22,15 +28,29 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Moneda> lasMonedas = RepoMonedas.FindAll();
-            if (lasMonedas == null)
+            try
             {
-                return NotFound();
+                IEnumerable<Moneda> lasMonedas = RepoMonedas.FindAll();
+                if (lasMonedas == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(lasMonedas);
+                }
             }
-            else
+            catch (MonedaException ex)
             {
-                return Ok(lasMonedas);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
 
         }
     }

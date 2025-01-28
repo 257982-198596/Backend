@@ -1,7 +1,11 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace WebAPIGestionCobros.Controllers
@@ -12,9 +16,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioMediosDePago RepoMediosDePago { get; set; }
 
-        public MediosDePagoController(IRepositorioMediosDePago repoMediosDePago)
+        private readonly ILogger<RepositorioMediosDePago> logAzure;
+
+        public MediosDePagoController(IRepositorioMediosDePago repoMediosDePago, ILogger<RepositorioMediosDePago> logger)
         {
             RepoMediosDePago = repoMediosDePago;
+            logAzure = logger;
         }
 
 
@@ -22,15 +29,29 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<MedioDePago> losMediosDePago = RepoMediosDePago.FindAll();
-            if (losMediosDePago == null)
+            try
             {
-                return NotFound();
+                IEnumerable<MedioDePago> losMediosDePago = RepoMediosDePago.FindAll();
+                if (losMediosDePago == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(losMediosDePago);
+                }
             }
-            else
+            catch (MedioDePagoException ex)
             {
-                return Ok(losMediosDePago);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
 
         }
     }
