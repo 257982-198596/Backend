@@ -93,6 +93,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: backend-proyecto-integrador-257982-198596-edhucddfd5axfwhe.eastus-01.azurewebsites.net
+          app-name: backend-Proyecto-Integrador-257982-198596
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           package: ${{ github.workspace }}/publish
