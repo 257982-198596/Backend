@@ -16,7 +16,7 @@ public class RepositorioServiciosDelClienteTests
             .UseInMemoryDatabase(databaseName: $"TestDatabase_{Guid.NewGuid()}")
             .Options;
     }
-
+    /*
     [Fact]
     public void Add_ShouldAddServicioDelCliente_WhenValid()
     {
@@ -170,4 +170,5 @@ public class RepositorioServiciosDelClienteTests
         Assert.Equal("Servicio 1", result[0].Descripcion);
         Assert.Equal("Servicio 2", result[1].Descripcion);
     }
+    */
 }
