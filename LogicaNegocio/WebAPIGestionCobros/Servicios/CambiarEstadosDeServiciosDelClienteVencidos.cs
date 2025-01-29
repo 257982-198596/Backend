@@ -25,6 +25,8 @@ namespace WebAPIGestionCobros.Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            TimeZoneInfo uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
+            DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, uruguayZone);
             logAzure.LogInformation("Servicio CambiarEstadosDeServiciosDelClienteVencidos iniciado.");
 
             var now = DateTime.Now;
