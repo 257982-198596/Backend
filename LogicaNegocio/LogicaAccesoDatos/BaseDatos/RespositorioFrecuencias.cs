@@ -1,6 +1,7 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RespositorioFrecuencias(CobrosContext context)
+        private readonly ILogger<RespositorioFrecuencias> logAzure;
+
+        public RespositorioFrecuencias(CobrosContext context, ILogger<RespositorioFrecuencias> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
 
@@ -36,10 +40,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (FrecuenciaException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
