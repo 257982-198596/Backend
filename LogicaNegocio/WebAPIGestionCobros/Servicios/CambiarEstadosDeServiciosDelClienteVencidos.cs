@@ -25,19 +25,13 @@ namespace WebAPIGestionCobros.Servicios
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            //CONFIGURACION DE HORA EN EL SERVIDOR AZURE
             TimeZoneInfo uruguayZone = TimeZoneInfo.FindSystemTimeZoneById("America/Montevideo");
             DateTime localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, uruguayZone);
             logAzure.LogInformation("Servicio CambiarEstadosDeServiciosDelClienteVencidos iniciado.");
 
-            var now = DateTime.Now;
-            var nextRun = new DateTime(now.Year, now.Month, now.Day, 20, 50, 0);
-
-            if (now > nextRun)
-            {
-                nextRun = nextRun.AddDays(1);
-            }
-
-            var initialDelay = nextRun - now;
+            var nextRun = new DateTime(localTime.Year, localTime.Month, localTime.Day, 00, 01, 0).AddDays(1);
+            var initialDelay = nextRun - localTime;
 
             _timer = new Timer(CambiarEstado, null, initialDelay, TimeSpan.FromDays(1));
             return Task.CompletedTask;

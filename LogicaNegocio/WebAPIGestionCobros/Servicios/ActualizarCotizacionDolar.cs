@@ -31,11 +31,7 @@ public class ActualizarCotizacionDolar : IHostedService, IDisposable
         logAzure.LogInformation("Servicio ActualizarCotizacionDolar iniciado.");
 
         var now = DateTime.Now;
-        var nextRun = new DateTime(now.Year, now.Month, now.Day, 20, 50, 0);
-        if (now > nextRun)
-        {
-            nextRun = nextRun.AddDays(1);
-        }
+        var nextRun = new DateTime(now.Year, now.Month, now.Day, 9, 0, 0).AddDays(1);
         var initialDelay = nextRun - now;
 
         _timer = new Timer(ObtenerCotizacionCallback, null, initialDelay, TimeSpan.FromDays(1));

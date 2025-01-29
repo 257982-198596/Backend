@@ -27,14 +27,14 @@ namespace WebAPIGestionCobros.Servicios
             //DoWork(null);
             // Configurar el temporizador para que se ejecute todos los días a las 09:00
             var now = DateTime.Now;
-            var nextRun = new DateTime(now.Year, now.Month, now.Day, 09, 00, 0).AddDays(1);
+            var nextRun = new DateTime(now.Year, now.Month, now.Day, 9, 0, 0).AddDays(1);
             var initialDelay = nextRun - now;
 
-            _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromDays(1));
+            _timer = new Timer(NotificarVencimientosProximos, null, initialDelay, TimeSpan.FromDays(1));
             return Task.CompletedTask;
         }
 
-        private void DoWork(object state)
+        private void NotificarVencimientosProximos(object state)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
