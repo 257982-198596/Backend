@@ -28,7 +28,7 @@ namespace WebAPIGestionCobros.Servicios
             logAzure.LogInformation("Servicio CambiarEstadosDeServiciosDelClienteVencidos iniciado.");
 
             var now = DateTime.Now;
-            var nextRun = new DateTime(now.Year, now.Month, now.Day, 17, 45, 0);
+            var nextRun = new DateTime(now.Year, now.Month, now.Day, 20, 50, 0);
 
             if (now > nextRun)
             {
