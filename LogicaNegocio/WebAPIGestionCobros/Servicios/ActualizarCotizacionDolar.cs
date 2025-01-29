@@ -10,26 +10,28 @@ using Newtonsoft.Json;
 using Microsoft.EntityFrameworkCore;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 public class ActualizarCotizacionDolar : IHostedService, IDisposable
 {
     private Timer _timer;
     private readonly IServiceProvider _serviceProvider;
     private readonly HttpClient _httpClient;
-    
+    private readonly ILogger<ActualizarCotizacionDolar> logAzure;
 
-    public ActualizarCotizacionDolar(IServiceProvider serviceProvider)
+    public ActualizarCotizacionDolar(IServiceProvider serviceProvider, ILogger<ActualizarCotizacionDolar> logger)
     {
         _serviceProvider = serviceProvider;
         _httpClient = new HttpClient();
+        logAzure = logger;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        //ObtenerCotizacionCallback(null);
-        // Configurar el temporizador para que se ejecute todos los días a las 10:30
+        logAzure.LogInformation("Servicio ActualizarCotizacionDolar iniciado.");
+
         var now = DateTime.Now;
-        var nextRun = new DateTime(now.Year, now.Month, now.Day, 10, 30, 0);
+        var nextRun = new DateTime(now.Year, now.Month, now.Day, 18, 0, 0);
         if (now > nextRun)
         {
             nextRun = nextRun.AddDays(1);
@@ -42,13 +44,23 @@ public class ActualizarCotizacionDolar : IHostedService, IDisposable
 
     private async void ObtenerCotizacionCallback(object state)
     {
+        logAzure.LogInformation("Ejecutando ObtenerCotizacionCallback.");
         var cotizacion = await ObtenerCotizacion(state);
         if (cotizacion != null)
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var repoCotizaciones = scope.ServiceProvider.GetRequiredService<IRepositorioCotizacionDolar>();
-                repoCotizaciones.Add(cotizacion);
+                try
+                {
+                    var repoCotizaciones = scope.ServiceProvider.GetRequiredService<IRepositorioCotizacionDolar>();
+                    repoCotizaciones.Add(cotizacion);
+                    logAzure.LogInformation("Cotización del dólar actualizada correctamente.");
+                }
+                catch (Exception ex)
+                {
+                    logAzure.LogError(ex, "Error al actualizar la cotización del dólar en la base de datos.");
+                }
+
             }
         }
 
@@ -73,6 +85,7 @@ public class ActualizarCotizacionDolar : IHostedService, IDisposable
         }
         catch (Exception ex)
         {
+            logAzure.LogError(ex, "Error al obtener la cotización del dólar.");
             throw new Exception($"Error al obtener la cotización del dólar: {ex.Message}", ex);
         }
 
