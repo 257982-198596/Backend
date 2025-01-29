@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -12,38 +13,49 @@ namespace WebAPIGestionCobros.Servicios
     {
         private Timer _timer;
         private readonly IServiceProvider ServiceProvider;
-        
 
-        public CambiarEstadosDeServiciosDelClienteVencidos(IServiceProvider serviceProvider)
+        private readonly ILogger<CambiarEstadosDeServiciosDelClienteVencidos> logAzure;
+
+        public CambiarEstadosDeServiciosDelClienteVencidos(IServiceProvider serviceProvider, ILogger<CambiarEstadosDeServiciosDelClienteVencidos> logger)
         {
             ServiceProvider = serviceProvider;
-            
+            logAzure = logger;
+
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            //DoWork(null);
-            // Configurar el temporizador para que se ejecute todos los días a las 00:01
+            logAzure.LogInformation("Servicio CambiarEstadosDeServiciosDelClienteVencidos iniciado.");
+
             var now = DateTime.Now;
-            var nextRun = new DateTime(now.Year, now.Month, now.Day, 00, 01, 0).AddDays(1);
+            var nextRun = new DateTime(now.Year, now.Month, now.Day, 17, 45, 0);
+
+            if (now > nextRun)
+            {
+                nextRun = nextRun.AddDays(1);
+            }
+
             var initialDelay = nextRun - now;
 
-            _timer = new Timer(DoWork, null, initialDelay, TimeSpan.FromDays(1));
+            _timer = new Timer(CambiarEstado, null, initialDelay, TimeSpan.FromDays(1));
             return Task.CompletedTask;
         }
 
-        private async void DoWork(object state)
+        private async void CambiarEstado(object state)
         {
             using (var scope = ServiceProvider.CreateScope())
             {
                 ServiciosDelClienteController controladorServicios = scope.ServiceProvider.GetRequiredService<ServiciosDelClienteController>();
                 try
                 {
+                    logAzure.LogInformation("Ejecutando MarcarServiciosComoVencidos.");
                     controladorServicios.MarcarServiciosComoVencidos();
+                    logAzure.LogInformation("MarcarServiciosComoVencidos ejecutado correctamente.");
                 }
                 catch (Exception ex)
                 {
                     throw new Exception($"Error al cambiar estados de servicios del cliente a vencidos: {ex.Message}", ex);
+                    logAzure.LogError(ex, "Error al cambiar estados de servicios del cliente a vencidos.");
                 }
             }
         }

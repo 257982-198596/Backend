@@ -4,6 +4,7 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,29 +19,45 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioCobros RepoCobrosRecibidos { get; set; }
 
+        private readonly ILogger<RepositorioCobros> logAzure;
+
         private readonly ObservadorService _observadorService;
 
-        public CobrosRecibidosController(IRepositorioCobros repoCobrosRecibidos, ObservadorService observadorService)
+        public CobrosRecibidosController(IRepositorioCobros repoCobrosRecibidos, ObservadorService observadorService, ILogger<RepositorioCobros> logger)
         {
             RepoCobrosRecibidos = repoCobrosRecibidos;
             _observadorService = observadorService;
+            logAzure = logger;
         }
 
         // GET: api/<CobrosRecibidosController>
         [HttpGet]
         public IActionResult Get()
         {
-
-            IEnumerable<CobroRecibido> losCobrosRecibidos = RepoCobrosRecibidos.FindAll();
-
-            if (losCobrosRecibidos == null)
+            try
             {
-                return NotFound();
+                IEnumerable<CobroRecibido> losCobrosRecibidos = RepoCobrosRecibidos.FindAll();
+
+                if (losCobrosRecibidos == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(losCobrosRecibidos);
+                }
             }
-            else
+            catch (CobroRecibidoException ex)
             {
-                return Ok(losCobrosRecibidos);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
         // COBROS DEL SUSCRIPTOR Y SUS CLIENTES
@@ -56,8 +73,14 @@ namespace WebAPIGestionCobros.Controllers
                 }
                 return Ok(cobros);
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -85,10 +108,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (CobroRecibidoException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -106,10 +131,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (CobroRecibidoException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e.Message);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
 
@@ -137,10 +164,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (CobroRecibidoException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return StatusCode(500);
             }
         }
@@ -173,10 +202,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (CobroRecibidoException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return StatusCode(500);
             }
         }
@@ -190,9 +221,15 @@ namespace WebAPIGestionCobros.Controllers
                 var resultado = RepoCobrosRecibidos.SumaCobrosPorMes(suscriptorId, year);
                 return Ok(resultado);
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -205,8 +242,14 @@ namespace WebAPIGestionCobros.Controllers
                 var resultado = RepoCobrosRecibidos.SumaCobrosPorMesYServicio(suscriptorId, year, servicioId);
                 return Ok(resultado);
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return StatusCode(500);
             }
         }
@@ -220,10 +263,17 @@ namespace WebAPIGestionCobros.Controllers
                 var resultado = RepoCobrosRecibidos.SumaCobrosPorMesYCliente(suscriptorId, year, clienteId);
                 return Ok(resultado);
             }
+            catch (CobroRecibidoException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                logAzure.LogError(ex.Message);
+                return StatusCode(500);
             }
+            
         }
     }
     

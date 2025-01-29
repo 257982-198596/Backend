@@ -1,6 +1,7 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioCotizacionDolar(CobrosContext context)
+        private readonly ILogger<RepositorioCotizacionDolar> logAzure;
+
+        public RepositorioCotizacionDolar(CobrosContext context, ILogger<RepositorioCotizacionDolar> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
         public void Add(CotizacionDolar obj)
@@ -29,6 +33,7 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new Exception("Error al agregar la cotizacion", ex);
             }
         }

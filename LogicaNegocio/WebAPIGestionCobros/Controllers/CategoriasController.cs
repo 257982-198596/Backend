@@ -1,7 +1,10 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +17,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioCategorias RepoCategorias { get; set; }
 
-        public CategoriasController(IRepositorioCategorias repoCategorias)
+        private readonly ILogger<RepositorioCategorias> logAzure;
+
+        public CategoriasController(IRepositorioCategorias repoCategorias, ILogger<RepositorioCategorias> logger)
         {
             RepoCategorias = repoCategorias;
+            logAzure = logger;
         }
 
 
@@ -24,15 +30,29 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Categoria> lasCategorias = RepoCategorias.FindAll();
-            if (lasCategorias == null)
+            try
             {
-                return NotFound();
+                IEnumerable<Categoria> lasCategorias = RepoCategorias.FindAll();
+                if (lasCategorias == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(lasCategorias);
+                }
             }
-            else
+            catch (CategoriaException ex)
             {
-                return Ok(lasCategorias);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
+
 
         }
 
@@ -48,8 +68,14 @@ namespace WebAPIGestionCobros.Controllers
                 }
                 return Ok(categorias);
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -74,8 +100,14 @@ namespace WebAPIGestionCobros.Controllers
                     return Ok(laCategoria);
                 }
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -90,8 +122,14 @@ namespace WebAPIGestionCobros.Controllers
                 RepoCategorias.Add(nueva);
                 return CreatedAtAction(nameof(Get), new { id = nueva.Id }, nueva);
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -111,8 +149,14 @@ namespace WebAPIGestionCobros.Controllers
                 RepoCategorias.Update(aModificar);
                 return Ok(aModificar);
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -126,8 +170,14 @@ namespace WebAPIGestionCobros.Controllers
                 RepoCategorias.Remove(id);
                 return NoContent();
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }

@@ -2,6 +2,7 @@
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,9 +15,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioServicios(CobrosContext context)
+        private readonly ILogger<RepositorioServicios> logAzure;
+
+        public RepositorioServicios(CobrosContext context, ILogger<RepositorioServicios> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
         public void Add(Servicio obj)
@@ -42,10 +46,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -67,10 +73,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
             
@@ -84,10 +92,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -111,10 +121,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -138,12 +150,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
                 
             }
-            catch (ServicioException ce)
+            catch (ServicioException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -168,10 +182,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw new ServicioException("Error al obtener los servicios del suscriptor", e);
             }
         }

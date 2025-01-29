@@ -1,7 +1,9 @@
 ﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -14,9 +16,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioUsuarios RepoUsuarios { get; set; }
 
-        public UsuariosController(IRepositorioUsuarios repoUsuarios)
+        private readonly ILogger<RepositorioUsuarios> logAzure;
+
+        public UsuariosController(IRepositorioUsuarios repoUsuarios, ILogger<RepositorioUsuarios> logger)
         {
             RepoUsuarios = repoUsuarios;
+            logAzure = logger;
         }
 
         // GET: api/usuarios/iniciarsesion
@@ -47,10 +52,12 @@ namespace WebAPIGestionCobros.Controllers
                 }
             }catch(UsuarioException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch(Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
 
@@ -90,8 +97,14 @@ namespace WebAPIGestionCobros.Controllers
                 RepoUsuarios.ResetContrasena(usuario);
                 return Ok("Contraseña temporal generada y enviada por correo.");
             }
+            catch (UsuarioException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }
@@ -105,8 +118,14 @@ namespace WebAPIGestionCobros.Controllers
                 RepoUsuarios.HashExistingPasswords();
                 return Ok("Contraseñas hasheadas correctamente.");
             }
+            catch (UsuarioException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex.Message);
             }
         }

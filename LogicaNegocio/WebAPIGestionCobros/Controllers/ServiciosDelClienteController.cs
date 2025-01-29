@@ -1,7 +1,9 @@
 ﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +18,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioServiciosDelCliente RepoServiciosDelCliente { get; set; }
 
-        public ServiciosDelClienteController(IRepositorioServiciosDelCliente repoServiciosDelClientes)
+        private readonly ILogger<RepositorioServiciosDelCliente> logAzure;
+
+        public ServiciosDelClienteController(IRepositorioServiciosDelCliente repoServiciosDelClientes, ILogger<RepositorioServiciosDelCliente> logger)
         {
             RepoServiciosDelCliente = repoServiciosDelClientes;
+            logAzure = logger;
         }
 
         // GET: api/<ServiciosDelClienteController>
@@ -35,10 +40,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
             
@@ -65,10 +72,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -94,10 +103,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
 
@@ -124,10 +135,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
 
@@ -155,10 +168,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
         }
@@ -174,10 +189,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException e)
             {
+                logAzure.LogError(e.Message);
                 return BadRequest(e.Message);
             }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
 
@@ -205,10 +222,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return StatusCode(500);
             }
         }
@@ -240,10 +259,12 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 return StatusCode(500);
             }
         }
@@ -262,11 +283,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message );
             }
         }
 
@@ -281,11 +304,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(ex);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -300,11 +325,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
-                return BadRequest(new { Mensaje = ex.Message });
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return StatusCode(500,ex.Message );
             }
         }
 
@@ -318,11 +345,13 @@ namespace WebAPIGestionCobros.Controllers
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 return BadRequest(new { Mensaje = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Mensaje = "Error interno del servidor.", Error = ex.Message });
+                logAzure.LogError(ex.Message);
+                return StatusCode(500,ex.Message);
             }
         }
 
@@ -335,9 +364,15 @@ namespace WebAPIGestionCobros.Controllers
                 Dictionary<string, decimal> indicadores = RepoServiciosDelCliente.ObtenerIndicadoresServiciosVencenEsteMes(idSuscriptor);
                 return Ok(indicadores);
             }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(new { Mensaje = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -349,9 +384,15 @@ namespace WebAPIGestionCobros.Controllers
                 IEnumerable<ServicioDelCliente> serviciosVencidos = RepoServiciosDelCliente.MarcarServiciosComoVencidos();
                 return Ok(serviciosVencidos);
             }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(new { Mensaje = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Error al marcar servicios como vencidos: {ex.Message}");
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
             }
         }
 

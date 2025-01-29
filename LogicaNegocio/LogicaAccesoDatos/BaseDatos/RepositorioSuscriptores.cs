@@ -2,6 +2,7 @@
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,12 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioSuscriptores(CobrosContext context)
+        private readonly ILogger<RepositorioSuscriptores> logAzure;
+
+        public RepositorioSuscriptores(CobrosContext context, ILogger<RepositorioSuscriptores> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
 
@@ -68,10 +72,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (SuscriptorException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -94,8 +100,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
                 return suscriptor;
             }
+            catch (SuscriptorException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -152,12 +164,14 @@ namespace LogicaAccesoDatos.BaseDatos
                     throw new SuscriptorException("Suscriptor no encontrado");
                 }
             }
-            catch (SuscriptorException)
+            catch (SuscriptorException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -178,8 +192,14 @@ namespace LogicaAccesoDatos.BaseDatos
 
                 return suscriptor;
             }
+            catch (SuscriptorException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw new SuscriptorException("Error al obtener el suscriptor por ID de usuario", e);
             }
         }

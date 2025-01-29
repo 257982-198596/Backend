@@ -3,6 +3,7 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesDominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 using SistemaDeNotificaciones;
 using System;
@@ -19,10 +20,13 @@ namespace LogicaAccesoDatos.BaseDatos
 
         private readonly EnviarCorreo SistemaEnviarCorreo;
 
-        public RepositorioNotificaciones(CobrosContext context, EnviarCorreo enviarCorreo)
+        private readonly ILogger<RepositorioNotificaciones> logAzure;
+
+        public RepositorioNotificaciones(CobrosContext context, EnviarCorreo enviarCorreo, ILogger<RepositorioNotificaciones> logger)
         {
             Contexto = context;
             SistemaEnviarCorreo = enviarCorreo;
+            logAzure = logger;
         }
  
 
@@ -51,10 +55,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -81,10 +87,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -102,8 +110,14 @@ namespace LogicaAccesoDatos.BaseDatos
                     .ToList();
                 return notificacionesDelSuscriptor;
             }
+            catch (NotificacionException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new NotificacionException("Error al obtener las notificaciones del suscriptor", ex);
             }
         }
@@ -116,10 +130,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
 
@@ -144,10 +160,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -160,12 +178,14 @@ namespace LogicaAccesoDatos.BaseDatos
              Contexto.SaveChanges();
 
             }
-            catch (NotificacionException ce)
+            catch (NotificacionException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -216,8 +236,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 Contexto.SaveChanges();
                 return notificacionesGeneradas;
             }
+            catch (NotificacionException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new NotificacionException("Error al generar notificaciones pendientes.", ex);
             }
         }
@@ -230,8 +256,22 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public int ContarNotificacionesEnviadas(int clienteId, DateTime desdeFecha)
         {
-            return Contexto.Notificaciones
+            try
+            {
+                return Contexto.Notificaciones
                 .Count(n => n.ClienteNotificadoId == clienteId && n.FechaEnvio >= desdeFecha);
+            }
+            catch (NotificacionException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+
         }
 
         public Dictionary<int, decimal> CantidadNotificacionesPorMesaDelSuscriptorId(int suscriptorId, int year)
@@ -258,8 +298,14 @@ namespace LogicaAccesoDatos.BaseDatos
 
                 return resultadoMeses;
             }
+            catch (NotificacionException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new NotificacionException("Error al obtener las notificaciones del suscriptor por mes", ex);
             }
         }

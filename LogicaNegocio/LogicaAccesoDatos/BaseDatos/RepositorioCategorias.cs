@@ -1,6 +1,7 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioCategorias(CobrosContext context)
+        private readonly ILogger<RepositorioCategorias> logAzure;
+
+        public RepositorioCategorias(CobrosContext context, ILogger<RepositorioCategorias> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
         public IEnumerable<Categoria> FindAll()
@@ -35,10 +39,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (CategoriaException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
 
@@ -53,8 +59,14 @@ namespace LogicaAccesoDatos.BaseDatos
                     .ToList();
                 return categorias;
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CategoriaException("Error al obtener las categorías del suscriptor", ex);
             }
         }
@@ -67,8 +79,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 Contexto.Categorias.Add(obj);
                 Contexto.SaveChanges();
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CategoriaException("Error al agregar la categoría", ex);
             }
         }
@@ -88,8 +106,14 @@ namespace LogicaAccesoDatos.BaseDatos
                     throw new CategoriaException("Categoría no encontrada");
                 }
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CategoriaException("Error al buscar la categoría", ex);
             }
         }
@@ -110,8 +134,14 @@ namespace LogicaAccesoDatos.BaseDatos
                     throw new CategoriaException("Categoría no encontrada");
                 }
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CategoriaException("Error al eliminar la categoría", ex);
             }
         }
@@ -124,8 +154,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 Contexto.Categorias.Update(obj);
                 Contexto.SaveChanges();
             }
+            catch (CategoriaException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new CategoriaException("Error al actualizar la categoría", ex);
             }
         }

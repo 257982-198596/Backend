@@ -1,6 +1,7 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioMonedas(CobrosContext context)
+        private readonly ILogger<RepositorioMonedas> logAzure;
+
+        public RepositorioMonedas(CobrosContext context, ILogger<RepositorioMonedas> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
 
@@ -36,10 +40,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (MonedaException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BCrypt.Net;
+using Microsoft.Extensions.Logging;
 
 namespace LogicaAccesoDatos.BaseDatos
 {
@@ -17,9 +18,12 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioClientes(CobrosContext context)
+        private readonly ILogger<RepositorioClientes> logAzure;
+
+        public RepositorioClientes(CobrosContext context, ILogger<RepositorioClientes> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
 
         public void Add(Cliente obj)
@@ -35,15 +39,15 @@ namespace LogicaAccesoDatos.BaseDatos
                 Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
                 if (elTipoDocumento != null)
                 {
-                    if(elPais != null)
+                    if (elPais != null)
                     {
                         Cliente elCliente = FindByNumDocumento(obj.NumDocumento);
-                        
+
                         if (elCliente == null)
                         {
                             if (elSuscriptor != null)
                             {
-                                
+
                                 obj.DocumentoCliente = elTipoDocumento;
                                 obj.UsuarioLogin.RolDeUsuario = elRol;
                                 obj.Estado = elEstado;
@@ -64,7 +68,7 @@ namespace LogicaAccesoDatos.BaseDatos
                         {
                             throw new ClienteException("Ya existe un cliente con ese numero de documento en el sistema");
                         }
-                        
+
                     }
                     else
                     {
@@ -78,10 +82,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -111,13 +117,15 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
-            
+
         }
 
         // POR SUSCRIPTOR
@@ -147,10 +155,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw new ClienteException("Error al obtener los clientes del suscriptor", e);
             }
         }
@@ -158,36 +168,67 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public Cliente FindById(int id)
         {
-            return Contexto.Clientes.Include(cli => cli.DocumentoCliente).Include(cli => cli.UsuarioLogin).Where(cli => cli.Id == id).SingleOrDefault();
+            try
+            {
+                return Contexto.Clientes.Include(cli => cli.DocumentoCliente).Include(cli => cli.UsuarioLogin).Where(cli => cli.Id == id).SingleOrDefault();
+            }
+            catch (ClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                throw;
+            }
+
         }
 
 
         public Cliente FindByNumDocumento(string numDocumento)
         {
-            return Contexto.Clientes.FirstOrDefault(c => c.NumDocumento == numDocumento);
+            try
+            {
+                return Contexto.Clientes.FirstOrDefault(c => c.NumDocumento == numDocumento);
+            }
+            catch (ClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                throw;
+            }
+
         }
+
         public void Remove(int id)
         {
             Cliente elClienteAEliminar = Contexto.Clientes.Find(id);
             try
             {
-               if(elClienteAEliminar != null)
+                if (elClienteAEliminar != null)
                 {
                     //validar registros en otras tablas
                     Contexto.Remove(elClienteAEliminar);
                     Contexto.SaveChanges();
-                }else
+                } else
                 {
                     throw new ClienteException("No se pudo dar la baja, el cliente no existe en el sistema");
                 }
-                
+
             }
             catch (ClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -200,13 +241,13 @@ namespace LogicaAccesoDatos.BaseDatos
             //   .FirstOrDefault();
             Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
             Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
-            
+
             Pais elPais = Contexto.Paises.Find(obj.PaisId);
 
             try
             {
                 Cliente elCliente = FindByNumDocumento(obj.NumDocumento);
-                
+
                 if (elCliente != null) //o no cambio el numero, o cambio el numero a otro que ya existe
                 {
                     Contexto.Entry(elCliente).State = EntityState.Detached;
@@ -219,7 +260,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     {
                         throw new ClienteException("Ya existe un cliente con ese numero de documento en el sistema");
                     }
-                    
+
                     obj.Validar();
                     obj.UsuarioLogin.RolDeUsuario = elRol;
                     obj.DocumentoCliente = elTipoDocumento;
@@ -232,26 +273,28 @@ namespace LogicaAccesoDatos.BaseDatos
                 else //cambio el numdoc a uno que no existe
                 {
                     // si si cambio el numdoc
-                    
-                        //Contexto.Entry(obj).State = EntityState.Modified;
-                        //Valida Cliente
-                        obj.Validar();
-                        obj.UsuarioLogin.RolDeUsuario = elRol;
-                        obj.DocumentoCliente = elTipoDocumento;
 
-                        Contexto.Clientes.Update(obj);
-                        
-                        Contexto.SaveChanges();
+                    //Contexto.Entry(obj).State = EntityState.Modified;
+                    //Valida Cliente
+                    obj.Validar();
+                    obj.UsuarioLogin.RolDeUsuario = elRol;
+                    obj.DocumentoCliente = elTipoDocumento;
+
+                    Contexto.Clientes.Update(obj);
+
+                    Contexto.SaveChanges();
 
                 }
 
             }
-            catch (ClienteException ce)
+            catch (ClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -293,7 +336,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 }
                 catch (Exception ex)
                 {
-                    // Logger.LogError(ex, "Error updating Cliente");
+                    logAzure.LogError(ex.Message);
                     throw new Exception("Error updating Cliente", ex);
                 }
             }/*else if(evento == "AltaNotificacion")
@@ -341,6 +384,7 @@ namespace LogicaAccesoDatos.BaseDatos
                     throw new Exception("Error updating Cliente", ex);
                 }
             }*/
+        
         }
 
         public void HabilitarCliente(int id)
@@ -371,6 +415,7 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw new ClienteException("Error al habilitar el cliente", e);
             }
         }
@@ -398,8 +443,15 @@ namespace LogicaAccesoDatos.BaseDatos
                     throw new ClienteException("Cliente no encontrado");
                 }
             }
+            catch (ClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception e)
             {
+                
+                logAzure.LogError(e.Message);
                 throw new ClienteException("Error al deshabilitar el cliente", e);
             }
         }

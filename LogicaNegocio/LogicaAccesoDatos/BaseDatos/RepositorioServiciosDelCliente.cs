@@ -3,6 +3,7 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesDominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioServiciosDelCliente(CobrosContext context)
+        private readonly ILogger<RepositorioServiciosDelCliente> logAzure;
+
+        public RepositorioServiciosDelCliente(CobrosContext context, ILogger<RepositorioServiciosDelCliente> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
         public void Add(ServicioDelCliente obj)
         {
@@ -81,10 +85,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -111,9 +117,11 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e) {
+                logAzure.LogError(e.Message);
                 throw;
             }
             
@@ -132,9 +140,11 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e) {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -158,10 +168,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -169,33 +181,71 @@ namespace LogicaAccesoDatos.BaseDatos
         public void Update(ServicioDelCliente obj)
         {
 
-            Frecuencia laFrecuencia = Contexto.Frecuencias.Find(obj.FrecuenciaDelServicioId);
-            Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelServicioId);
-            Servicio elServicio = Contexto.Servicios.Find(obj.ServicioContratadoId);
-            ServicioDelCliente elServicioACambiar = Contexto.ServiciosDelCliente
-                .Include(ser => ser.Cliente)
-                .Include(ser => ser.EstadoDelServicioDelCliente)
-                .Where(ser => ser.Id == obj.Id).SingleOrDefault();
-            Contexto.Entry(elServicioACambiar).State = EntityState.Detached;
-            Contexto.Entry(obj).State = EntityState.Modified;
+            
             try
             {
-                obj.FrecuenciaDelServicio = laFrecuencia;
-                obj.MonedaDelServicio = laMoneda;
-                obj.ServicioContratado = elServicio;
-                obj.Cliente = elServicioACambiar.Cliente;
-                obj.EstadoDelServicioDelCliente = elServicioACambiar.EstadoDelServicioDelCliente;
-                laFrecuencia.CalcularVencimiento(obj);
-                obj.Validar();
-                Contexto.ServiciosDelCliente.Update(obj);
-                Contexto.SaveChanges();
+                Frecuencia laFrecuencia = Contexto.Frecuencias.Find(obj.FrecuenciaDelServicioId);
+                Moneda laMoneda = Contexto.Monedas.Find(obj.MonedaDelServicioId);
+                Servicio elServicio = Contexto.Servicios.Find(obj.ServicioContratadoId);
+                ServicioDelCliente elServicioACambiar = Contexto.ServiciosDelCliente
+                    .Include(ser => ser.Cliente)
+                    .Include(ser => ser.EstadoDelServicioDelCliente)
+                    .Where(ser => ser.Id == obj.Id).SingleOrDefault();
+                Contexto.Entry(elServicioACambiar).State = EntityState.Detached;
+                Contexto.Entry(obj).State = EntityState.Modified;
+                if (laFrecuencia != null)
+                {
+                    if (laMoneda != null)
+                    {
+                        if (elServicio != null)
+                        {
+                            if (elServicioACambiar != null)
+                            {
+                                if (elServicioACambiar.EstadoDelServicioDelCliente.Nombre == "Activo")
+                                {
+                                    obj.FrecuenciaDelServicio = laFrecuencia;
+                                    obj.MonedaDelServicio = laMoneda;
+                                    obj.ServicioContratado = elServicio;
+                                    obj.Cliente = elServicioACambiar.Cliente;
+                                    obj.EstadoDelServicioDelCliente = elServicioACambiar.EstadoDelServicioDelCliente;
+                                    laFrecuencia.CalcularVencimiento(obj);
+                                    obj.Validar();
+                                    Contexto.ServiciosDelCliente.Update(obj);
+                                    Contexto.SaveChanges();
+                                }
+                                else
+                                {
+                                    throw new ServicioDelClienteException("El servicio debe estar en estado Activo");
+                                }
+                            }
+                            else
+                            {
+                                throw new ServicioDelClienteException("No se pudo encontrar el servicio del cliente a modificar");
+                            }
+                        }
+                        else
+                        {
+                            throw new ServicioDelClienteException("No se pudo encontrar el servicio a modificar");
+                        }
+                    }
+                    else
+                    {
+                        throw new ServicioDelClienteException("Debe seleccionar una moneda");
+                    }
+                }
+                else
+                {
+                    throw new ServicioDelClienteException("Debe seleccionar una frecuencia de servicio");
+                }
             }
-            catch (ServicioDelClienteException ce)
+            catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -216,10 +266,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -249,10 +301,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -283,38 +337,68 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
 
         public void RenovarServicio(ServicioDelCliente servicioDelCliente)
         {
-            ServicioDelCliente nuevoServicio = new ServicioDelCliente();
-            nuevoServicio.Cliente = servicioDelCliente.Cliente;
-            nuevoServicio.ServicioContratado = servicioDelCliente.ServicioContratado;
-            nuevoServicio.MonedaDelServicio = servicioDelCliente.MonedaDelServicio;
-            nuevoServicio.FrecuenciaDelServicio = servicioDelCliente.FrecuenciaDelServicio;
-            nuevoServicio.EstadoDelServicioDelCliente = Contexto.EstadosServiciosDelClientes.FirstOrDefault(e => e.Nombre == "Activo");
-            nuevoServicio.Precio = servicioDelCliente.Precio;
-            nuevoServicio.Descripcion = servicioDelCliente.Descripcion;
-            nuevoServicio.FechaInicio = servicioDelCliente.FechaVencimiento;
-            nuevoServicio.FrecuenciaDelServicio.CalcularVencimiento(nuevoServicio);
-            Contexto.Add(nuevoServicio);
+            try
+            {
+                ServicioDelCliente nuevoServicio = new ServicioDelCliente();
+                nuevoServicio.Cliente = servicioDelCliente.Cliente;
+                nuevoServicio.ServicioContratado = servicioDelCliente.ServicioContratado;
+                nuevoServicio.MonedaDelServicio = servicioDelCliente.MonedaDelServicio;
+                nuevoServicio.FrecuenciaDelServicio = servicioDelCliente.FrecuenciaDelServicio;
+                nuevoServicio.EstadoDelServicioDelCliente = Contexto.EstadosServiciosDelClientes.FirstOrDefault(e => e.Nombre == "Activo");
+                nuevoServicio.Precio = servicioDelCliente.Precio;
+                nuevoServicio.Descripcion = servicioDelCliente.Descripcion;
+                nuevoServicio.FechaInicio = servicioDelCliente.FechaVencimiento;
+                nuevoServicio.FrecuenciaDelServicio.CalcularVencimiento(nuevoServicio);
+                Contexto.Add(nuevoServicio);
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                throw;
+            }
+
         }
 
 
         public ServicioDelCliente ObtenerProximoServicioActivoAVencerse(int idCliente)
         {
-            return Contexto.ServiciosDelCliente
+            try
+            {
+                return Contexto.ServiciosDelCliente
                 .Where(s => s.ClienteId == idCliente
                     && s.FechaVencimiento > DateTime.Now
                     && s.EstadoDelServicioDelCliente.Nombre == "Activo")
                  .OrderBy(s => s.FechaVencimiento)
                 .FirstOrDefault();
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                throw;
+            }
+
         }
 
         public void Actualizar(RepositorioCobros obj, string evento)
@@ -363,8 +447,8 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (Exception ex)
             {
-                // Logger.LogError(ex, "Error updating ServicioDelCliente");
-                throw new Exception("Error updating ServicioDelCliente", ex);
+                    logAzure.LogError(ex.Message);
+                    throw new Exception("Error updating ServicioDelCliente", ex);
             }
         }
 
@@ -373,49 +457,63 @@ namespace LogicaAccesoDatos.BaseDatos
         // INDICADOR DE SERVICIOS DE UN CLIENTE MONTO ANUAL
         public decimal CalcularIngresosProximos365Dias(int idCliente)
         {
-            CotizacionDolar ultimaCotizacion = Contexto.Cotizaciones
+            try
+            {
+                CotizacionDolar ultimaCotizacion = Contexto.Cotizaciones
                                    .OrderByDescending(c => c.Fecha)
                                    .FirstOrDefault();
 
-            IEnumerable<ServicioDelCliente> serviciosActivos = Contexto.ServiciosDelCliente
-                .Include(s => s.FrecuenciaDelServicio)
-                .Include(s => s.MonedaDelServicio)
-                .Where(s => s.ClienteId == idCliente
-                    && s.EstadoDelServicioDelCliente.Nombre == "Activo"
-                    && s.FechaVencimiento <= DateTime.Now.AddYears(1));
+                IEnumerable<ServicioDelCliente> serviciosActivos = Contexto.ServiciosDelCliente
+                    .Include(s => s.FrecuenciaDelServicio)
+                    .Include(s => s.MonedaDelServicio)
+                    .Where(s => s.ClienteId == idCliente
+                        && s.EstadoDelServicioDelCliente.Nombre == "Activo"
+                        && s.FechaVencimiento <= DateTime.Now.AddYears(1));
 
-            decimal totalIngresos = 0;
-            int multiplicador = 1;
-            foreach (var servicio in serviciosActivos)
-            {
-                decimal montoServicio = servicio.Precio;
-                if (servicio.MonedaDelServicio.Nombre == "Pesos")
+                decimal totalIngresos = 0;
+                int multiplicador = 1;
+                foreach (var servicio in serviciosActivos)
                 {
-                    if (ultimaCotizacion != null)
+                    decimal montoServicio = servicio.Precio;
+                    if (servicio.MonedaDelServicio.Nombre == "Pesos")
                     {
-                        montoServicio = servicio.MonedaDelServicio.CovertirADolares(servicio.Precio, ultimaCotizacion.Valor);
-                        //montoServicio = montoServicio / ultimaCotizacion.Valor;
+                        if (ultimaCotizacion != null)
+                        {
+                            montoServicio = servicio.MonedaDelServicio.CovertirADolares(servicio.Precio, ultimaCotizacion.Valor);
+                            //montoServicio = montoServicio / ultimaCotizacion.Valor;
+                        }
                     }
+                    switch (servicio.FrecuenciaDelServicio.Nombre)
+                    {
+                        case "Mensual":
+                            totalIngresos += montoServicio * 12;
+                            break;
+                        case "Trimestral":
+                            totalIngresos += montoServicio * 4;
+                            break;
+                        case "Semestral":
+                            totalIngresos += montoServicio * 2;
+                            break;
+                        case "Anual":
+                            totalIngresos += montoServicio;
+                            break;
+                    }
+
                 }
-                switch (servicio.FrecuenciaDelServicio.Nombre)
-                {
-                    case "Mensual":
-                        totalIngresos += montoServicio * 12;
-                        break;
-                    case "Trimestral":
-                        totalIngresos += montoServicio * 4;
-                        break;
-                    case "Semestral":
-                        totalIngresos += montoServicio * 2;
-                        break;
-                    case "Anual":
-                        totalIngresos += montoServicio;
-                        break;
-                }
-                
+
+                return totalIngresos;
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                throw;
             }
 
-            return totalIngresos;
         }
 
         public IEnumerable<ServicioDelCliente> ServiciosDeClientesDeUnSuscriptor(int idSuscriptor)
@@ -441,10 +539,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -466,10 +566,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (ServicioDelClienteException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
@@ -510,9 +612,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 indicadores["MontoPendienteCobro"] = montoPendienteCobro;
                 indicadores["CantidadVencimientos"] = cantidadVencimientos;
             }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
-                
+                logAzure.LogError(ex.Message);
                 throw new ServicioDelClienteException("Error al obtener los indicadores de servicios que vencen este mes", ex);
             }
 
@@ -544,8 +651,14 @@ namespace LogicaAccesoDatos.BaseDatos
                 Contexto.SaveChanges();
                 return serviciosVencidos;
             }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
             catch (Exception ex)
             {
+                logAzure.LogError(ex.Message);
                 throw new Exception($"Error al marcar servicios como vencidos: {ex.Message}", ex);
             }
         }

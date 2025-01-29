@@ -1,7 +1,11 @@
-﻿using LogicaNegocio.Dominio;
+﻿using Excepciones;
+using LogicaAccesoDatos.BaseDatos;
+using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 
 namespace WebAPIGestionCobros.Controllers
@@ -12,9 +16,12 @@ namespace WebAPIGestionCobros.Controllers
     {
         public IRepositorioFrecuencias RepoFrecuencias { get; set; }
 
-        public FrecuenciasController(IRepositorioFrecuencias repoFrecuencias)
+        private readonly ILogger<RespositorioFrecuencias> logAzure;
+
+        public FrecuenciasController(IRepositorioFrecuencias repoFrecuencias, ILogger<RespositorioFrecuencias> logger)
         {
             RepoFrecuencias = repoFrecuencias;
+            logAzure = logger;
         }
 
 
@@ -22,15 +29,29 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            IEnumerable<Frecuencia> lasFrecuencias = RepoFrecuencias.FindAll();
-            if (lasFrecuencias == null)
+            try
             {
-                return NotFound();
+                IEnumerable<Frecuencia> lasFrecuencias = RepoFrecuencias.FindAll();
+                if (lasFrecuencias == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return Ok(lasFrecuencias);
+                }
             }
-            else
+            catch (FrecuenciaException ex)
             {
-                return Ok(lasFrecuencias);
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex.Message);
             }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
 
         }
     }

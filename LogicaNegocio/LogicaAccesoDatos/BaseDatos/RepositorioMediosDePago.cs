@@ -1,6 +1,7 @@
 ﻿using Excepciones;
 using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace LogicaAccesoDatos.BaseDatos
     {
         public CobrosContext Contexto { get; set; }
 
-        public RepositorioMediosDePago(CobrosContext context)
+        private readonly ILogger<RepositorioMediosDePago> logAzure;
+
+        public RepositorioMediosDePago(CobrosContext context, ILogger<RepositorioMediosDePago> logger)
         {
             Contexto = context;
+            logAzure = logger;
         }
         public IEnumerable<MedioDePago> FindAll()
         {
@@ -34,10 +38,12 @@ namespace LogicaAccesoDatos.BaseDatos
             }
             catch (MedioDePagoException ex)
             {
+                logAzure.LogError(ex.Message);
                 throw;
             }
             catch (Exception e)
             {
+                logAzure.LogError(e.Message);
                 throw;
             }
         }
