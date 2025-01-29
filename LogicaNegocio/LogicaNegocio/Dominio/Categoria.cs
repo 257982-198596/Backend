@@ -21,6 +21,23 @@ namespace LogicaNegocio.Dominio
             if (this.Id == 0)
             {
                 throw new CategoriaException("Debe seleccionar una categoría");
+                ValidarNombre();
+            }
+        }
+
+        private void ValidarNombre()
+        {
+            if (string.IsNullOrWhiteSpace(Nombre))
+            {
+                throw new ServicioException("El nombre es obligatorio");
+            }
+            if (Nombre.Length < 3)
+            {
+                throw new ServicioException("El nombre debe tener al menos 3 caracteres");
+            }
+            if (Nombre.Length > 100)
+            {
+                throw new ServicioException("El nombre no debe exceder los 100 caracteres");
             }
         }
     }
