@@ -30,13 +30,14 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                obj.Validar();
+                
 
                 Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
                 EstadoCliente elEstado = Contexto.EstadosDelCliente.FirstOrDefault(e => e.Nombre == "Activo");
                 Pais elPais = Contexto.Paises.Find(obj.PaisId);
                 Suscriptor elSuscriptor = Contexto.Suscriptores.Find(obj.SuscriptorId);
                 Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
+                
                 if (elTipoDocumento != null)
                 {
                     if (elPais != null)
@@ -54,6 +55,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                 obj.Pais = elPais;
                                 obj.SuscriptorId = elSuscriptor.Id;
                                 obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
+                                obj.Validar();
                                 obj.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
                                 Contexto.Add(obj);
                                 Contexto.SaveChanges();
@@ -235,66 +237,61 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Update(Cliente obj)
         {
-            //Cliente elClienteBD = Contexto.Clientes.Where(c => c.Id == obj.Id)
-            //   .Include(c => c.UsuarioLogin)
-            //    .ThenInclude(u => u.RolDeUsuario)
-            //   .FirstOrDefault();
-            Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
-            Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
-
-            Pais elPais = Contexto.Paises.Find(obj.PaisId);
-
             try
             {
-                Cliente elCliente = FindByNumDocumento(obj.NumDocumento);
+                // Traigo rol cliente
+                Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
+                // Busco el tipo de documento
+                Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
+                // Busco el país
+                Pais elPais = Contexto.Paises.Find(obj.PaisId);
 
-                if (elCliente != null) //o no cambio el numero, o cambio el numero a otro que ya existe
+                // Busco el cliente existente en la base de datos
+                Cliente clienteExistente = Contexto.Clientes.Include(c => c.UsuarioLogin)
+                    .Include(c => c.Pais)
+                    .Include(c => c.DocumentoCliente)
+                    .Include(c => c.Estado)
+                    .Include(c => c.CobrosDelCliente)
+                    .Include(c => c.ServiciosDelCliente)
+                    .FirstOrDefault(c => c.Id == obj.Id);
+
+                if (clienteExistente != null)
                 {
-                    Contexto.Entry(elCliente).State = EntityState.Detached;
-                    Contexto.Entry(obj).State = EntityState.Modified;
-                    if (elCliente.NumDocumento != obj.NumDocumento) //si cambio el numdoc pero es otro cliente
-                    {
-                        throw new ClienteException("Ya existe un cliente con ese numero de documento en el sistema");
-                    }
-                    if (elCliente.NumDocumento == obj.NumDocumento && elCliente.Id != obj.Id)
-                    {
-                        throw new ClienteException("Ya existe un cliente con ese numero de documento en el sistema");
-                    }
+                    // Actualiza las propiedades del cliente existente
+                    clienteExistente.Nombre = obj.Nombre;
+                    clienteExistente.Telefono = obj.Telefono;
+                    clienteExistente.Direccion = obj.Direccion;
+                    clienteExistente.PersonaContacto = obj.PersonaContacto;
+                    clienteExistente.PaisId = obj.PaisId;
+                    //clienteExistente.SuscriptorId = obj.SuscriptorId;
 
-                    obj.Validar();
-                    obj.UsuarioLogin.RolDeUsuario = elRol;
-                    obj.DocumentoCliente = elTipoDocumento;
+                    // No se permite editar Documento, NumDocumento y Email del usuario
+                    clienteExistente.DocumentoCliente = elTipoDocumento;
+                    clienteExistente.UsuarioLogin.RolDeUsuario = elRol;
 
+                    // Validar el cliente
+                    clienteExistente.Validar();
 
+                    // Evitar la inserción en cascada
+                    Contexto.Entry(clienteExistente.UsuarioLogin).State = EntityState.Unchanged;
 
-                    Contexto.Clientes.Update(obj);
+                    // Actualizar el cliente
+                    Contexto.Clientes.Update(clienteExistente);
                     Contexto.SaveChanges();
                 }
-                else //cambio el numdoc a uno que no existe
+                else
                 {
-                    // si si cambio el numdoc
-
-                    //Contexto.Entry(obj).State = EntityState.Modified;
-                    //Valida Cliente
-                    obj.Validar();
-                    obj.UsuarioLogin.RolDeUsuario = elRol;
-                    obj.DocumentoCliente = elTipoDocumento;
-
-                    Contexto.Clientes.Update(obj);
-
-                    Contexto.SaveChanges();
-
+                    throw new ClienteException("El cliente no existe.");
                 }
-
             }
             catch (ClienteException ex)
             {
                 logAzure.LogError(ex.Message);
                 throw;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                logAzure.LogError(e.Message);
+                logAzure.LogError(ex.Message);
                 throw;
             }
         }
@@ -453,6 +450,75 @@ namespace LogicaAccesoDatos.BaseDatos
                 
                 logAzure.LogError(e.Message);
                 throw new ClienteException("Error al deshabilitar el cliente", e);
+            }
+        }
+
+        public Cliente UpdatePerfilCliente(Cliente obj)
+        {
+            try
+            {
+                // Traigo rol cliente
+                Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Cliente");
+                // Busco el tipo de documento
+                Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
+                // Busco el país
+                Pais elPais = Contexto.Paises.Find(obj.PaisId);
+
+                // Busco el cliente existente en la base de datos
+                Cliente clienteExistente = Contexto.Clientes.Include(c => c.UsuarioLogin)
+                    .Include(c => c.Pais)
+                    .Include(c => c.DocumentoCliente)
+                    .Include(c => c.Estado)
+                    .Include(c => c.CobrosDelCliente)
+                    .Include(c => c.ServiciosDelCliente)
+                    .FirstOrDefault(c => c.Id == obj.Id);
+
+                if (clienteExistente != null)
+                {
+                    // Actualiza las propiedades del cliente existente
+                    clienteExistente.Nombre = obj.Nombre;
+                    clienteExistente.Telefono = obj.Telefono;
+                    clienteExistente.Direccion = obj.Direccion;
+                    clienteExistente.PersonaContacto = obj.PersonaContacto;
+                    clienteExistente.PaisId = obj.PaisId;
+                
+
+                    // No se permite editar Documento, NumDocumento y Email del usuario
+                    clienteExistente.DocumentoCliente = elTipoDocumento;
+                    clienteExistente.UsuarioLogin.RolDeUsuario = elRol;
+                   
+                    // Verificar si la contraseña ha cambiado
+                    if (!string.IsNullOrWhiteSpace(obj.UsuarioLogin.Password) &&
+                        !BCrypt.Net.BCrypt.Verify(obj.UsuarioLogin.Password, clienteExistente.UsuarioLogin.Password))
+                    {
+                        obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
+                        clienteExistente.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
+
+                        // Marcar la entidad UsuarioLogin como modificada
+                        Contexto.Entry(clienteExistente.UsuarioLogin).State = EntityState.Modified;
+                    }
+
+                    // Validar el cliente
+                    clienteExistente.Validar();
+
+                    Contexto.Clientes.Update(clienteExistente);
+                    Contexto.SaveChanges();
+                    return clienteExistente;
+                }
+                else
+                {
+                    throw new ClienteException("El cliente no existe.");
+                }
+            }
+            catch (ClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
             }
         }
     }

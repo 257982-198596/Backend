@@ -126,7 +126,6 @@ namespace WebAPIGestionCobros.Controllers
                 {
                     if (nuevo.DocumentoId != null && nuevo.DocumentoId != 0)
                     {
-                        nuevo.Validar();
                         RepoClientes.Add(nuevo);
                     }
                     else
@@ -164,9 +163,10 @@ namespace WebAPIGestionCobros.Controllers
                if(aModificar.Id != null)
                 {
                     aModificar.Id = id;
-                    aModificar.Validar();
+                    //aModificar.Validar();
                     RepoClientes.Update(aModificar);
-                    return Ok(aModificar);
+                    Cliente clienteActualizado = RepoClientes.FindById(id);
+                    return Ok(clienteActualizado);
                 }
                 else
                 {
@@ -181,7 +181,38 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception e)
             {   
                 logAzure.LogError(e.Message);
-                return StatusCode(500);
+                return BadRequest(e);
+            }
+
+        }
+
+        [HttpPut("actualizar-perfil/{id}")]
+        public IActionResult PutPerfilCliente(int id, [FromBody] Cliente aModificar)
+        {
+            try
+            {
+                if (aModificar.Id != null)
+                {
+                    aModificar.Id = id;
+                    //aModificar.Validar();
+                    Cliente clienteActualizado = RepoClientes.UpdatePerfilCliente(aModificar);
+                    
+                    return Ok(clienteActualizado);
+                }
+                else
+                {
+                    return BadRequest("El id del usuario es obligatorio");
+                }
+            }
+            catch (ClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                return BadRequest(e);
             }
 
         }

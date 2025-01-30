@@ -13,5 +13,7 @@ namespace LogicaNegocio.InterfacesRepositorios
         void DeshabilitarCliente(int id);
 
         IEnumerable<Cliente> FindAllBySuscriptorId(int suscriptorId);
+
+        Cliente UpdatePerfilCliente(Cliente obj);
     }
 }
