@@ -123,7 +123,7 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                nuevo.Validar();
+                
                 RepoServicios.Add(nuevo);
             }
             catch (ServicioException e)
@@ -150,7 +150,6 @@ namespace WebAPIGestionCobros.Controllers
                 if (aModificar.Id != null)
                 {
                     aModificar.Id = id;
-                    aModificar.Validar();
                     RepoServicios.Update(aModificar);
                     return Ok(aModificar);
                 }

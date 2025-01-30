@@ -118,7 +118,7 @@ namespace WebAPIGestionCobros.Controllers
         {
             try
             {
-                nueva.Validar();
+                
                 RepoCategorias.Add(nueva);
                 return CreatedAtAction(nameof(Get), new { id = nueva.Id }, nueva);
             }
@@ -145,7 +145,6 @@ namespace WebAPIGestionCobros.Controllers
             try
             {
                 aModificar.Id = id;
-                aModificar.Validar();
                 RepoCategorias.Update(aModificar);
                 return Ok(aModificar);
             }
