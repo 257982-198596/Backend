@@ -85,7 +85,7 @@ namespace SistemaDeNotificaciones
             var subject = $"RECORDATORIO DE VENCIMIENTO: {elServicioDelCliente.Descripcion}";
             var to = new EmailAddress($"{elCliente.UsuarioLogin.Email}", $"{elCliente.Nombre}");
             // Calcular días restantes para el vencimiento
-            int diasVencimiento = (elServicioDelCliente.FechaVencimiento - DateTime.Now).Days;
+            int diasVencimiento = (elServicioDelCliente.FechaVencimiento - DateTime.Today).Days;
             var plainTextContent = $@"
             Estimado Cliente {elCliente.Nombre}:
 

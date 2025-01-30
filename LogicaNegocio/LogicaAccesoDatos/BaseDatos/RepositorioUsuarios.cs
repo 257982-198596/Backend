@@ -40,8 +40,35 @@ namespace LogicaAccesoDatos.BaseDatos
                     {
                         if (item.Email == username && BCrypt.Net.BCrypt.Verify(password, item.Password))
                         {
-                            usuarioIniciado = item;
-                            break;
+                            //login de cliente - chequeo de activo o inactivo
+                            if(item.RolDeUsuario.Nombre == "Cliente")
+                            {
+                                Cliente elCliente = ObtenerClientePorEmail(item.Email);
+                                if (elCliente != null)
+                                {
+                                    if (elCliente.Estado.Nombre != "Inactivo")
+                                    {
+                                        usuarioIniciado = item;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        throw new UsuarioException("Usuario inactivo, contacte al administrador para más información");
+                                    }
+                                }
+                                else
+                                {
+                                    throw new UsuarioException("El usuario no tiene un cliente asociado");
+                                }
+                            }
+                            else
+                            {
+                                //login de suscriptor, no se pueden deshabilitar los suscriptores
+                                usuarioIniciado = item;
+                                break;
+                            }
+                            
+                            
                         }
                     }
                 }
@@ -120,6 +147,27 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw;
             }
 
+        }
+
+        public Cliente ObtenerClientePorEmail(string email)
+        {
+            try
+            {
+                return Contexto.Clientes
+                .Include(c => c.UsuarioLogin)
+                .Include(c => c.Estado)
+                .FirstOrDefault(c => c.UsuarioLogin.Email == email);
+            }
+            catch (UsuarioException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception e)
+            {
+                logAzure.LogError(e.Message);
+                throw;
+            }
         }
     }
 }

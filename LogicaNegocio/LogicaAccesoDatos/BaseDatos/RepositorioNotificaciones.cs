@@ -194,22 +194,22 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                DateTime ahora = DateTime.Now;
-                DateTime rangoMaximo = ahora.AddDays(30);
+                DateTime hoy = DateTime.Today;
+                DateTime rangoMaximo = hoy.AddDays(31);
                 // Filtrar servicios en la base de datos
                 List<ServicioDelCliente> servicios = Contexto.ServiciosDelCliente
                     .Include(ser => ser.MonedaDelServicio)
                     .Include(s => s.Cliente)
                     .ThenInclude(c => c.UsuarioLogin)
                     .Include(s => s.FrecuenciaDelServicio)
-                    .Where(s => s.FechaVencimiento > ahora && s.FechaVencimiento <= rangoMaximo)
+                    .Where(s => s.FechaVencimiento > hoy && s.FechaVencimiento <= rangoMaximo)
                     .ToList();
 
                 List<Notificacion> notificacionesGeneradas = new List<Notificacion>();
 
                 foreach (ServicioDelCliente servicio in servicios)
                 {
-                    int diasParaVencimiento = (servicio.FechaVencimiento - DateTime.Now).Days;
+                    int diasParaVencimiento = (servicio.FechaVencimiento - hoy).Days;
 
                     
                     if (diasParaVencimiento == 30 || diasParaVencimiento == 15 || diasParaVencimiento == 3 || diasParaVencimiento == 1)
