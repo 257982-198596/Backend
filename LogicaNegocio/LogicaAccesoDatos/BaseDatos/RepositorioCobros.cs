@@ -174,7 +174,11 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                return Contexto.CobrosRecibidos.Where(co => co.Id == id).SingleOrDefault();
+                return Contexto.CobrosRecibidos
+                        .Include(co => co.ServicioDelCliente)
+                            .ThenInclude(sc => sc.Cliente)
+                        .Where(co => co.Id == id)
+                        .SingleOrDefault();
             }
             catch (CobroRecibidoException ex)
             {
