@@ -65,12 +65,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (PaisException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex);
             }
 
 

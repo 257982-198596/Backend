@@ -70,12 +70,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (CobroRecibidoException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex);
             }
 
         }
@@ -101,7 +101,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (CobroRecibidoException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {
@@ -166,7 +166,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (CobroRecibidoException e)
             {
                 logAzure.LogError(e.Message);
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
             catch (Exception ex)
             {
@@ -209,7 +209,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception e)
             {
                 logAzure.LogError(e.Message);
-                return StatusCode(500);
+                return BadRequest(e);
             }
         }
 
@@ -252,7 +252,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception e)
             {
                 logAzure.LogError(e.Message);
-                return StatusCode(500);
+                return BadRequest(e);
             }
         }
 
@@ -278,7 +278,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex);
             }
         }
 
@@ -304,7 +304,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500);
+                return BadRequest(ex);
             }
         }
 
@@ -330,7 +330,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500);
+                return BadRequest(ex);
             }
             
         }

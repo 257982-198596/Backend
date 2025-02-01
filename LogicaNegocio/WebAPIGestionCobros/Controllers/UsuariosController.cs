@@ -129,7 +129,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
         }
 
@@ -154,7 +154,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
         }
 

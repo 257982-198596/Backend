@@ -52,7 +52,7 @@ namespace LogicaNegocio.Dominio
             {
                 throw new Exception("El usuario de login es obligatorio");
             }
-            UsuarioLogin.ValidarPassword();
+            UsuarioLogin.ValidarContrasena(UsuarioLogin.Password);
         }
 
         protected void ValidarNombre()

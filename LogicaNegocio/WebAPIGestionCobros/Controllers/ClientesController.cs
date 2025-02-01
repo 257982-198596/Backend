@@ -64,12 +64,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (ClienteException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex);
             }
 
 
@@ -98,12 +98,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (ClienteException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex);
+                return BadRequest(ex);
             }
         }
 
@@ -292,7 +292,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception e)
             {
                 logAzure.LogError(e.Message);
-                return StatusCode(500);
+                return BadRequest(e);
             }
         }
 
@@ -312,12 +312,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (ClienteException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception e)
             {
                 logAzure.LogError(e.Message);
-                return StatusCode(500, e.Message);
+                return BadRequest(e);
             }
         }
 
@@ -337,12 +337,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (ClienteException ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
             catch (Exception e)
             {
                 logAzure.LogError(e.Message);
-                return StatusCode(500, e.Message);
+                return BadRequest(e);
             }
         }
     }
