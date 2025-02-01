@@ -62,7 +62,7 @@ namespace WebAPIGestionCobros.Controllers
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex); 
             }
 
         }

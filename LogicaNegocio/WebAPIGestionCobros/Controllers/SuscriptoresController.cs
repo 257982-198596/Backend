@@ -62,12 +62,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (SuscriptorException e)
             {
                 logAzure.LogError(e.Message);
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
 
             return Created("api/suscriptores/" + nuevo.Id, nuevo);
@@ -98,12 +98,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (SuscriptorException e)
             {
                 logAzure.LogError(e.Message);
-                return BadRequest(e.Message);
+                return BadRequest(e);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return BadRequest(ex.Message);
+                return BadRequest(ex);
             }
 
             return NoContent();
@@ -126,12 +126,12 @@ namespace WebAPIGestionCobros.Controllers
             catch (SuscriptorException e)
             {
                 logAzure.LogError(e.Message);
-                return NotFound(e.Message);
+                return BadRequest(e);
             }
             catch (Exception ex)
             {
                 logAzure.LogError(ex.Message);
-                return StatusCode(500, ex.Message);
+                return BadRequest(ex);
             }
         }
     }
