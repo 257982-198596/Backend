@@ -154,8 +154,8 @@ namespace WebAPIGestionCobros.Controllers
                     aModificar.Id = id;
                     aModificar.Validar();
                     RepoCobrosRecibidos.Update(aModificar);
-                   
-                    return Ok(aModificar);
+                    CobroRecibido nuevoCobro = RepoCobrosRecibidos.FindById(aModificar.Id);
+                    return Ok(nuevoCobro);
                 }
                 else
                 {

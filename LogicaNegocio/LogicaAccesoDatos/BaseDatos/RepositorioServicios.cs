@@ -27,16 +27,17 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                obj.Validar();
+                
 
                 Categoria laCategoria = Contexto.Categorias.Find(obj.CategoriaId);
                 
                 if (laCategoria != null)
                 {
                                          
-                            obj.CategoriaDelServicio = laCategoria;
-                            Contexto.Add(obj);
-                            Contexto.SaveChanges();
+                    obj.CategoriaDelServicio = laCategoria;
+                    obj.Validar();
+                    Contexto.Add(obj);
+                    Contexto.SaveChanges();
                      
                 }
                 else
@@ -140,6 +141,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 if(laCategoriaDelServicio != null)
                 {
                     //Valida Servicio
+                    obj.CategoriaDelServicio = laCategoriaDelServicio;
                     obj.Validar();
                     Contexto.Servicios.Update(obj);
                     Contexto.SaveChanges();

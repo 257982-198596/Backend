@@ -129,5 +129,39 @@ namespace WebAPIGestionCobros.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("obtener-cliente-por-email")]
+        public IActionResult ObtenerClientePorEmail([FromQuery] string email)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(email))
+                {
+                    throw new UsuarioException("El email es obligatorio.");
+                }
+
+                Cliente cliente = RepoUsuarios.ObtenerClientePorEmail(email);
+
+                if (cliente != null)
+                {
+                    return Ok(cliente);
+                }
+                else
+                {
+                    throw new UsuarioException("Cliente no encontrado.");
+                }
+            }
+            catch (UsuarioException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
+        }
     }
 }

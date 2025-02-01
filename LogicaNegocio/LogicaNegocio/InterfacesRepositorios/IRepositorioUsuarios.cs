@@ -14,5 +14,7 @@ namespace LogicaNegocio.InterfacesRepositorios
         void ResetContrasena(Usuario usuario);
 
         void HashExistingPasswords();
+
+        Cliente ObtenerClientePorEmail(string email);
     }
 }

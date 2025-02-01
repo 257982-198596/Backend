@@ -229,7 +229,7 @@ namespace WebAPIGestionCobros.Controllers
         public IActionResult ProcesarNotificacionesVencimientos()
         {
             try
-            {
+              {
                 IEnumerable<Notificacion> notificacionesGeneradas = RepoNotificaciones.GenerarNotificacionesPendientes();
                 if (notificacionesGeneradas == null)
                 {

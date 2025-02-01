@@ -25,7 +25,7 @@ namespace LogicaNegocio.Dominio
             }
         }
 
-        private void ValidarNombre()
+        public void ValidarNombre()
         {
             if (string.IsNullOrWhiteSpace(Nombre))
             {

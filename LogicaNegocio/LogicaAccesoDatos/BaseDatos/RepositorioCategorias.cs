@@ -75,7 +75,7 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                obj.Validar();
+                obj.ValidarNombre();
                 Contexto.Categorias.Add(obj);
                 Contexto.SaveChanges();
             }
@@ -150,7 +150,7 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                obj.Validar();
+                obj.ValidarNombre();
                 Contexto.Categorias.Update(obj);
                 Contexto.SaveChanges();
             }
