@@ -5,9 +5,11 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebAPIGestionCobros.Configuration;
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -19,17 +21,34 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioCategorias> logAzure;
 
-        public CategoriasController(IRepositorioCategorias repoCategorias, ILogger<RepositorioCategorias> logger)
+        private readonly string apiKeyConfig;
+
+        public CategoriasController(IRepositorioCategorias repoCategorias, ILogger<RepositorioCategorias> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoCategorias = repoCategorias;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
         }
 
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
+        }
 
 
         [HttpGet]
         public IActionResult Get()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 IEnumerable<Categoria> lasCategorias = RepoCategorias.FindAll();
@@ -59,6 +78,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("suscriptor/{suscriptorId}")]
         public IActionResult GetBySuscriptorId(int suscriptorId)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 IEnumerable<Categoria> categorias = RepoCategorias.FindBySuscriptorId(suscriptorId);
@@ -84,6 +107,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int? id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             if (id == null || id == 0)
             {
                 return BadRequest();
@@ -116,6 +144,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Categoria nueva)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 
@@ -138,6 +170,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Categoria aModificar)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             if (id == null)
             {
                 return BadRequest();
@@ -164,6 +200,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 RepoCategorias.Remove(id);

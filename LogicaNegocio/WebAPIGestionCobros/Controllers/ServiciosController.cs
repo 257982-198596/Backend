@@ -4,9 +4,11 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebAPIGestionCobros.Configuration;
 
 
 
@@ -21,17 +23,34 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioServicios> logAzure;
 
-        public ServiciosController(IRepositorioServicios repoServicios, ILogger<RepositorioServicios> logger)
+        private readonly string apiKeyConfig;
+
+        public ServiciosController(IRepositorioServicios repoServicios, ILogger<RepositorioServicios> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoServicios = repoServicios;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
         }
 
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
+        }
 
         // GET: api/<ServiciosController>
         [HttpGet]
         public IActionResult Get()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 IEnumerable<Servicio> losServicios = RepoServicios.FindAll();
@@ -61,6 +80,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("suscriptor/{suscriptorId}")]
         public IActionResult GetServiciosBySuscriptorId(int suscriptorId)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 IEnumerable<Servicio> losServicios = RepoServicios.FindAllBySuscriptorId(suscriptorId);
@@ -89,6 +113,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int? id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             if (id == null || id == 0)
             {
                 return BadRequest(); 
@@ -121,6 +150,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Servicio nuevo)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 
@@ -145,6 +179,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Servicio aModificar)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 if (aModificar.Id != null)
@@ -174,6 +213,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 if (id != null && id != 0)

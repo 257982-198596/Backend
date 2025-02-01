@@ -5,9 +5,11 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebAPIGestionCobros.Configuration;
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -20,15 +22,32 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioNotificaciones> logAzure;
 
-        public NotificacionesController(IRepositorioNotificaciones repoNotificaciones, ILogger<RepositorioNotificaciones> logger)
+        private readonly string apiKeyConfig;
+
+        public NotificacionesController(IRepositorioNotificaciones repoNotificaciones, ILogger<RepositorioNotificaciones> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoNotificaciones = repoNotificaciones;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
+        }
+
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 IEnumerable<Notificacion> lasNotificaciones = RepoNotificaciones.FindAll();
@@ -58,6 +77,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("suscriptor/{suscriptorId}")]
         public IActionResult GetBySuscriptorId(int suscriptorId)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 IEnumerable<Notificacion> notificaciones = RepoNotificaciones.FindBySuscriptorId(suscriptorId);
@@ -84,6 +108,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int? id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             if (id == null || id == 0)
             {
                 return BadRequest();
@@ -116,7 +145,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPost]
             public IActionResult Post([FromBody] Notificacion nuevaNotificacion)
             {
-                try
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+            try
                 {
 
                     RepoNotificaciones.Add(nuevaNotificacion);
@@ -140,6 +173,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Notificacion aModificar)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 if (aModificar.Id != null)
@@ -170,6 +207,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 if (id != null && id != 0)
@@ -206,6 +247,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPost("enviar")]
         public IActionResult EnviarRecordatorio([FromBody] Notificacion nuevaNotificacion)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 
@@ -228,6 +273,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPost("procesar-notificaciones-de-vencimientos")]
         public IActionResult ProcesarNotificacionesVencimientos()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
               {
                 IEnumerable<Notificacion> notificacionesGeneradas = RepoNotificaciones.GenerarNotificacionesPendientes();
@@ -252,6 +301,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("cantidad-notificaciones/{clienteId}")]
         public IActionResult ObtenerCantidadNotificacionesEnviadas(int clienteId)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 DateTime fechaHaceTreintaDias = DateTime.Now.AddDays(-30);
@@ -274,6 +327,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("suscriptor/{suscriptorId}/anio/{year}/notificaciones-por-mes")]
         public IActionResult GetNotificacionesPorMes(int suscriptorId, int year)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 Dictionary<int, decimal> notificacionesPorMes = RepoNotificaciones.CantidadNotificacionesPorMesaDelSuscriptorId(suscriptorId, year);

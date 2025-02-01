@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebAPIGestionCobros.Configuration;
 using WebAPIGestionCobros.Controllers;
 using WebAPIGestionCobros.Servicios;
 
@@ -85,9 +86,9 @@ namespace WebAPIGestionCobros
 
             // Para uso del sistema de envio de correos
             services.AddScoped<EnviarCorreo>();
-            
 
-
+            // API Settings
+            services.Configure<ApiSettings>(Configuration.GetSection("ApiSettings"));
 
             //conexión a bd
             string stringConexion = Configuration.GetConnectionString("Miconexion");

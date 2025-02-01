@@ -4,9 +4,11 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebAPIGestionCobros.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -20,17 +22,33 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioClientes> logAzure;
 
-        public ClientesController(IRepositorioClientes repoClientes, ILogger<RepositorioClientes> logger)
+        private readonly string apiKeyConfig;
+
+        public ClientesController(IRepositorioClientes repoClientes, ILogger<RepositorioClientes> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoClientes = repoClientes;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
         }
 
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
+        }
 
         // GET: api/<ClientesController>
         [HttpGet]
         public IActionResult Get()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 IEnumerable<Cliente> losClientes = RepoClientes.FindAll();
@@ -61,6 +79,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("suscriptor/{suscriptorId}")]
         public IActionResult GetClientesBySuscriptorId(int suscriptorId)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 IEnumerable<Cliente> losClientes = RepoClientes.FindAllBySuscriptorId(suscriptorId);
@@ -89,7 +111,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int? id)
         {
-            if(id == null || id == 0)
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+            if (id == null || id == 0)
             {
                 return BadRequest();
             }
@@ -120,6 +146,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Cliente nuevo)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 if(nuevo.PaisId != null && nuevo.PaisId != 0)
@@ -158,6 +188,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Cliente aModificar)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                if(aModificar.Id != null)
@@ -189,6 +223,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("actualizar-perfil/{id}")]
         public IActionResult PutPerfilCliente(int id, [FromBody] Cliente aModificar)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 if (aModificar.Id != null)
@@ -221,6 +259,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 if (id != null && id != 0)
@@ -258,6 +300,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("habilitar/{id}")]
         public IActionResult Habilitar(int id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 RepoClientes.HabilitarCliente(id);
@@ -279,6 +325,10 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("deshabilitar/{id}")]
         public IActionResult Deshabilitar(int id)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 RepoClientes.DeshabilitarCliente(id);

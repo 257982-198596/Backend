@@ -4,7 +4,9 @@ using LogicaNegocio.Dominio;
 using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
+using WebAPIGestionCobros.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -18,10 +20,23 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioUsuarios> logAzure;
 
-        public UsuariosController(IRepositorioUsuarios repoUsuarios, ILogger<RepositorioUsuarios> logger)
+        private readonly string apiKeyConfig;
+
+        public UsuariosController(IRepositorioUsuarios repoUsuarios, ILogger<RepositorioUsuarios> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoUsuarios = repoUsuarios;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
+        }
+
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
         }
 
         // GET: api/usuarios/iniciarsesion
@@ -29,6 +44,11 @@ namespace WebAPIGestionCobros.Controllers
         [Route("iniciarsesion")]
         public IActionResult IniciarSesion([FromBody] Usuario usuario)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 if (usuario.Email != null && usuario.Password != null)
@@ -92,6 +112,10 @@ namespace WebAPIGestionCobros.Controllers
         [Route("reset")]
         public IActionResult ResetContrasena([FromBody] Usuario usuario)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 RepoUsuarios.ResetContrasena(usuario);
@@ -113,6 +137,10 @@ namespace WebAPIGestionCobros.Controllers
         [Route("hashpasswords")]
         public IActionResult HashExistingPasswords()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
             try
             {
                 RepoUsuarios.HashExistingPasswords();
@@ -134,6 +162,11 @@ namespace WebAPIGestionCobros.Controllers
         [Route("obtener-cliente-por-email")]
         public IActionResult ObtenerClientePorEmail([FromQuery] string email)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 if (string.IsNullOrWhiteSpace(email))

@@ -33,6 +33,7 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Add(Notificacion obj)
         {
+
             ServicioDelCliente elServicioDelCliente = Contexto.ServiciosDelCliente
                 .Include(ser => ser.MonedaDelServicio)
                 .Include(serCli => serCli.ServicioContratado)

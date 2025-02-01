@@ -5,7 +5,9 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
+using WebAPIGestionCobros.Configuration;
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -17,16 +19,34 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioSuscriptores> logAzure;
 
-        public SuscriptoresController(IRepositorioSuscriptores repoSuscriptores, ILogger<RepositorioSuscriptores> logger)
+        private readonly string apiKeyConfig;
+
+        public SuscriptoresController(IRepositorioSuscriptores repoSuscriptores, ILogger<RepositorioSuscriptores> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoSuscriptores = repoSuscriptores;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
+        }
+
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
         }
 
         // POST api/<SuscriptoresController>
         [HttpPost]
         public IActionResult Post([FromBody] Suscriptor nuevo)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 if (nuevo.PaisId != null && nuevo.PaisId != 0)
@@ -57,6 +77,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] Suscriptor actualizado)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 if (actualizado.PaisId != null && actualizado.PaisId != 0)
@@ -88,6 +113,11 @@ namespace WebAPIGestionCobros.Controllers
         [HttpGet("{idUsuario}")]
         public IActionResult GetSuscriptorPorIdUsuario(int idUsuario)
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 Suscriptor suscriptor = RepoSuscriptores.FindByIdUsuario(idUsuario);
