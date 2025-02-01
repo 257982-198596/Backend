@@ -5,8 +5,10 @@ using LogicaNegocio.InterfacesRepositorios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using WebAPIGestionCobros.Configuration;
 
 namespace WebAPIGestionCobros.Controllers
 {
@@ -18,17 +20,34 @@ namespace WebAPIGestionCobros.Controllers
 
         private readonly ILogger<RepositorioMediosDePago> logAzure;
 
-        public MediosDePagoController(IRepositorioMediosDePago repoMediosDePago, ILogger<RepositorioMediosDePago> logger)
+        private readonly string apiKeyConfig;
+
+        public MediosDePagoController(IRepositorioMediosDePago repoMediosDePago, ILogger<RepositorioMediosDePago> logger, IOptions<ApiSettings> apiSettings)
         {
             RepoMediosDePago = repoMediosDePago;
             logAzure = logger;
+            apiKeyConfig = apiSettings.Value.ApiKey;
         }
 
+        private bool EsApiKeyValida()
+        {
+            if (!Request.Headers.TryGetValue("ApiKey", out var apiKeyHeader))
+            {
+                return false;
+            }
+
+            return apiKeyHeader == apiKeyConfig;
+        }
 
         // GET: api/<MediosDePagoController>
         [HttpGet]
         public IActionResult Get()
         {
+            if (!EsApiKeyValida())
+            {
+                return Unauthorized("API Key inválida o no proporcionada.");
+            }
+
             try
             {
                 IEnumerable<MedioDePago> losMediosDePago = RepoMediosDePago.FindAll();
