@@ -156,7 +156,15 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 if (elServicioDelClienteAEliminar != null)
                 {
-                    //validar registros en otras tablas
+                    // Obtener las notificaciones asociadas al ServicioDelCliente
+                    List<Notificacion> notificaciones = Contexto.Notificaciones
+                        .Where(n => n.ServicioNotificadoId == id)
+                        .ToList();
+                    if (notificaciones.Count > 0)
+                    {
+                        throw new ServicioDelClienteException("No se puede eliminar el servicio del cliente porque tiene notificaciones asociadas.");
+                    }
+
                     Contexto.Remove(elServicioDelClienteAEliminar);
                     Contexto.SaveChanges();
                 }

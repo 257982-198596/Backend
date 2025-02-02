@@ -214,12 +214,16 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Remove(int id)
         {
-            Cliente elClienteAEliminar = Contexto.Clientes.Find(id);
+            Cliente elClienteAEliminar = Contexto.Clientes.Include(c => c.ServiciosDelCliente).FirstOrDefault(c => c.Id == id);
             try
             {
                 if (elClienteAEliminar != null)
                 {
-                    //validar registros en otras tablas
+                    if (elClienteAEliminar.ServiciosDelCliente != null && elClienteAEliminar.ServiciosDelCliente.Any())
+                    {
+                        throw new ClienteException("El cliente tiene servicios asociados y no puede ser eliminado");
+                    }
+
                     Contexto.Remove(elClienteAEliminar);
                     Contexto.SaveChanges();
                 } else
