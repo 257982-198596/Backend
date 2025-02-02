@@ -135,6 +135,16 @@ namespace LogicaAccesoDatos.BaseDatos
                 Categoria laCategoria = FindById(id);
                 if (laCategoria != null)
                 {
+                    List<Servicio> serviciosAsociadosALaCategoria = Contexto.Servicios
+                        .Where(s => s.CategoriaId == id)
+                        .ToList();
+
+                    // Verificar si hay servicios asociados
+                    if (serviciosAsociadosALaCategoria.Any())
+                    {
+                        throw new CategoriaException("No se puede eliminar la categoría porque tiene servicios asociados.");
+                    }
+
                     Contexto.Categorias.Remove(laCategoria);
                     Contexto.SaveChanges();
                 }
