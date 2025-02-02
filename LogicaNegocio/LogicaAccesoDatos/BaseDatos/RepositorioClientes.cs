@@ -30,6 +30,14 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
+                //Validacion si existe otro cliente en el sistema con el mismo nombre para ese suscriptor
+                Cliente clienteExistente = Contexto.Clientes
+                .FirstOrDefault(c => c.Nombre.ToLower() == obj.Nombre && c.SuscriptorId == obj.SuscriptorId);
+
+                if (clienteExistente != null)
+                {
+                    throw new ClienteException("Ya existe un cliente con el mismo nombre para este suscriptor.");
+                }
                 //Validacion si existe email en el sistema
                 Usuario usuarioExistente = Contexto.Usuarios.FirstOrDefault(u => u.Email == obj.UsuarioLogin.Email);
                 if (usuarioExistente != null)

@@ -27,7 +27,13 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                
+                Servicio servicioExistente = Contexto.Servicios
+                .FirstOrDefault(ser => ser.Nombre.ToLower() == obj.Nombre && ser.SuscriptorId == obj.SuscriptorId);
+
+                if (servicioExistente != null)
+                {
+                    throw new ServicioException("Ya existe un servicio con el mismo nombre para este suscriptor.");
+                }
 
                 Categoria laCategoria = Contexto.Categorias.Find(obj.CategoriaId);
                 
@@ -110,6 +116,7 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 if (elServicioAEliminar != null)
                 {
+
                     // Obtener los ServiciosDelCliente asociados al servicio
                     List<ServicioDelCliente> serviciosDelCliente = Contexto.ServiciosDelCliente
                         .Where(sdc => sdc.ServicioContratadoId == id)

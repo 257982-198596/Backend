@@ -75,6 +75,15 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
+                string nombreCategoria = obj.Nombre.ToLower();
+
+                Categoria categoriaExistente = Contexto.Categorias
+                .FirstOrDefault(c => c.Nombre.ToLower() == obj.Nombre && c.SuscriptorId == obj.SuscriptorId);
+
+                if (categoriaExistente != null)
+                {
+                    throw new CategoriaException("Ya existe una categoría con el mismo nombre para este suscriptor.");
+                }
                 obj.ValidarNombre();
                 Contexto.Categorias.Add(obj);
                 Contexto.SaveChanges();
