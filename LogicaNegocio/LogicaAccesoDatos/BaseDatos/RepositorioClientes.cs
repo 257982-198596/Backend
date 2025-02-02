@@ -30,7 +30,12 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                
+                //Validacion si existe email en el sistema
+                Usuario usuarioExistente = Contexto.Usuarios.FirstOrDefault(u => u.Email == obj.UsuarioLogin.Email);
+                if (usuarioExistente != null)
+                {
+                    throw new ClienteException("El correo electrónico ya está registrado en el sistema");
+                }
 
                 Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
                 EstadoCliente elEstado = Contexto.EstadosDelCliente.FirstOrDefault(e => e.Nombre == "Activo");

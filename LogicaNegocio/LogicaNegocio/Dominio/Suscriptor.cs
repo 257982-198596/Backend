@@ -43,7 +43,11 @@ namespace LogicaNegocio.Dominio
             {
                 throw new SuscriptorException("El número de documento debe ser numérico");
             }
-            
+            if (RUT.Length != 12)
+            {
+                throw new SuscriptorException("El número de RUT debe tener exactamente 12 caracteres");
+            }
+
 
         }
     }
