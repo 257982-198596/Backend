@@ -30,7 +30,20 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
-                
+                //Validacion si existe otro cliente en el sistema con el mismo nombre para ese suscriptor
+                Cliente clienteExistente = Contexto.Clientes
+                .FirstOrDefault(c => c.Nombre.ToLower() == obj.Nombre && c.SuscriptorId == obj.SuscriptorId);
+
+                if (clienteExistente != null)
+                {
+                    throw new ClienteException("Ya existe un cliente con el mismo nombre para este suscriptor.");
+                }
+                //Validacion si existe email en el sistema
+                Usuario usuarioExistente = Contexto.Usuarios.FirstOrDefault(u => u.Email == obj.UsuarioLogin.Email);
+                if (usuarioExistente != null)
+                {
+                    throw new ClienteException("El correo electrónico ya está registrado en el sistema");
+                }
 
                 Documento elTipoDocumento = Contexto.Documentos.Find(obj.DocumentoId);
                 EstadoCliente elEstado = Contexto.EstadosDelCliente.FirstOrDefault(e => e.Nombre == "Activo");
@@ -209,12 +222,16 @@ namespace LogicaAccesoDatos.BaseDatos
 
         public void Remove(int id)
         {
-            Cliente elClienteAEliminar = Contexto.Clientes.Find(id);
+            Cliente elClienteAEliminar = Contexto.Clientes.Include(c => c.ServiciosDelCliente).FirstOrDefault(c => c.Id == id);
             try
             {
                 if (elClienteAEliminar != null)
                 {
-                    //validar registros en otras tablas
+                    if (elClienteAEliminar.ServiciosDelCliente != null && elClienteAEliminar.ServiciosDelCliente.Any())
+                    {
+                        throw new ClienteException("El cliente tiene servicios asociados y no puede ser eliminado");
+                    }
+
                     Contexto.Remove(elClienteAEliminar);
                     Contexto.SaveChanges();
                 } else

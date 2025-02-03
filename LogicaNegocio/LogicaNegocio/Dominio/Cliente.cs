@@ -28,7 +28,7 @@ namespace LogicaNegocio.Dominio
 
         public List<ServicioDelCliente> ServiciosDelCliente { get; set; }
 
-        //public List<Notificacion> NotificacionesDelCliente { get; set; }
+        public int UsuarioLoginId { get; set; }
 
         public int SuscriptorId { get; set; }
         public void Validar()

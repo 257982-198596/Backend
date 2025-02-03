@@ -65,6 +65,12 @@ namespace LogicaAccesoDatos.BaseDatos
             .HasIndex(c => c.NumDocumento)
             .IsUnique();
 
+            modelBuilder.Entity<Cliente>()
+            .HasOne(c => c.UsuarioLogin)
+            .WithOne()
+            .HasForeignKey<Cliente>(c => c.UsuarioLoginId)
+            .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Notificacion>()
             .HasOne(n => n.EstadoDeNotificacion)
             .WithMany()

@@ -16,6 +16,34 @@ namespace LogicaNegocio.Dominio
 
         //public List<int> Rutina { get; set; }
 
+        public void ValidarFechaMaxima(DateTime fechaInicio)
+        {
+            DateTime fechaMaxima;
+
+            switch (this.Nombre)
+            {
+                case "Anual":
+                    fechaMaxima = fechaInicio.AddYears(1);
+                    break;
+                case "Mensual":
+                    fechaMaxima = fechaInicio.AddMonths(1);
+                    break;
+                case "Trimestral":
+                    fechaMaxima = fechaInicio.AddMonths(3);
+                    break;
+                case "Semestral":
+                    fechaMaxima = fechaInicio.AddMonths(6);
+                    break;
+                default:
+                    throw new FrecuenciaException($"Frecuencia '{this.Nombre}' no soportada.");
+            }
+
+            if (fechaMaxima < DateTime.Today)
+            {
+                throw new FrecuenciaException("El servicio quedaria vencido con la fecha y frecuencia seleccionada. Contacte al Administrador");
+            }
+        }
+
         public void CalcularVencimiento(ServicioDelCliente nuevoServicio)
         {
             if (nuevoServicio == null) return;

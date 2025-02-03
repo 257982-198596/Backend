@@ -75,6 +75,15 @@ namespace LogicaAccesoDatos.BaseDatos
         {
             try
             {
+                string nombreCategoria = obj.Nombre.ToLower();
+
+                Categoria categoriaExistente = Contexto.Categorias
+                .FirstOrDefault(c => c.Nombre.ToLower() == obj.Nombre && c.SuscriptorId == obj.SuscriptorId);
+
+                if (categoriaExistente != null)
+                {
+                    throw new CategoriaException("Ya existe una categoría con el mismo nombre para este suscriptor.");
+                }
                 obj.ValidarNombre();
                 Contexto.Categorias.Add(obj);
                 Contexto.SaveChanges();
@@ -126,6 +135,16 @@ namespace LogicaAccesoDatos.BaseDatos
                 Categoria laCategoria = FindById(id);
                 if (laCategoria != null)
                 {
+                    List<Servicio> serviciosAsociadosALaCategoria = Contexto.Servicios
+                        .Where(s => s.CategoriaId == id)
+                        .ToList();
+
+                    // Verificar si hay servicios asociados
+                    if (serviciosAsociadosALaCategoria.Any())
+                    {
+                        throw new CategoriaException("No se puede eliminar la categoría porque tiene servicios asociados.");
+                    }
+
                     Contexto.Categorias.Remove(laCategoria);
                     Contexto.SaveChanges();
                 }

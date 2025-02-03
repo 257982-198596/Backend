@@ -51,6 +51,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                     obj.FrecuenciaDelServicio = laFrecuencia;
                                     obj.MonedaDelServicio = laMoneda;
                                     obj.EstadoDelServicioDelCliente = elEstadoInicial;
+                                    laFrecuencia.ValidarFechaMaxima(obj.FechaInicio);
                                     laFrecuencia.CalcularVencimiento(obj);
 
                                     Contexto.Add(obj);
@@ -156,7 +157,15 @@ namespace LogicaAccesoDatos.BaseDatos
             {
                 if (elServicioDelClienteAEliminar != null)
                 {
-                    //validar registros en otras tablas
+                    // Obtener las notificaciones asociadas al ServicioDelCliente
+                    List<Notificacion> notificaciones = Contexto.Notificaciones
+                        .Where(n => n.ServicioNotificadoId == id)
+                        .ToList();
+                    if (notificaciones.Count > 0)
+                    {
+                        throw new ServicioDelClienteException("No se puede eliminar el servicio del cliente porque tiene notificaciones asociadas.");
+                    }
+
                     Contexto.Remove(elServicioDelClienteAEliminar);
                     Contexto.SaveChanges();
                 }
@@ -208,6 +217,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                     obj.ServicioContratado = elServicio;
                                     obj.Cliente = elServicioACambiar.Cliente;
                                     obj.EstadoDelServicioDelCliente = elServicioACambiar.EstadoDelServicioDelCliente;
+                                    laFrecuencia.ValidarFechaMaxima(obj.FechaInicio);
                                     laFrecuencia.CalcularVencimiento(obj);
                                     obj.Validar();
                                     Contexto.ServiciosDelCliente.Update(obj);
@@ -611,6 +621,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 indicadores["MontoYaCobrado"] = montoYaCobrado;
                 indicadores["MontoPendienteCobro"] = montoPendienteCobro;
                 indicadores["CantidadVencimientos"] = cantidadVencimientos;
+                indicadores["CotizacionDolar"] = cotizacionDolar.Valor;
             }
             catch (ServicioDelClienteException ex)
             {

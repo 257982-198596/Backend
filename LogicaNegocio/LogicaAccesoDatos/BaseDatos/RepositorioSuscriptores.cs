@@ -29,46 +29,53 @@ namespace LogicaAccesoDatos.BaseDatos
         public void Add(Suscriptor obj)
         {
 
-
             try
             {
                 obj.Validar();
-                Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Suscriptor");
-                Pais elPais = Contexto.Paises.Find(obj.PaisId);
-
-                if (elRol != null)
+                //Validacion si existe email en el sistema
+                Usuario usuarioExistente = Contexto.Usuarios.FirstOrDefault(u => u.Email == obj.UsuarioLogin.Email);
+                if (usuarioExistente == null)
                 {
-                    if (elPais != null)
+                    Rol elRol = Contexto.Roles.FirstOrDefault(e => e.Nombre == "Suscriptor");
+                    Pais elPais = Contexto.Paises.Find(obj.PaisId);
+
+                    if (elRol != null)
                     {
-                        if(obj.UsuarioLogin != null)
+                        if (elPais != null)
                         {
-                            obj.Pais = elPais;
-                            obj.UsuarioLogin.RolDeUsuario = elRol;
+                            if (obj.UsuarioLogin != null)
+                            {
+                                obj.Pais = elPais;
+                                obj.UsuarioLogin.RolDeUsuario = elRol;
 
-                            // Hash the password
-                            obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
-                            obj.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
+                                // Hash the password
+                                obj.UsuarioLogin.ValidarContrasena(obj.UsuarioLogin.Password);
+                                obj.UsuarioLogin.Password = BCrypt.Net.BCrypt.HashPassword(obj.UsuarioLogin.Password);
 
-                            Contexto.Add(obj);
-                            Contexto.SaveChanges();
+                                Contexto.Add(obj);
+                                Contexto.SaveChanges();
+                            }
+                            else
+                            {
+                                throw new SuscriptorException("El suscriptor debe tener un usuario asociado");
+                            }
+
                         }
                         else
                         {
-                            throw new SuscriptorException("El suscriptor debe tener un usuario asociado");
+                            throw new SuscriptorException("Debe seleccionar un pais para el suscriptor");
                         }
-                        
                     }
                     else
                     {
-                        throw new SuscriptorException("Debe seleccionar un pais para el suscriptor");
+                        throw new SuscriptorException("Error al asignar rol");
                     }
-
-
                 }
                 else
                 {
-                    throw new SuscriptorException("Error al asignar rol");
+                    throw new SuscriptorException("El correo electrónico ya está registrado en el sistema");
                 }
+                
             }
             catch (SuscriptorException ex)
             {
