@@ -51,6 +51,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                     obj.FrecuenciaDelServicio = laFrecuencia;
                                     obj.MonedaDelServicio = laMoneda;
                                     obj.EstadoDelServicioDelCliente = elEstadoInicial;
+                                    laFrecuencia.ValidarFechaMaxima(obj.FechaInicio);
                                     laFrecuencia.CalcularVencimiento(obj);
 
                                     Contexto.Add(obj);
@@ -216,6 +217,7 @@ namespace LogicaAccesoDatos.BaseDatos
                                     obj.ServicioContratado = elServicio;
                                     obj.Cliente = elServicioACambiar.Cliente;
                                     obj.EstadoDelServicioDelCliente = elServicioACambiar.EstadoDelServicioDelCliente;
+                                    laFrecuencia.ValidarFechaMaxima(obj.FechaInicio);
                                     laFrecuencia.CalcularVencimiento(obj);
                                     obj.Validar();
                                     Contexto.ServiciosDelCliente.Update(obj);
