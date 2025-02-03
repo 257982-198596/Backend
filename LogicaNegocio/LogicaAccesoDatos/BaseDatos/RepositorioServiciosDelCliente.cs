@@ -619,6 +619,7 @@ namespace LogicaAccesoDatos.BaseDatos
                 indicadores["MontoYaCobrado"] = montoYaCobrado;
                 indicadores["MontoPendienteCobro"] = montoPendienteCobro;
                 indicadores["CantidadVencimientos"] = cantidadVencimientos;
+                indicadores["CotizacionDolar"] = cotizacionDolar.Valor;
             }
             catch (ServicioDelClienteException ex)
             {
