@@ -673,5 +673,43 @@ namespace LogicaAccesoDatos.BaseDatos
                 throw new Exception($"Error al marcar servicios como vencidos: {ex.Message}", ex);
             }
         }
+
+        public void CancelarServicioDelCliente(int idServicioDelCliente)
+        {
+            try
+            {
+                ServicioDelCliente servicio = Contexto.ServiciosDelCliente.FirstOrDefault(s => s.Id == idServicioDelCliente);
+                if (servicio == null)
+                {
+                    throw new ServicioDelClienteException("El servicio no esta cargado en el sistema.");
+                }
+
+                EstadoServicioDelCliente estadoActivo = Contexto.EstadosServiciosDelClientes.FirstOrDefault(e => e.Nombre == "Activo");
+                EstadoServicioDelCliente estadoCancelado = Contexto.EstadosServiciosDelClientes.FirstOrDefault(e => e.Nombre == "Cancelado");
+                if (estadoActivo == null || estadoCancelado == null)
+                {
+                    throw new ServicioDelClienteException("El estado 'Activo' o 'Cancelado' no existe.");
+                }
+
+                if (servicio.EstadoDelServicioDelCliente != estadoActivo)
+                {
+                    throw new ServicioDelClienteException("El servicio debe estar en estado 'Activo' para poder ser cancelado.");
+                }
+
+                servicio.EstadoDelServicioDelCliente = estadoCancelado;
+                Contexto.SaveChanges();
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                throw new Exception($"Error al cancelar servicios de un cliente", ex);
+            }
+
+        }
     }
 }

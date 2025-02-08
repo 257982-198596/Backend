@@ -29,6 +29,8 @@ namespace LogicaNegocio.InterfacesRepositorios
         // indicadores para reporte vencimientos del mes corriente
         Dictionary<string, decimal> ObtenerIndicadoresServiciosVencenEsteMes(int idSuscriptor);
 
+        void CancelarServicioDelCliente(int idServicioDelCliente);
+
 
     }
 }

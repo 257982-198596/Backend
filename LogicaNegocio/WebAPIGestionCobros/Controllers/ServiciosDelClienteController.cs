@@ -481,6 +481,25 @@ namespace WebAPIGestionCobros.Controllers
             }
         }
 
+        [HttpPut("cancelar/{idServicioDelCliente}")]
+        public IActionResult CancelarServicio(int idServicioDelCliente)
+        {
+            try
+            {
+                RepoServiciosDelCliente.CancelarServicioDelCliente(idServicioDelCliente);
+                return Ok("Servicio cancelado exitosamente.");
+            }
+            catch (ServicioDelClienteException ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
+            catch (Exception ex)
+            {
+                logAzure.LogError(ex.Message);
+                return BadRequest(ex);
+            }
+        }
 
     }
 }

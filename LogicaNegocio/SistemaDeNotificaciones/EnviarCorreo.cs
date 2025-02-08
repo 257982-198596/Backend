@@ -89,7 +89,7 @@ namespace SistemaDeNotificaciones
             var plainTextContent = $@"
             Estimado Cliente {elCliente.Nombre}:
 
-            Su servicio {elServicioDelCliente.Descripcion} con fecha de vencimiento {elServicioDelCliente.FechaVencimiento:dd/MM/yyyy} le restan {diasVencimiento} para vencerse.
+            Su servicio {elServicioDelCliente.Descripcion} con fecha de vencimiento {elServicioDelCliente.FechaVencimiento:dd/MM/yyyy} le restan {diasVencimiento} días para vencerse.
             
             El costo de renovación es de {elServicioDelCliente.Precio} {elServicioDelCliente.MonedaDelServicio.Nombre}.
             Evite costos adicionales y renueve su servicio a tiempo.
